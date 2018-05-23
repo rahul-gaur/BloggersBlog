@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Blogger\'s Blog</string>
+    <string name="welcome_to_blogger_s_blog">WELCOME TO BLOGGER\'S BLOG</string>
+    <string name="register_to_blogger_s_blog">Register to Blogger\'s Blog</string>
+    <string name="login_to_your_blog">Login to your Blog!!</string>
+    <string name="please_enter_your_emailid">Please enter your email</string>
+    <string name="please_enter_your_password">Please enter your Password</string>
+    <string name="welcome">Welcome</string>
+    <string name="log_out">Log out</string>
+    <string name="please_enter_a_password">Please enter a password</string>
+    <string name="please_enter_a_email">Please enter a Email</string>
+    <string name="please_confirm_password">Please confirm password</string>
+    <string name="search">Search</string>
+    <string name="profile">Profile</string>
+    <string name="log_out_appBar">Log Out</string>
+    <string name="enter_your_name">Enter your name</string>
+    <string name="submit">Submit</string>
+    <string name="enter_description">Enter description</string>
+    <string name="publish_your_masterpiece">Publish your Masterpiece</string>
+</resources>

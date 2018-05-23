@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/app_bar_search"
+        android:icon="@mipmap/search_ico"
+        android:title="@string/search"
+        app:showAsAction="always"
+        app:actionViewClass="android.widget.SearchView" />
+    <item
+        android:id="@+id/profile_menu"
+        android:title="Profile" />
+    <item
+        android:id="@+id/setting_AppBar"
+        android:title="Setting" />
+    <item
+        android:id="@+id/LogOut_app_bar"
+        android:title="Log Out" />
+</menu>
