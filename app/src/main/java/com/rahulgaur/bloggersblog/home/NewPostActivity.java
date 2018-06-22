@@ -1,4 +1,4 @@
-package com.rahulgaur.bloggersblog;
+package com.rahulgaur.bloggersblog.home;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -25,6 +25,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.rahulgaur.bloggersblog.R;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -33,14 +34,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 import java.util.UUID;
 
 import id.zelory.compressor.Compressor;
 
 public class NewPostActivity extends AppCompatActivity {
 
-    private static final int MAX_LENGTH = 100;
     private ImageView imageView;
     private EditText postDescET;
     private Button uploadBtn;
@@ -81,6 +80,9 @@ public class NewPostActivity extends AppCompatActivity {
                 final String post_desc = postDescET.getText().toString();
                 if (!TextUtils.isEmpty(post_desc)) {
                     progressBar.setVisibility(View.VISIBLE);
+                    Toast.makeText(NewPostActivity.this, "Please wait..", Toast.LENGTH_LONG).show();
+                    uploadBtn.setEnabled(false);
+                    uploadBtn.setClickable(false);
                     final String randomName = UUID.randomUUID().toString();
                     StorageReference filePath = storageReference.child("post_images").child(randomName + ".jpg");
                     filePath.putFile(postUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
@@ -122,6 +124,7 @@ public class NewPostActivity extends AppCompatActivity {
                                         postMap.put("desc", post_desc);
                                         postMap.put("user_id", current_user_id);
                                         postMap.put("timestamp", FieldValue.serverTimestamp());
+                                        postMap.put("post_name", randomName);
 
                                         firebaseFirestore.collection("Posts").add(postMap)
                                                 .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
@@ -155,6 +158,9 @@ public class NewPostActivity extends AppCompatActivity {
                                 });
 
                             } else {
+                                uploadBtn.setEnabled(true);
+                                uploadBtn.setClickable(true);
+                                postDescET.setText(null);
                                 String msg = task.getException().getMessage();
                                 Toast.makeText(NewPostActivity.this, "Error: "
                                         + msg, Toast.LENGTH_SHORT).show();
@@ -200,17 +206,5 @@ public class NewPostActivity extends AppCompatActivity {
                 Exception error = result.getError();
             }
         }
-    }
-
-    public static String random() {
-        Random generator = new Random();
-        StringBuilder randomStringBuilder = new StringBuilder();
-        int randomLength = generator.nextInt(MAX_LENGTH);
-        char tempChar;
-        for (int i = 0; i < randomLength; i++) {
-            tempChar = (char) (generator.nextInt(96) + 32);
-            randomStringBuilder.append(tempChar);
-        }
-        return randomStringBuilder.toString();
     }
 }

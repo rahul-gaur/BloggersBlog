@@ -1,17 +1,21 @@
-package com.rahulgaur.bloggersblog;
+package com.rahulgaur.bloggersblog.home;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -19,16 +23,24 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.rahulgaur.bloggersblog.notification.NotificationFragment;
+import com.rahulgaur.bloggersblog.R;
+import com.rahulgaur.bloggersblog.welcome.WelcomePage;
+import com.rahulgaur.bloggersblog.account.Account;
+import com.rahulgaur.bloggersblog.account.AccountFragment;
 
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth auth = FirebaseAuth.getInstance();
-    private FloatingActionButton addPost;
 
     private String current_user_id;
     FirebaseFirestore firebaseFirestore;
+
+    private homeFragment homeFrag;
+    private NotificationFragment notiFrag;
+    private AccountFragment accountFrag;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -36,30 +48,56 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        TextView tv = findViewById(R.id.mainTV);
-
         final FirebaseUser current_user = auth.getCurrentUser();
 
         Toolbar toolbar = findViewById(R.id.main_toolbar);
-        addPost = findViewById(R.id.main_add_post);
+        FloatingActionButton addPost = findViewById(R.id.main_add_post);
 
-        firebaseFirestore = FirebaseFirestore.getInstance();
+        homeFrag = new homeFragment();
+        notiFrag = new NotificationFragment();
+        accountFrag = new AccountFragment();
 
-        addPost.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendToNewPost();
-            }
-        });
+        if (auth.getCurrentUser() != null) {
+
+            fragmentReplace(homeFrag);
+
+            BottomNavigationView bottomNavigationView = findViewById(R.id.main_bottomNev);
+
+            bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+                    switch (item.getItemId()) {
+                        case R.id.bottom_home:
+                            fragmentReplace(homeFrag);
+                            return true;
+                        case R.id.bottom_notification:
+                            fragmentReplace(notiFrag);
+                            return true;
+                        case R.id.bottom_profile:
+                            fragmentReplace(accountFrag);
+                            return true;
+                        default:
+                            return false;
+                    }
+                }
+            });
+
+            firebaseFirestore = FirebaseFirestore.getInstance();
+
+            addPost.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    sendToNewPost();
+                }
+            });
+
+        }
 
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle("Blogger's Blog");
 
         assert current_user != null;
-        String email = current_user.getEmail();
-
-        tv.setText("Welcome " + email);
-
     }
 
     private void sendToNewPost() {
@@ -75,6 +113,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
+        network();
 
         FirebaseUser current_user = auth.getCurrentUser();
 
@@ -92,6 +132,15 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             });
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (current_user_id == null) {
+            sendUserToWelcome();
         }
     }
 
@@ -127,9 +176,30 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
+    private void network() {
+        String answer = null;
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        if (null != activeNetwork) {
+            if (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI)
+                answer = "You are connected to a WiFi Network";
+            if (activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE)
+                answer = "You are connected to a Mobile Network";
+        } else
+            answer = "No internet Connectivity";
+    }
+
     private void sendToAccount() {
         Intent i = new Intent(MainActivity.this, Account.class);
         startActivity(i);
+    }
+
+    private void fragmentReplace(Fragment fragment) {
+
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.main_fragLayout, fragment);
+        fragmentTransaction.commit();
+
     }
 
 }

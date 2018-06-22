@@ -1,9 +1,10 @@
-package com.rahulgaur.bloggersblog;
+package com.rahulgaur.bloggersblog.account;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -28,14 +30,21 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.rahulgaur.bloggersblog.R;
+import com.rahulgaur.bloggersblog.home.MainActivity;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import id.zelory.compressor.Compressor;
 
 public class Account extends AppCompatActivity {
 
@@ -47,6 +56,7 @@ public class Account extends AppCompatActivity {
     private FirebaseFirestore firebaseFirestore;
     private String user_id;
     private boolean isChanged = false;
+    private Bitmap compressedImageFile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +83,7 @@ public class Account extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     if (task.getResult().exists()) {
                         String name = task.getResult().getString("name");
-                        String image = task.getResult().getString("image");
+                        String image = task.getResult().getString("thumb_image");
 
                         mainImageURI = Uri.parse(image);
 
@@ -85,7 +95,8 @@ public class Account extends AppCompatActivity {
 
                 } else {
                     String message = Objects.requireNonNull(task.getException()).getMessage();
-                    Toast.makeText(Account.this, "Error: " + message, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Account.this,
+                            "Error: " + message, Toast.LENGTH_SHORT).show();
                 }
                 progressBar.setVisibility(View.INVISIBLE);
                 btn.setEnabled(true);
@@ -145,41 +156,71 @@ public class Account extends AppCompatActivity {
         });
     }
 
-    private void firebaseStore(@NonNull Task<UploadTask.TaskSnapshot> task, String name) {
+    private void firebaseStore(@NonNull Task<UploadTask.TaskSnapshot> task, final String name) {
 
-        Uri download_uri;
+        final Uri download_uri;
+
+        final String randomName = UUID.randomUUID().toString();
 
         if (task != null) {
             download_uri = task.getResult().getDownloadUrl();
-        }else{
+        } else {
             download_uri = mainImageURI;
         }
 
-        Map<String, String> userMap = new HashMap<>();
-        userMap.put("name", name);
-        userMap.put("image", download_uri.toString());
+        File newImageFile = new File(mainImageURI.getPath());
 
-        firebaseFirestore.collection("Users").document(user_id).set(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+        try {
+            compressedImageFile = new Compressor(Account.this)
+                    .setMaxHeight(200)
+                    .setMaxWidth(200)
+                    .setQuality(10)
+                    .compressToBitmap(newImageFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        compressedImageFile.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] profileThumb = baos.toByteArray();
+
+        UploadTask uploadTask = storageReference.child("profile_images/thumbs")
+                .child(randomName + ".jpg").putBytes(profileThumb);
+
+        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<Void> task) {
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                String downloadThumbUri = taskSnapshot.getDownloadUrl().toString();
 
-                if (task.isSuccessful()) {
-                    progressBar.setVisibility(View.INVISIBLE);
-                    Toast.makeText(Account.this, "Profile updated..", Toast.LENGTH_SHORT).show();
-                    Intent i = new Intent(Account.this, MainActivity.class);
-                    startActivity(i);
-                    finish();
-                } else {
-                    progressBar.setVisibility(View.INVISIBLE);
-                    String message = Objects.requireNonNull(task.getException()).getMessage();
-                    Toast.makeText(Account.this, "Firestore error: " + message, Toast.LENGTH_SHORT).show();
+                Map<String, String> userMap = new HashMap<>();
+                userMap.put("thumb_image", downloadThumbUri);
+                userMap.put("name", name);
+                userMap.put("image", download_uri.toString());
 
-                }
+                firebaseFirestore.collection("Users").document(user_id).set(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+
+                        if (task.isSuccessful()) {
+                            progressBar.setVisibility(View.INVISIBLE);
+                            Toast.makeText(Account.this, "Profile updated..", Toast.LENGTH_SHORT).show();
+                            Intent i = new Intent(Account.this, MainActivity.class);
+                            startActivity(i);
+                            finish();
+                        } else {
+                            progressBar.setVisibility(View.INVISIBLE);
+                            String message = Objects.requireNonNull(task.getException()).getMessage();
+                            Toast.makeText(Account.this, "Firestore error: " + message, Toast.LENGTH_SHORT).show();
+
+                        }
+
+                    }
+                });
+
+                progressBar.setVisibility(View.INVISIBLE);
 
             }
         });
-
-        progressBar.setVisibility(View.INVISIBLE);
     }
 
     private void ImagePicker() {

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/cmnt_profileView"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        android:layout_marginBottom="4dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:src="@drawable/default_usr"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/cmnt_nameTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="username"
+        android:textColor="@color/secondaryTextColor"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/cmnt_profileView"
+        app:layout_constraintTop_toTopOf="@+id/cmnt_profileView" />
+
+    <TextView
+        android:id="@+id/cmnt_messageTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:text="Your comment here "
+        android:textColor="@color/secondaryTextColor"
+        android:textSize="15sp"
+        app:layout_constraintStart_toEndOf="@+id/cmnt_profileView"
+        app:layout_constraintTop_toBottomOf="@+id/cmnt_nameTV" />
+
+</android.support.constraint.ConstraintLayout>

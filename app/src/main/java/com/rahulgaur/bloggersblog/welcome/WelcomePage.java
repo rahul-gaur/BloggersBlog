@@ -1,4 +1,4 @@
-package com.rahulgaur.bloggersblog;
+package com.rahulgaur.bloggersblog.welcome;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,6 +16,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.rahulgaur.bloggersblog.R;
+import com.rahulgaur.bloggersblog.home.MainActivity;
 
 import java.util.Objects;
 
@@ -54,16 +56,18 @@ public class WelcomePage extends AppCompatActivity {
 
                 if (!TextUtils.isEmpty(email) && !TextUtils.isEmpty(pass)) {
                     progressBar.setVisibility(View.VISIBLE);
-
+                    Toast.makeText(WelcomePage.this, "Please wait..", Toast.LENGTH_SHORT).show();
                     auth.signInWithEmailAndPassword(email, pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
+                                Toast.makeText(WelcomePage.this, "Logging you in..", Toast.LENGTH_SHORT).show();
                                 sendToMain();
                             } else {
                                 String msg = Objects.requireNonNull(task.getException()).getMessage();
                                 Toast.makeText(WelcomePage.this, "Error: " + msg, Toast.LENGTH_SHORT).show();
                                 progressBar.setVisibility(View.INVISIBLE);
+                                passTV.setText(null);
                             }
                         }
                     });
