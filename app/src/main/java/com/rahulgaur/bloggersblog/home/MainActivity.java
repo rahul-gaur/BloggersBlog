@@ -1,10 +1,7 @@
 package com.rahulgaur.bloggersblog.home;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -12,7 +9,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,13 +20,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.rahulgaur.bloggersblog.notification.NotificationFragment;
 import com.rahulgaur.bloggersblog.R;
-import com.rahulgaur.bloggersblog.welcome.WelcomePage;
 import com.rahulgaur.bloggersblog.account.Account;
 import com.rahulgaur.bloggersblog.account.AccountFragment;
-
-import java.util.Objects;
+import com.rahulgaur.bloggersblog.notification.NotificationFragment;
+import com.rahulgaur.bloggersblog.welcome.WelcomePage;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -49,17 +44,18 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         final FirebaseUser current_user = auth.getCurrentUser();
+        assert current_user != null;
+        current_user_id = current_user.getUid();
 
-        Toolbar toolbar = findViewById(R.id.main_toolbar);
         FloatingActionButton addPost = findViewById(R.id.main_add_post);
-
-        homeFrag = new homeFragment();
-        notiFrag = new NotificationFragment();
-        accountFrag = new AccountFragment();
 
         if (auth.getCurrentUser() != null) {
 
-            fragmentReplace(homeFrag);
+            homeFrag = new homeFragment();
+            notiFrag = new NotificationFragment();
+            accountFrag = new AccountFragment();
+
+            initializeFragment();
 
             BottomNavigationView bottomNavigationView = findViewById(R.id.main_bottomNev);
 
@@ -94,9 +90,6 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setTitle("Blogger's Blog");
-
         assert current_user != null;
     }
 
@@ -113,8 +106,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
-        network();
 
         FirebaseUser current_user = auth.getCurrentUser();
 
@@ -150,43 +141,19 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    private void initializeFragment() {
 
-        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 
-        return true;
-    }
+        fragmentTransaction.add(R.id.main_fragLayout, homeFrag);
+        fragmentTransaction.add(R.id.main_fragLayout, notiFrag);
+        fragmentTransaction.add(R.id.main_fragLayout, accountFrag);
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+        fragmentTransaction.hide(notiFrag);
+        fragmentTransaction.hide(accountFrag);
 
-        switch (item.getItemId()) {
-            case R.id.profile_menu:
-                sendToAccount();
-                break;
-            case R.id.setting_AppBar:
-                break;
-            case R.id.LogOut_app_bar:
-                logout();
-                return true;
-            default:
-                return false;
-        }
-        return false;
-    }
+        fragmentTransaction.commit();
 
-    private void network() {
-        String answer = null;
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        if (null != activeNetwork) {
-            if (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI)
-                answer = "You are connected to a WiFi Network";
-            if (activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE)
-                answer = "You are connected to a Mobile Network";
-        } else
-            answer = "No internet Connectivity";
     }
 
     private void sendToAccount() {
@@ -197,9 +164,19 @@ public class MainActivity extends AppCompatActivity {
     private void fragmentReplace(Fragment fragment) {
 
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.main_fragLayout, fragment);
+        if (fragment == homeFrag) {
+            fragmentTransaction.hide(accountFrag);
+            fragmentTransaction.hide(notiFrag);
+        }
+        if (fragment == accountFrag) {
+            fragmentTransaction.hide(homeFrag);
+            fragmentTransaction.hide(notiFrag);
+        }
+        if (fragment == notiFrag) {
+            fragmentTransaction.hide(accountFrag);
+            fragmentTransaction.hide(homeFrag);
+        }
+        fragmentTransaction.show(fragment);
         fragmentTransaction.commit();
-
     }
-
 }

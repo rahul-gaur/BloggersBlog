@@ -1,16 +1,20 @@
 package com.rahulgaur.bloggersblog.welcome;
 
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -32,25 +36,31 @@ import java.util.Objects;
 
 public class RegisterPage extends AppCompatActivity {
 
+    private ImageView backImage;
+    private ObjectAnimator objectAnimator;
+
     private FirebaseAuth auth = FirebaseAuth.getInstance();
-    GoogleSignInOptions signInOptions;
-    GoogleApiClient googleApiClient;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_page);
 
         Button reg = findViewById(R.id.reg_regBtn);
-        Button facebook = findViewById(R.id.facebook_reg);
-        Button google = findViewById(R.id.google_reg);
-        Button twitter = findViewById(R.id.twitter_reg);
 
         final ProgressBar progressBar = findViewById(R.id.reg_progressBar);
+
+        backImage = findViewById(R.id.account_backImage);
 
         final TextView emailTV = findViewById(R.id.reg_email);
         final TextView passTV = findViewById(R.id.reg_pass);
         final TextView passConfirmTV = findViewById(R.id.reg_passConfirm);
 
+
+        objectAnimator = ObjectAnimator.ofFloat(backImage,"x",-1000);
+        objectAnimator.setDuration(6000);
+        objectAnimator.start();
+
+        /*
         signInOptions =
                 new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                         .requestEmail()
@@ -66,29 +76,7 @@ public class RegisterPage extends AppCompatActivity {
                                 }).addApi(Auth.GOOGLE_SIGN_IN_API,signInOptions)
                         .build();
 
-        //facebook login
-        facebook.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-
-        //google login
-        google.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                googleSignIn();
-            }
-        });
-
-        //twitter login
-        twitter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
+*/
 
         reg.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -157,11 +145,13 @@ public class RegisterPage extends AppCompatActivity {
                     }
                 });
     }
+/*
 
     private void googleSignIn() {
         Intent AuthIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
         startActivityForResult(AuthIntent,7);
     }
+*/
 
     private void sendToRegister() {
         Intent i = new Intent(RegisterPage.this, Account.class);
@@ -175,6 +165,16 @@ public class RegisterPage extends AppCompatActivity {
         FirebaseUser user = auth.getCurrentUser();
         if (!(user == null)) {
             sendToMain();
+        } else {
+            setBackImage();
+        }
+    }
+
+    private void setBackImage() {
+        try{
+            Glide.with(getApplicationContext()).load(R.drawable.i).into(backImage);
+        } catch (Exception e){
+            Log.e("registerPage","some error in glide image update");
         }
     }
 

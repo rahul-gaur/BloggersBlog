@@ -14,6 +14,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -59,6 +62,13 @@ public class NewPostActivity extends AppCompatActivity {
         imageView = findViewById(R.id.new_post_imageView);
         postDescET = findViewById(R.id.new_post_descET);
         uploadBtn = findViewById(R.id.new_post_uploadBtn);
+
+        //adMob
+        AdView adView;
+        MobileAds.initialize(this,"ca-app-pub-5119226630407445/4712709782");
+        adView = findViewById(R.id.newAccountAd);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
 
         auth = FirebaseAuth.getInstance();
         storageReference = FirebaseStorage.getInstance().getReference();
@@ -119,7 +129,6 @@ public class NewPostActivity extends AppCompatActivity {
                                         String downloadThumbUri = String.valueOf(taskSnapshot.getDownloadUrl());
                                         Map<String, Object> postMap = new HashMap<>();
 
-                                        postMap.put("image_url", download_uri);
                                         postMap.put("thumb_image_url", downloadThumbUri);
                                         postMap.put("desc", post_desc);
                                         postMap.put("user_id", current_user_id);

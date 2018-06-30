@@ -7,6 +7,16 @@
     android:background="@color/primaryLightColor"
     tools:context=".welcome.RegisterPage">
 
+    <ImageView
+        android:id="@+id/account_backImage"
+        android:layout_width="1000dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@color/primaryLightColor"
+        android:contentDescription="@string/profile" />
+
     <ProgressBar
         android:id="@+id/reg_progressBar"
         style="?android:attr/progressBarStyleHorizontal"
@@ -35,7 +45,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
+    <android.support.v7.widget.AppCompatAutoCompleteTextView
         android:id="@+id/reg_email"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -43,6 +53,8 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:ems="10"
+        android:textColorHint="@color/primaryTextColor"
+        android:theme="@style/Theme.AppCompat.Light"
         android:textColor="@color/primaryTextColor"
         android:hint="@string/please_enter_a_email"
         android:inputType="textEmailAddress"
@@ -58,6 +70,8 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:ems="10"
+        android:textColorHint="@color/primaryTextColor"
+        android:theme="@style/Theme.AppCompat.Light"
         android:textColor="@color/primaryTextColor"
         android:hint="@string/please_enter_a_password"
         android:inputType="textPassword"
@@ -68,7 +82,9 @@
     <EditText
         android:id="@+id/reg_passConfirm"
         android:layout_width="0dp"
+        android:theme="@style/Theme.AppCompat.Light"
         android:layout_height="wrap_content"
+        android:textColorHint="@color/primaryTextColor"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
@@ -79,51 +95,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/reg_pass" />
-
-    <Button
-        android:id="@+id/twitter_reg"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:text="Twitter"
-        android:textSize="15sp"
-        android:background="@color/twitterBlue"
-        android:textColor="@color/primaryTextColor"
-        app:layout_constraintBottom_toTopOf="@+id/google_reg"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/google_reg"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:textColor="@color/primaryTextColor"
-        android:background="@color/googleRed"
-        android:text="Google"
-        android:textSize="15sp"
-        app:layout_constraintBottom_toTopOf="@+id/facebook_reg"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/facebook_reg"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:background="@color/facebookBlue"
-        android:textColor="@color/primaryTextColor"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:text="Facebook"
-        android:textSize="15sp"
-        app:layout_constraintBottom_toTopOf="@+id/reg_regBtn"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/reg_regBtn"
@@ -139,4 +110,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
 </android.support.constraint.ConstraintLayout>

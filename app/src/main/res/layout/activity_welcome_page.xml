@@ -7,6 +7,16 @@
     android:background="@color/primaryLightColor"
     tools:context=".welcome.WelcomePage">
 
+    <ImageView
+        android:id="@+id/welcome_imageView"
+        android:layout_width="1000dp"
+        android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@color/primaryLightColor" />
+
     <TextView
         android:id="@+id/login_logo"
         android:layout_width="250dp"
@@ -33,6 +43,8 @@
         android:textColor="@color/primaryTextColor"
         android:layout_marginTop="64dp"
         android:ems="10"
+        android:textColorHint="@color/white"
+        android:theme="@style/ThemeOverlay.AppCompat.Light"
         android:padding="10dp"
         android:hint="@string/please_enter_your_emailid"
         android:inputType="textEmailAddress"
@@ -48,10 +60,12 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="15dp"
         android:textColor="@color/primaryTextColor"
+        android:textColorHint="@color/white"
         android:ems="10"
         android:padding="10dp"
         android:hint="@string/please_enter_your_password"
         android:inputType="textPassword"
+        android:theme="@style/ThemeOverlay.AppCompat.Light"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintStart_toStartOf="parent"

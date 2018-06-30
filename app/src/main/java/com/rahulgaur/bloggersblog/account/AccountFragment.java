@@ -1,15 +1,22 @@
 package com.rahulgaur.bloggersblog.account;
 
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -22,13 +29,12 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.storage.StorageReference;
 import com.rahulgaur.bloggersblog.R;
-import com.rahulgaur.bloggersblog.blogPost.User;
 import com.rahulgaur.bloggersblog.blogPost.postid;
+import com.rahulgaur.bloggersblog.comment.Comments;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
 
 
 /**
@@ -36,22 +42,13 @@ import java.util.List;
  */
 public class AccountFragment extends Fragment {
 
-    private GridView gridView;
-    private List<User> userList;
-
-    private com.rahulgaur.bloggersblog.blogPost.postid pd;
-
-    private StorageReference storageReference;
-    private FirebaseAuth auth;
-    private FirebaseFirestore firebaseFirestore;
-
-    private TextView nameTV;
     private ImageView profileImageView;
 
     private String current_userID;
-    private String username;
     private String imageURL;
     private String post_id;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private String username ="";
 
     GridViewList gridViewList;
     ArrayList<GridViewList> postList = new ArrayList<>();
@@ -64,43 +61,61 @@ public class AccountFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_account, container, false);
 
-        userList = new ArrayList<>();
-        gridView = view.findViewById(R.id.account_postGridView);
-        nameTV = view.findViewById(R.id.account_usernameTV);
+        final GridView gridView = view.findViewById(R.id.account_postGridView);
         profileImageView = view.findViewById(R.id.account_profileImage);
 
-        pd = new postid();
+        postid pd = new postid();
+
+        swipeRefreshLayout = view.findViewById(R.id.frag_account_swipeRefresh);
+
+        Toolbar account_toolbar = view.findViewById(R.id.account_frag_toolbar);
+
+        ((AppCompatActivity) Objects.requireNonNull(getActivity())).setSupportActionBar(account_toolbar);
 
         post_id = pd.getPostid();
 
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                Toast.makeText(getContext(), "Refreshed..", Toast.LENGTH_SHORT).show();
+                gridView.setAdapter(gridViewAdapter);
+                swipeRefreshLayout.setRefreshing(false);
+            }
+
+        });
+
         gridViewList = new GridViewList();
 
-        auth = FirebaseAuth.getInstance();
+        FirebaseAuth auth = FirebaseAuth.getInstance();
 
-        current_userID = auth.getCurrentUser().getUid();
+        current_userID = Objects.requireNonNull(auth.getCurrentUser()).getUid();
 
-        firebaseFirestore = FirebaseFirestore.getInstance();
+        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
 
         firebaseFirestore.collection("Users")
                 .document(current_userID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.getResult().exists()) {
+                    imageURL = task.getResult().getString("thumb_image");
                     username = task.getResult().getString("name");
-                    imageURL = task.getResult().getString("image");
-
-                    setName(username);
                     setProfile(imageURL);
+                    setToolbarName(username);
                 }
+            }
+
+            private void setToolbarName(String name) {
+                ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(name);
             }
         });
 
-        gridViewAdapter = new GridViewAdapter(getActivity(),R.layout.grid_view_item,postList);
+
+        gridViewAdapter = new GridViewAdapter(Objects.requireNonNull(getActivity()), R.layout.grid_view_item, postList);
 
         auth = FirebaseAuth.getInstance();
 
@@ -108,41 +123,50 @@ public class AccountFragment extends Fragment {
 
         firebaseFirestore = FirebaseFirestore.getInstance();
 
+
         //getting posts from the database
-        firebaseFirestore.collection("Posts/"+post_id).addSnapshotListener(new EventListener<QuerySnapshot>() {
+        firebaseFirestore.collection("Posts/" + post_id).addSnapshotListener(getActivity(), new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
-                if (!documentSnapshots.isEmpty()){
-                    for (DocumentChange doc : documentSnapshots.getDocumentChanges()){
-                        if (doc.getType()==DocumentChange.Type.ADDED){
+                if (!documentSnapshots.isEmpty()) {
+                    for (DocumentChange doc : documentSnapshots.getDocumentChanges()) {
+                        if (doc.getType() == DocumentChange.Type.ADDED) {
                             String post_user_id = doc.getDocument().getString("user_id");
                             String post_thumb_url = doc.getDocument().getString("thumb_image_url");
 
-                            if (post_user_id.equals(current_userID)){
+                            if (post_user_id.equals(current_userID)) {
                                 postList.add(new GridViewList(post_thumb_url));
                                 gridViewAdapter.notifyDataSetChanged();
                             }
+
                         }
                     }
                 } else {
-
+                    //some error
+                    Log.e("Account Fragment", "error in user_id and image url");
                 }
             }
         });
 
         gridView.setAdapter(gridViewAdapter);
 
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                Intent i = new Intent(getActivity(), Comments.class);
+                i.putExtra("blog_post_id", post_id);
+            }
+        });
+
         return view;
     }
 
-    public void setName(String name) {
-        nameTV.setText(name);
-    }
-
+    @SuppressLint("CheckResult")
     public void setProfile(String profile) {
         RequestOptions placeholder = new RequestOptions();
         placeholder.placeholder(R.drawable.default_usr);
-        Glide.with(getActivity()).applyDefaultRequestOptions(placeholder)
+        Glide.with(Objects.requireNonNull(getActivity())).applyDefaultRequestOptions(placeholder)
                 .load(profile).into(profileImageView);
     }
 }

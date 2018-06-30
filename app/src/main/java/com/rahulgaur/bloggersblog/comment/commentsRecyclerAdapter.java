@@ -77,7 +77,7 @@ public class commentsRecyclerAdapter extends RecyclerView.Adapter<commentsRecycl
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                         if (task.isSuccessful()) {
                             String user_data = task.getResult().getString("name");
-                            String profile_url = task.getResult().getString("image");
+                            String profile_url = task.getResult().getString("thumb_image");
                             holder.setProfile(profile_url);
                             holder.setNameText(user_data);
                         } else {
@@ -96,32 +96,6 @@ public class commentsRecyclerAdapter extends RecyclerView.Adapter<commentsRecycl
         }
 */
         holder.setMessageText(message);
-
-        //get comments
-        firebaseFirestore.collection("Posts/" + blogPostID + "/Comments")
-                .addSnapshotListener((Activity) context, new EventListener<QuerySnapshot>() {
-                    @Override
-                    public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
-                        if (!documentSnapshots.isEmpty()) {
-                            //some comments
-                        } else {
-                            //no comments
-                        }
-                    }
-                });
-
-        //get comments on start
-        firebaseFirestore.collection("Posts/" + blogPostID + "/Comments")
-                .document(currentUserId).addSnapshotListener((Activity) context, new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
-                if (documentSnapshot.exists()) {
-                    //comments exists
-                } else {
-                    //comments do not exists
-                }
-            }
-        });
 
         //comments feature
     }

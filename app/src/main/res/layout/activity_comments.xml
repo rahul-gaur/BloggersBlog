@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".comment.Comments">
+    tools:context=".comment.Comments"
+    tools:layout_editor_absoluteY="25dp">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/cmntToolbar"
@@ -17,38 +18,68 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
+    <ImageView
+        android:id="@+id/cmntImageView"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:layout_marginEnd="8dp"
+
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="2dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cmntProfileImageView"
+        app:srcCompat="@drawable/ic_launcher_background" />
+
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/cmnt_usernameTV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="Comments:"
+        android:fontFamily="@font/andika"
+        android:text="User Name"
         android:textColor="@color/secondaryTextColor"
-        android:textSize="24sp"
+        android:textSize="20dp"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cmntToolbar" />
+        app:layout_constraintStart_toEndOf="@+id/cmntProfileImageView"
+        app:layout_constraintTop_toTopOf="@+id/cmntProfileImageView" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/cmntRecyclerView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/cmntProfileImageView"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:src="@drawable/default_usr"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@id/cmntToolbar" />
+
+
+    <!--
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/constraintLayout2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.064"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
+-->
 
     <EditText
         android:id="@+id/cmntEditText"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:ems="10"
+
+        android:background="@color/white"
         android:hint="Write your comment"
         android:inputType="text"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -57,12 +88,32 @@
 
     <ImageView
         android:id="@+id/cmntPostImageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
+        android:background="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+
         app:srcCompat="@mipmap/cmnt_post" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/cmntRecyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+
+        android:layout_marginTop="8dp"
+        android:scrollbarSize="1dp"
+        android:scrollbars="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/cmntEditText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cmntImageView" />
+
+    <!--    </android.support.constraint.ConstraintLayout>-->
 
 </android.support.constraint.ConstraintLayout>

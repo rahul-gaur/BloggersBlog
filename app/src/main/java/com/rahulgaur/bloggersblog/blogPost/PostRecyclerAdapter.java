@@ -85,6 +85,8 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
         //get current user id
         final String currentUserId = auth.getCurrentUser().getUid();
 
+
+
         String desc_data = postList.get(position).getDesc();
         final String user_id = postList.get(position).getUser_id();
         final String image_url = postList.get(position).getImage_url();
@@ -322,6 +324,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
             if (currentUser.equals(postUser)) {
                 deleteImage.setVisibility(View.VISIBLE);
             } else {
+                deleteImage.setEnabled(false);
                 deleteImage.setVisibility(View.INVISIBLE);
             }
         }

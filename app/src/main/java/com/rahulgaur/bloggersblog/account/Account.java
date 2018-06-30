@@ -21,6 +21,9 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -64,6 +67,13 @@ public class Account extends AppCompatActivity {
         setContentView(R.layout.activity_account);
 
         user_id = auth.getCurrentUser().getUid();
+
+        //adMob
+        AdView adView;
+        MobileAds.initialize(this,"ca-app-pub-5119226630407445/3355396088");
+        adView = findViewById(R.id.newAccountAd);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
 
         profile = findViewById(R.id.circleImageView);
         final Button btn = findViewById(R.id.account_subBtn);
@@ -195,7 +205,6 @@ public class Account extends AppCompatActivity {
                 Map<String, String> userMap = new HashMap<>();
                 userMap.put("thumb_image", downloadThumbUri);
                 userMap.put("name", name);
-                userMap.put("image", download_uri.toString());
 
                 firebaseFirestore.collection("Users").document(user_id).set(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
