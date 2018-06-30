@@ -1,6 +1,4 @@
 package com.rahulgaur.bloggersblog.account;
-
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
@@ -29,26 +27,25 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.rahulgaur.bloggersblog.ThemeAndSettings.DayNightTheme;
 import com.rahulgaur.bloggersblog.R;
 import com.rahulgaur.bloggersblog.blogPost.postid;
 import com.rahulgaur.bloggersblog.comment.Comments;
 
 import java.util.ArrayList;
 import java.util.Objects;
-
-
 /**
  * A simple {@link Fragment} subclass.
  */
 public class AccountFragment extends Fragment {
 
     private ImageView profileImageView;
-
+    private DayNightTheme dayNightTheme = new DayNightTheme();
     private String current_userID;
     private String imageURL;
     private String post_id;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private String username ="";
+    private String username = "";
 
     GridViewList gridViewList;
     ArrayList<GridViewList> postList = new ArrayList<>();
@@ -63,6 +60,12 @@ public class AccountFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        if (dayNightTheme.getMode().equals("night")) {
+            getActivity().setTheme(R.style.darkTheme);
+        } else {
+            getActivity().setTheme(R.style.AppTheme);
+        }
+
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_account, container, false);
 
@@ -110,7 +113,7 @@ public class AccountFragment extends Fragment {
             }
 
             private void setToolbarName(String name) {
-                ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(name);
+                ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(name);
             }
         });
 

@@ -33,6 +33,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.rahulgaur.bloggersblog.ThemeAndSettings.DayNightTheme;
 import com.rahulgaur.bloggersblog.R;
 import com.rahulgaur.bloggersblog.home.MainActivity;
 import com.theartofdev.edmodo.cropper.CropImage;
@@ -51,6 +52,7 @@ import id.zelory.compressor.Compressor;
 
 public class Account extends AppCompatActivity {
 
+    private DayNightTheme dayNightTheme = new DayNightTheme();
     private FirebaseAuth auth = FirebaseAuth.getInstance();
     private Uri mainImageURI = null;
     private CircleImageView profile;
@@ -63,6 +65,11 @@ public class Account extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (dayNightTheme.getMode().equals("night")){
+            setTheme(R.style.darkTheme);
+        } else {
+            setTheme(R.style.AppTheme);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account);
 

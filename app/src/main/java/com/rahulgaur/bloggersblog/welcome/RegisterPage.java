@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -42,6 +43,12 @@ public class RegisterPage extends AppCompatActivity {
     private FirebaseAuth auth = FirebaseAuth.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (AppCompatDelegate.getDefaultNightMode()==AppCompatDelegate.MODE_NIGHT_YES){
+            setTheme(R.style.darkTheme);
+        } else {
+            setTheme(R.style.AppTheme);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_page);
 
@@ -59,24 +66,6 @@ public class RegisterPage extends AppCompatActivity {
         objectAnimator = ObjectAnimator.ofFloat(backImage,"x",-1000);
         objectAnimator.setDuration(6000);
         objectAnimator.start();
-
-        /*
-        signInOptions =
-                new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                        .requestEmail()
-                        .build();
-
-        googleApiClient =
-                new GoogleApiClient.Builder(RegisterPage.this)
-                        .enableAutoManage(RegisterPage.this,
-                                new GoogleApiClient.OnConnectionFailedListener() {
-                                    @Override
-                                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-                                    }
-                                }).addApi(Auth.GOOGLE_SIGN_IN_API,signInOptions)
-                        .build();
-
-*/
 
         reg.setOnClickListener(new View.OnClickListener() {
             @Override

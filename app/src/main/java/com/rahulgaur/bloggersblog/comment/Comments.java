@@ -27,6 +27,7 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.rahulgaur.bloggersblog.ThemeAndSettings.DayNightTheme;
 import com.rahulgaur.bloggersblog.R;
 
 import java.util.ArrayList;
@@ -36,6 +37,7 @@ import java.util.Map;
 
 public class Comments extends AppCompatActivity {
 
+    private DayNightTheme dayNightTheme = new DayNightTheme();
     private EditText comment_field;
     private ImageView comment_postView, postUserImageView;
     private TextView comment_Username;
@@ -53,6 +55,12 @@ public class Comments extends AppCompatActivity {
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (dayNightTheme.getMode().equals("night")) {
+            setTheme(R.style.darkTheme);
+        } else {
+            setTheme(R.style.AppTheme);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comments);
 

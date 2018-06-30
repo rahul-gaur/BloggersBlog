@@ -1,6 +1,4 @@
 package com.rahulgaur.bloggersblog.home;
-
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -27,7 +25,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.rahulgaur.bloggersblog.ThemeAndSettings.DayNightTheme;
 import com.rahulgaur.bloggersblog.R;
+import com.rahulgaur.bloggersblog.ThemeAndSettings.Settings;
 import com.rahulgaur.bloggersblog.account.Account;
 import com.rahulgaur.bloggersblog.blogPost.Post;
 import com.rahulgaur.bloggersblog.blogPost.PostRecyclerAdapter;
@@ -37,8 +37,6 @@ import com.rahulgaur.bloggersblog.welcome.WelcomePage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-
 /**
  * A simple {@link Fragment} subclass.
  * @author Rahul Gaur
@@ -48,6 +46,8 @@ public class homeFragment extends Fragment {
     private RecyclerView recyclerView;
     private List<Post> postList;
     private List<User> userList;
+
+    private DayNightTheme dayNightTheme = new DayNightTheme();
 
     private FirebaseFirestore firebaseFirestore;
     private PostRecyclerAdapter postRecyclerAdapter;
@@ -66,6 +66,11 @@ public class homeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        if (dayNightTheme.getMode().equals("night")){
+            getActivity().setTheme(R.style.darkTheme);
+        } else {
+            getActivity().setTheme(R.style.AppTheme);
+        }
         // Inflate the layout for this fragment
        View view = inflater.inflate(R.layout.fragment_home, container, false);
 

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -32,10 +33,16 @@ public class WelcomePage extends AppCompatActivity {
     private ProgressBar progressBar;
     private String email, pass;
     private ImageView backImage;
-    private ObjectAnimator forwardObjectAnimator, backwardObjectAnimator;
+    private ObjectAnimator forwardObjectAnimator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (AppCompatDelegate.getDefaultNightMode()==AppCompatDelegate.MODE_NIGHT_YES){
+            setTheme(R.style.darkTheme);
+        } else {
+            setTheme(R.style.AppTheme);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome_page);
 

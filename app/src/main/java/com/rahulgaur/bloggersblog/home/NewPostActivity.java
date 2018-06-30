@@ -28,6 +28,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.rahulgaur.bloggersblog.ThemeAndSettings.DayNightTheme;
 import com.rahulgaur.bloggersblog.R;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -43,6 +44,7 @@ import id.zelory.compressor.Compressor;
 
 public class NewPostActivity extends AppCompatActivity {
 
+    private DayNightTheme dayNightTheme = new DayNightTheme();
     private ImageView imageView;
     private EditText postDescET;
     private Button uploadBtn;
@@ -56,6 +58,12 @@ public class NewPostActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (dayNightTheme.getMode().equals("night")){
+            setTheme(R.style.darkTheme);
+        } else {
+            setTheme(R.style.AppTheme);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_post);
 
