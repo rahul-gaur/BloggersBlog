@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?attr/colorBackground"
     tools:context=".account.Account">
 
     <include
@@ -35,7 +36,8 @@
         android:layout_marginTop="32dp"
         android:ems="10"
         android:textSize="25sp"
-        android:textColor="@color/secondaryTextColor"
+        android:textColor="?attr/secondaryTextColor"
+        android:textColorHint="?attr/secondaryTextColor"
         android:inputType="textPersonName"
         android:hint="@string/enter_your_name"
         app:layout_constraintEnd_toEndOf="parent"
@@ -49,7 +51,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:background="@color/colorAccent"
+        android:background="?attr/colorAccent"
         android:padding="10dp"
         android:text="@string/submit"
         android:textSize="25sp"

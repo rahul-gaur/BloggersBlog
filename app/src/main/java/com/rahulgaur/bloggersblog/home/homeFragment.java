@@ -32,6 +32,7 @@ import com.rahulgaur.bloggersblog.account.Account;
 import com.rahulgaur.bloggersblog.blogPost.Post;
 import com.rahulgaur.bloggersblog.blogPost.PostRecyclerAdapter;
 import com.rahulgaur.bloggersblog.blogPost.User;
+import com.rahulgaur.bloggersblog.welcome.WelcomePage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,12 +41,13 @@ import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
+ * @author Rahul Gaur
  */
 public class homeFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private List<Post> postList;
-    private List<User> user_list;
+    private List<User> userList;
 
     private FirebaseFirestore firebaseFirestore;
     private PostRecyclerAdapter postRecyclerAdapter;
@@ -65,14 +67,13 @@ public class homeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
-        View view = inflater.inflate(R.layout.fragment_home, container, false);
+       View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         postList = new ArrayList<>();
-        user_list = new ArrayList<>();
+        userList = new ArrayList<>();
         recyclerView = view.findViewById(R.id.frag_home_recyclerView);
 
-        postRecyclerAdapter = new PostRecyclerAdapter(postList, user_list);
+        postRecyclerAdapter = new PostRecyclerAdapter(postList, userList);
 
         swipeRefreshLayout = view.findViewById(R.id.frag_home_swipeRefresh);
 
@@ -126,7 +127,7 @@ public class homeFragment extends Fragment {
                         lastVisible = documentSnapshots.getDocuments()
                                 .get(documentSnapshots.size() -1);
                         postList.clear();
-                        user_list.clear();
+                        userList.clear();
                     }
 
                     for (DocumentChange doc : documentSnapshots.getDocumentChanges()) {
@@ -142,10 +143,10 @@ public class homeFragment extends Fragment {
                                         User user = task.getResult().toObject(User.class);
 
                                         if (isfirstPageLoad){
-                                            user_list.add(user);
+                                            userList.add(user);
                                             postList.add(post);
                                         } else {
-                                            user_list.add(0,user);
+                                            userList.add(0,user);
                                             postList.add(0,post);
                                         }
                                         postRecyclerAdapter.notifyDataSetChanged();
@@ -190,7 +191,7 @@ public class homeFragment extends Fragment {
                                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                     if (task.isSuccessful()){
                                         User user = task.getResult().toObject(User.class);
-                                         user_list.add(user);
+                                         userList.add(user);
                                          postList.add(post);
                                         postRecyclerAdapter.notifyDataSetChanged();
                                     } else {
@@ -215,7 +216,7 @@ public class homeFragment extends Fragment {
         MenuItem mSearch = menu.findItem(R.id.app_bar_search);
         android.widget.SearchView searchView = (android.widget.SearchView) mSearch.getActionView();
 
-        searchView.setQueryHint("Search");
+        searchView.setQueryHint("Settings");
 
         searchView.setOnQueryTextListener(new android.widget.SearchView.OnQueryTextListener() {
             @Override
@@ -239,6 +240,7 @@ public class homeFragment extends Fragment {
                 sendToAccount();
                 break;
             case R.id.setting_AppBar:
+                settings();
                 break;
             case R.id.LogOut_app_bar:
                 logout();
@@ -249,8 +251,16 @@ public class homeFragment extends Fragment {
         return false;
     }
 
+    private void settings() {
+        Intent i = new Intent(getContext(),Settings.class);
+        startActivity(i);
+    }
+
     private void logout() {
         auth.signOut();
+        Intent i = new Intent(getContext(), WelcomePage.class);
+        startActivity(i);
+        Objects.requireNonNull(getActivity()).finish();
     }
 
     private void sendToAccount() {

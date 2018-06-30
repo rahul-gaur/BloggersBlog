@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?attr/colorBackground"
     tools:context=".home.NewPostActivity">
 
 
@@ -25,10 +26,11 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:ems="10"
+        android:textColorHint="?attr/secondaryTextColor"
         android:hint="@string/enter_description"
         android:inputType="textMultiLine"
         android:padding="10dp"
-        android:textColor="@color/secondaryTextColor"
+        android:textColor="?attr/secondaryTextColor"
         android:textSize="25sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -47,7 +49,7 @@
         ads:layout_constraintEnd_toEndOf="parent"
         ads:layout_constraintHorizontal_bias="0.0"
         ads:layout_constraintStart_toStartOf="parent"
-        ads:layout_constraintTop_toBottomOf="@+id/new_post_imageView"></com.google.android.gms.ads.AdView>
+        ads:layout_constraintTop_toBottomOf="@+id/new_post_imageView"/>
 
     <Button
         android:id="@+id/new_post_uploadBtn"
@@ -56,11 +58,11 @@
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:background="@color/secondaryDarkColor"
+        android:background="?attr/secondaryDarkColor"
         android:padding="10dp"
         android:text="@string/publish_your_masterpiece"
         android:textAllCaps="false"
-        android:textColor="@color/secondaryTextColor"
+        android:textColor="?attr/secondaryTextColor"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -1,11 +1,36 @@
 <resources>
 
     <!-- Base application theme. -->
+    <!-- Light application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorBackground">@color/white</item>
+        <item name="primaryLightColor">@color/primaryLightColor</item>
+        <item name="secondaryLightColor">@color/secondaryLightColor</item>
+        <item name="secondaryDarkColor">@color/secondaryDarkColor</item>
+        <item name="primaryTextColor">@color/primaryTextColor</item>
+        <item name="secondaryTextColor">@color/secondaryTextColor</item>
+        <item name="white">@color/white</item>
+        <item name="black">@color/black</item>
+    </style>
+
+    <!-- Dark application theme. -->
+    <style name="darkTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorBackground">@color/colorPrimaryDark</item>
+        <item name="primaryLightColor">@color/primaryLightColor</item>
+        <item name="secondaryLightColor">@color/secondaryDarkColor</item>
+        <item name="secondaryDarkColor">@color/secondaryDarkColor</item>
+        <item name="primaryTextColor">@color/primaryTextColor</item>
+        <item name="secondaryTextColor">@color/primaryTextColor</item>
+        <item name="white">@color/white</item>
+        <item name="black">@color/black</item>
     </style>
 
 </resources>

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?attr/colorBackground"
     tools:context=".comment.Comments"
     tools:layout_editor_absoluteY="25dp">
 
@@ -11,7 +12,7 @@
         android:id="@+id/cmntToolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
+        android:background="?attr/colorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -26,6 +27,7 @@
 
         android:layout_marginStart="8dp"
         android:layout_marginTop="2dp"
+        android:contentDescription="@string/app_name"
         android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -38,9 +40,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:fontFamily="@font/andika"
-        android:text="User Name"
-        android:textColor="@color/secondaryTextColor"
-        android:textSize="20dp"
+        android:text="@string/username"
+        android:textColor="?attr/secondaryTextColor"
+        android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@+id/cmntProfileImageView"
         app:layout_constraintTop_toTopOf="@+id/cmntProfileImageView" />
@@ -55,33 +57,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/cmntToolbar" />
 
-
-    <!--
-
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/constraintLayout2"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.064"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
--->
-
     <EditText
         android:id="@+id/cmntEditText"
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
-
-        android:background="@color/white"
-        android:hint="Write your comment"
+        android:background="?attr/white"
+        android:hint="@string/write_your_comment"
         android:inputType="text"
+        android:textColor="?attr/secondaryTextColor"
+        android:textColorHint="?attr/secondaryDarkColor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/cmntPostImageView"
         app:layout_constraintStart_toStartOf="parent" />
@@ -92,10 +78,10 @@
         android:layout_height="40dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
-        android:background="@color/white"
+        android:background="?attr/white"
+        android:contentDescription="@string/app_name"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-
         app:srcCompat="@mipmap/cmnt_post" />
 
     <android.support.v7.widget.RecyclerView
@@ -105,15 +91,13 @@
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-
         android:layout_marginTop="8dp"
+        android:background="?attr/colorBackground"
         android:scrollbarSize="1dp"
         android:scrollbars="vertical"
         app:layout_constraintBottom_toTopOf="@+id/cmntEditText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cmntImageView" />
-
-    <!--    </android.support.constraint.ConstraintLayout>-->
 
 </android.support.constraint.ConstraintLayout>

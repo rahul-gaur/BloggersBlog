@@ -21,4 +21,12 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="your_posts">Your Posts</string>
+    <string name="jan_1_2018">Jan 1 2018</string>
+    <string name="username">Username</string>
+    <string name="description_of_the_post">Description of the post</string>
+    <string name="_0">0</string>
+    <string name="this_is_notification_fragment">This is notification fragment</string>
+    <string name="your_comment_here">Your comment here</string>
+    <string name="write_your_comment">Write your comment</string>
+    <string name="dark_mode">Dark Mode </string>
 </resources>

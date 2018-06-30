@@ -3,19 +3,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="?attr/colorBackground"
     android:id="@+id/frag_account_swipeRefresh"
     android:layout_height="match_parent"
     tools:context=".account.AccountFragment">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
+        android:background="?attr/colorBackground"
         android:layout_height="match_parent">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/account_frag_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
+            android:background="?attr/colorPrimary"
             android:elevation="4dp"
             app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
@@ -30,6 +32,7 @@
             android:padding="1dp"
             android:contentDescription="@string/profile"
             android:src="@drawable/border"
+            android:background="?attr/colorBackground"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/account_frag_toolbar" />
@@ -58,6 +61,7 @@
             android:layout_marginTop="8dp"
             android:horizontalSpacing="10dp"
             android:numColumns="3"
+            android:background="?attr/colorBackground"
             android:scrollbarSize="2dp"
             android:padding="2dp"
             android:scrollbars="horizontal"
@@ -76,7 +80,7 @@
             android:layout_marginTop="8dp"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:textColor="@color/black"
+            android:textColor="?attr/secondaryTextColor"
             android:text="@string/your_posts"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/account_profileImage" />

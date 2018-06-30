@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="?attr/colorBackground"
     android:layout_height="wrap_content">
 
     <android.support.v7.widget.CardView
@@ -14,6 +14,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:padding="10dp"
+        android:background="?attr/colorBackground"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -23,6 +24,7 @@
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
+            android:background="?attr/colorBackground"
             android:layout_height="wrap_content">
 
             <de.hdodenhof.circleimageview.CircleImageView
@@ -40,8 +42,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="Username"
-                android:textColor="@color/secondaryTextColor"
+                android:text="@string/username"
+                android:textColor="?attr/secondaryTextColor"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@+id/profile_view"
@@ -52,7 +54,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="Jan 1 2018"
+                android:text="@string/jan_1_2018"
+                android:textColor="?attr/secondaryTextColor"
                 app:layout_constraintStart_toEndOf="@+id/profile_view"
                 app:layout_constraintTop_toBottomOf="@+id/username_tv" />
 
@@ -65,7 +68,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/profile_view"
-                app:srcCompat="@android:drawable/sym_def_app_icon" />
+                app:srcCompat="@android:drawable/sym_def_app_icon"
+                android:contentDescription="@string/app_name" />
 
             <TextView
                 android:id="@+id/desc_tv"
@@ -74,8 +78,9 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:text="Description of the post"
+                android:text="@string/description_of_the_post"
                 android:textSize="16sp"
+                android:textColor="?attr/secondaryTextColor"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/post_imageView" />
@@ -88,7 +93,8 @@
                 android:layout_marginTop="2dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/desc_tv"
-                app:srcCompat="@mipmap/like_grey" />
+                app:srcCompat="@mipmap/like_grey"
+                android:contentDescription="@string/app_name" />
 
             <TextView
                 android:id="@+id/like_tv"
@@ -97,7 +103,8 @@
                 android:layout_marginBottom="8dp"
                 android:layout_marginStart="2dp"
                 android:layout_marginTop="8dp"
-                android:text="0"
+                android:text="@string/_0"
+                android:textColor="?attr/secondaryTextColor"
                 android:textSize="25sp"
                 app:layout_constraintBottom_toBottomOf="@+id/like_imageView"
                 app:layout_constraintStart_toEndOf="@+id/like_imageView"
@@ -113,7 +120,8 @@
                 app:layout_constraintEnd_toEndOf="@+id/delete_imageView"
                 app:layout_constraintStart_toStartOf="@+id/like_imageView"
                 app:layout_constraintTop_toBottomOf="@+id/desc_tv"
-                app:srcCompat="@mipmap/cmnt" />
+                app:srcCompat="@mipmap/cmnt"
+                android:contentDescription="@string/app_name" />
 
             <ImageView
                 android:id="@+id/delete_imageView"
@@ -124,7 +132,8 @@
                 android:visibility="invisible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/desc_tv"
-                app:srcCompat="@mipmap/dlt" />
+                app:srcCompat="@mipmap/dlt"
+                android:contentDescription="@string/app_name" />
 
             <TextView
                 android:id="@+id/cmnt_tv"
@@ -133,8 +142,9 @@
                 android:layout_marginBottom="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:text="0"
+                android:text="@string/_0"
                 android:textSize="25sp"
+                android:textColor="?attr/secondaryTextColor"
                 app:layout_constraintBottom_toBottomOf="@+id/cmnt_imageView"
                 app:layout_constraintStart_toEndOf="@+id/cmnt_imageView"
                 app:layout_constraintTop_toTopOf="@+id/cmnt_imageView" />

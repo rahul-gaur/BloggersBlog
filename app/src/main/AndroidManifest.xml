@@ -43,7 +43,7 @@
         <activity
             android:name=".comment.Comments"
             android:screenOrientation="portrait" />
-        <activity android:name=".home.Search"></activity>
+        <activity android:name=".home.Settings"></activity>
     </application>
 
 </manifest>

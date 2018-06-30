@@ -5,17 +5,19 @@
     android:layout_width="match_parent"
     android:id="@+id/frag_home_swipeRefresh"
     android:layout_height="match_parent"
+    android:background="?attr/colorBackground"
     tools:context=".home.homeFragment">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
+        android:background="?attr/colorBackground"
         android:layout_height="match_parent">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/home_frag_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
+            android:background="?attr/colorPrimary"
             android:elevation="4dp"
             app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
@@ -27,6 +29,7 @@
             android:id="@+id/frag_home_recyclerView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:background="?attr/colorBackground"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

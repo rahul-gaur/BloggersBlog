@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/primaryLightColor"
+    android:background="?attr/primaryLightColor"
     tools:context=".welcome.WelcomePage">
 
     <ImageView
@@ -15,7 +15,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@color/primaryLightColor" />
+        app:srcCompat="?attr/primaryLightColor" />
 
     <TextView
         android:id="@+id/login_logo"
@@ -27,7 +27,7 @@
         android:fontFamily="@font/andika"
         android:gravity="center"
         android:text="@string/welcome_to_blogger_s_blog"
-        android:textColor="@color/primaryTextColor"
+        android:textColor="?attr/primaryTextColor"
         android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -40,10 +40,10 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:textColor="@color/primaryTextColor"
+        android:textColor="?attr/primaryTextColor"
         android:layout_marginTop="64dp"
         android:ems="10"
-        android:textColorHint="@color/white"
+        android:textColorHint="?attr/white"
         android:theme="@style/ThemeOverlay.AppCompat.Light"
         android:padding="10dp"
         android:hint="@string/please_enter_your_emailid"
@@ -59,8 +59,8 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="15dp"
-        android:textColor="@color/primaryTextColor"
-        android:textColorHint="@color/white"
+        android:textColor="?attr/primaryTextColor"
+        android:textColorHint="?attr/white"
         android:ems="10"
         android:padding="10dp"
         android:hint="@string/please_enter_your_password"
@@ -78,7 +78,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="10dp"
-        android:background="@color/colorAccent"
+        android:background="?attr/colorAccent"
         android:text="@string/login_to_your_blog"
         android:textAllCaps="false"
         android:padding="10dp"
@@ -93,7 +93,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:background="@color/colorAccent"
+        android:background="?attr/colorAccent"
         android:padding="10dp"
         android:text="@string/register_to_blogger_s_blog"
         android:textAllCaps="false"
