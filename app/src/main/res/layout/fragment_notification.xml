@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/colorBackground"
+    android:background="?attr/white"
     android:id="@+id/frag_noti_swipeRefresh"
     tools:context=".notification.NotificationFragment">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:background="?attr/colorBackground"
+        android:background="?attr/white"
         android:layout_height="match_parent">
 
         <android.support.v7.widget.Toolbar

@@ -5,12 +5,12 @@
     android:layout_width="match_parent"
     android:id="@+id/frag_home_swipeRefresh"
     android:layout_height="match_parent"
-    android:background="?attr/colorBackground"
-    tools:context=".home.homeFragment">
+    android:background="?attr/white"
+    tools:context=".home.HomeFragment">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:background="?attr/colorBackground"
+        android:background="?attr/white"
         android:layout_height="match_parent">
 
         <android.support.v7.widget.Toolbar
@@ -29,7 +29,7 @@
             android:id="@+id/frag_home_recyclerView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:background="?attr/colorBackground"
+            android:background="?attr/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -41,7 +42,7 @@ import java.util.Objects;
  * A simple {@link Fragment} subclass.
  * @author Rahul Gaur
  */
-public class homeFragment extends Fragment {
+public class HomeFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private List<Post> postList;
@@ -58,7 +59,7 @@ public class homeFragment extends Fragment {
     private DocumentSnapshot lastVisible;
     private SwipeRefreshLayout swipeRefreshLayout;
 
-    public homeFragment() {
+    public HomeFragment() {
         // Required empty public constructor
     }
 
@@ -66,7 +67,7 @@ public class homeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        if (dayNightTheme.getMode().equals("night")){
+        if (AppCompatDelegate.getDefaultNightMode()==AppCompatDelegate.MODE_NIGHT_YES){
             getActivity().setTheme(R.style.darkTheme);
         } else {
             getActivity().setTheme(R.style.AppTheme);
@@ -254,6 +255,14 @@ public class homeFragment extends Fragment {
                 return false;
         }
         return false;
+    }
+
+    public void nightMode(String mode) {
+        if (mode.equals("night")) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
     }
 
     private void settings() {

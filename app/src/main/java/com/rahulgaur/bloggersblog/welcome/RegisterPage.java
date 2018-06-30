@@ -30,6 +30,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.rahulgaur.bloggersblog.R;
+import com.rahulgaur.bloggersblog.ThemeAndSettings.DayNightTheme;
 import com.rahulgaur.bloggersblog.account.Account;
 import com.rahulgaur.bloggersblog.home.MainActivity;
 
@@ -39,6 +40,7 @@ public class RegisterPage extends AppCompatActivity {
 
     private ImageView backImage;
     private ObjectAnimator objectAnimator;
+    private DayNightTheme dayNightTheme = new DayNightTheme();
 
     private FirebaseAuth auth = FirebaseAuth.getInstance();
     @Override
@@ -99,6 +101,14 @@ public class RegisterPage extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public void nightMode(String mode) {
+        if (mode.equals("night")) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
     }
 
     @Override

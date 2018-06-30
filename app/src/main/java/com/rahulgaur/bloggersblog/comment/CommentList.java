@@ -2,15 +2,15 @@ package com.rahulgaur.bloggersblog.comment;
 
 import java.util.Date;
 
-public class commentList extends com.rahulgaur.bloggersblog.blogPost.BlogPostID {
+public class CommentList extends com.rahulgaur.bloggersblog.blogPost.BlogPostID {
     private String message, user_id;
     private Date timestamp;
 
-    public commentList(){
+    public CommentList(){
 
     }
 
-    public commentList(String message, String user_id, Date timestamp) {
+    public CommentList(String message, String user_id, Date timestamp) {
         this.message = message;
         this.user_id = user_id;
         this.timestamp = timestamp;

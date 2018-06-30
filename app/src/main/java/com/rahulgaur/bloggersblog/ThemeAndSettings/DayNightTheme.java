@@ -5,7 +5,7 @@ package com.rahulgaur.bloggersblog.ThemeAndSettings;
  */
 
 public class DayNightTheme {
-    private String mode = "";
+    private String mode;
 
     public void setMode(String mode) {
         this.mode = mode;

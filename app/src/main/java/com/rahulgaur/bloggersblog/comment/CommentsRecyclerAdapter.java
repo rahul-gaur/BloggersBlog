@@ -1,7 +1,6 @@
 package com.rahulgaur.bloggersblog.comment;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -17,10 +16,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.rahulgaur.bloggersblog.R;
 import com.rahulgaur.bloggersblog.blogPost.postid;
 
@@ -29,9 +25,9 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class commentsRecyclerAdapter extends RecyclerView.Adapter<commentsRecyclerAdapter.ViewHolder> {
+public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecyclerAdapter.ViewHolder> {
 
-    private List<commentList> cmntList;
+    private List<CommentList> cmntList;
     @SuppressLint("StaticFieldLeak")
     private static Context context;
 
@@ -42,7 +38,7 @@ public class commentsRecyclerAdapter extends RecyclerView.Adapter<commentsRecycl
 
     private postid pd = new postid();
 
-    commentsRecyclerAdapter(List<commentList> cmntList) {
+    CommentsRecyclerAdapter(List<CommentList> cmntList) {
         this.cmntList = cmntList;
     }
 

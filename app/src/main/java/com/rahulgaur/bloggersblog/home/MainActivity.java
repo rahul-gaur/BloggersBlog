@@ -9,6 +9,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -34,15 +35,14 @@ public class MainActivity extends AppCompatActivity {
     private String current_user_id;
     FirebaseFirestore firebaseFirestore;
 
-    private homeFragment homeFrag;
+    private HomeFragment homeFrag;
     private NotificationFragment notiFrag;
     private AccountFragment accountFrag;
 
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        String mode = dayNightTheme.getMode();
-        if (dayNightTheme.getMode().equals("night")){
+        if (AppCompatDelegate.getDefaultNightMode()==AppCompatDelegate.MODE_NIGHT_YES){
             setTheme(R.style.darkTheme);
         } else {
             setTheme(R.style.AppTheme);
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (auth.getCurrentUser() != null) {
 
-            homeFrag = new homeFragment();
+            homeFrag = new HomeFragment();
             notiFrag = new NotificationFragment();
             accountFrag = new AccountFragment();
 
@@ -101,6 +101,13 @@ public class MainActivity extends AppCompatActivity {
         assert current_user != null;
     }
 
+    public void nightMode(String mode) {
+        if (mode.equals("night")) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
+    }
     private void sendToNewPost() {
         Intent i = new Intent(MainActivity.this, NewPostActivity.class);
         startActivity(i);

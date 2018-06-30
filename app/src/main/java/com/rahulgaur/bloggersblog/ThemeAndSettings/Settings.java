@@ -8,6 +8,15 @@ import android.support.v7.widget.SwitchCompat;
 import android.widget.CompoundButton;
 
 import com.rahulgaur.bloggersblog.R;
+import com.rahulgaur.bloggersblog.account.Account;
+import com.rahulgaur.bloggersblog.account.AccountFragment;
+import com.rahulgaur.bloggersblog.comment.Comments;
+import com.rahulgaur.bloggersblog.home.HomeFragment;
+import com.rahulgaur.bloggersblog.home.MainActivity;
+import com.rahulgaur.bloggersblog.home.NewPostActivity;
+import com.rahulgaur.bloggersblog.notification.NotificationFragment;
+import com.rahulgaur.bloggersblog.welcome.RegisterPage;
+import com.rahulgaur.bloggersblog.welcome.WelcomePage;
 
 public class Settings extends AppCompatActivity {
 
@@ -16,13 +25,15 @@ public class Settings extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //check theme
-        if (dayNightTheme.getMode().equals("night")) {
+        if (AppCompatDelegate.getDefaultNightMode()==AppCompatDelegate.MODE_NIGHT_YES) {
             setTheme(R.style.darkTheme);
         } else {
             setTheme(R.style.AppTheme);
         }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
+        //TO-DO = Add Toolbar name "Settings".
 
         SwitchCompat switchCompat = findViewById(R.id.setting_switchCompat);
 
@@ -55,10 +66,39 @@ public class Settings extends AppCompatActivity {
     private void nightMode(String mode) {
         if (mode.equals("night")) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-            dayNightTheme.setMode(mode);
+            setMode(mode);
         } else {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-            dayNightTheme.setMode(mode);
+            setMode(mode);
         }
+    }
+
+    private void setMode(String mode) {
+        RegisterPage registerPage = new RegisterPage();
+        registerPage.nightMode(mode);
+
+        WelcomePage welcomePage = new WelcomePage();
+        welcomePage.nightMode(mode);
+
+        NotificationFragment notificationFragment = new NotificationFragment();
+        notificationFragment.nightMode(mode);
+
+        NewPostActivity newPostActivity = new NewPostActivity();
+        newPostActivity.nightMode(mode);
+
+        MainActivity mainActivity = new MainActivity();
+        mainActivity.nightMode(mode);
+
+        HomeFragment homeFragment = new HomeFragment();
+        homeFragment.nightMode(mode);
+
+        Comments comments = new Comments();
+        comments.nightMode(mode);
+
+        Account account = new Account();
+        account.nightMode(mode);
+
+        AccountFragment accountFragment = new AccountFragment();
+        accountFragment.nightMode(mode);
     }
 }

@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -58,7 +59,7 @@ public class NewPostActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (dayNightTheme.getMode().equals("night")){
+        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
             setTheme(R.style.darkTheme);
         } else {
             setTheme(R.style.AppTheme);
@@ -73,7 +74,7 @@ public class NewPostActivity extends AppCompatActivity {
 
         //adMob
         AdView adView;
-        MobileAds.initialize(this,"ca-app-pub-5119226630407445/4712709782");
+        MobileAds.initialize(this, "ca-app-pub-5119226630407445/4712709782");
         adView = findViewById(R.id.newAccountAd);
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
@@ -193,6 +194,14 @@ public class NewPostActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public void nightMode(String mode) {
+        if (mode.equals("night")) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
     }
 
     private void sendToMain() {

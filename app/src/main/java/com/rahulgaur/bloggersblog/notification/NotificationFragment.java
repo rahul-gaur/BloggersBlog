@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.rahulgaur.bloggersblog.R;
+import com.rahulgaur.bloggersblog.ThemeAndSettings.DayNightTheme;
 
 import java.util.Objects;
 
@@ -21,6 +22,7 @@ import java.util.Objects;
 public class NotificationFragment extends Fragment {
     private SwipeRefreshLayout swipeRefreshLayout;
     private android.support.v7.widget.Toolbar toolbar;
+    private DayNightTheme dayNightTheme = new DayNightTheme();
 
     public NotificationFragment() {
         // Required empty public constructor
@@ -30,7 +32,6 @@ public class NotificationFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         if (AppCompatDelegate.getDefaultNightMode()==AppCompatDelegate.MODE_NIGHT_YES){
             getActivity().setTheme(R.style.darkTheme);
         } else {
@@ -57,6 +58,14 @@ public class NotificationFragment extends Fragment {
 
 
         return view;
+    }
+
+    public void nightMode(String mode) {
+        if (mode.equals("night")) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
     }
 
 }

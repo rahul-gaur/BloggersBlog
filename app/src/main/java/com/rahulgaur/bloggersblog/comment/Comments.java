@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -42,12 +43,12 @@ public class Comments extends AppCompatActivity {
     private ImageView comment_postView, postUserImageView;
     private TextView comment_Username;
 
-    private List<commentList> cmntList;
+    private List<CommentList> cmntList;
 
     private String blog_post_id;
     private String current_user_id;
 
-    private commentsRecyclerAdapter commentsRecyclerAdapter;
+    private CommentsRecyclerAdapter commentsRecyclerAdapter;
 
     private FirebaseFirestore firebaseFirestore;
     private FirebaseAuth auth;
@@ -55,7 +56,7 @@ public class Comments extends AppCompatActivity {
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (dayNightTheme.getMode().equals("night")) {
+        if (AppCompatDelegate.getDefaultNightMode()== AppCompatDelegate.MODE_NIGHT_YES) {
             setTheme(R.style.darkTheme);
         } else {
             setTheme(R.style.AppTheme);
@@ -73,7 +74,7 @@ public class Comments extends AppCompatActivity {
 
         cmntList = new ArrayList<>();
 
-        commentsRecyclerAdapter = new commentsRecyclerAdapter(cmntList);
+        commentsRecyclerAdapter = new CommentsRecyclerAdapter(cmntList);
 
         comment_field = findViewById(R.id.cmntEditText);
         ImageView comment_post_btn = findViewById(R.id.cmntPostImageView);
@@ -133,7 +134,7 @@ public class Comments extends AppCompatActivity {
                             for (DocumentChange doc : documentSnapshots.getDocumentChanges()) {
                                 if (doc.getType() == DocumentChange.Type.ADDED) {
                                     String commentid = doc.getDocument().getId();
-                                    commentList commentList = doc.getDocument().toObject(com.rahulgaur.bloggersblog.comment.commentList.class)
+                                    CommentList commentList = doc.getDocument().toObject(CommentList.class)
                                             .withID(commentid);
                                     cmntList.add(commentList);
                                     commentsRecyclerAdapter.notifyDataSetChanged();
@@ -208,5 +209,13 @@ public class Comments extends AppCompatActivity {
                 .applyDefaultRequestOptions(placeholder)
                 .load(image)
                 .into(postUserImageView);
+    }
+
+    public void nightMode(String mode) {
+        if (mode.equals("night")) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
     }
 }
