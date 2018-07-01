@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -45,8 +47,8 @@ import java.util.Objects;
 public class HomeFragment extends Fragment {
 
     private RecyclerView recyclerView;
-    private List<Post> postList;
-    private List<User> userList;
+    private ArrayList<Post> postList;
+    private ArrayList<User> userList;
 
     private DayNightTheme dayNightTheme = new DayNightTheme();
 
@@ -90,7 +92,7 @@ public class HomeFragment extends Fragment {
 
         ((AppCompatActivity) Objects.requireNonNull(getActivity())).setSupportActionBar(toolbar);
 
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Blogger's blog");
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Blogger's Blog");
         setHasOptionsMenu(true);
 
         auth = FirebaseAuth.getInstance();
@@ -232,9 +234,28 @@ public class HomeFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                return false;
+
+                newText = newText.toLowerCase();
+
+                ArrayList<User> newUser = new ArrayList<>();
+
+                for (User user : userList) {
+                    String fname = user.getName().toLowerCase();
+                    Log.v("onQueryTextChange", ""+fname );
+                    if (fname.contains(newText)) {
+
+                        newUser.add(user);
+
+                    }
+                    postRecyclerAdapter.setFilter(newUser);
+
+                }
+                return true;
+
             }
         });
+
+
 
     }
 
@@ -281,4 +302,7 @@ public class HomeFragment extends Fragment {
         Intent i = new Intent(getContext(), Account.class);
         startActivity(i);
     }
+
+
+
 }

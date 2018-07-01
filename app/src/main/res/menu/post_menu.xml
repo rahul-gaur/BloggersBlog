@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/post_menu_report_btn"
+        android:icon="@drawable/if_block_user_678157"
+        android:title="Report" />
+    <item
+        android:id="@+id/post_menu_block_btn"
+        android:icon="@drawable/if_ic_block_48px_352056"
+        android:title="Block" />
+</menu>

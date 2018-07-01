@@ -109,12 +109,9 @@ public class AccountFragment extends Fragment {
                     imageURL = task.getResult().getString("thumb_image");
                     username = task.getResult().getString("name");
                     setProfile(imageURL);
-                    setToolbarName(username);
+                    //setToolbarName(username);
+                    ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(username);
                 }
-            }
-
-            private void setToolbarName(String name) {
-                ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(name);
             }
         });
 

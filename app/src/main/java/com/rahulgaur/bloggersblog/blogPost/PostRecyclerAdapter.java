@@ -32,6 +32,7 @@ import com.rahulgaur.bloggersblog.R;
 import com.rahulgaur.bloggersblog.comment.Comments;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -41,8 +42,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapter.ViewHolder> {
 
-    private List<Post> postList;
-    private List<User> user_list;
+    private ArrayList<Post> postList;
+    private ArrayList<User> user_list;
 
     @SuppressLint("StaticFieldLeak")
     public static Context context;
@@ -56,7 +57,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
 
     private postid pd = new postid();
 
-    public PostRecyclerAdapter(List<Post> postList, List<User> user_list) {
+    public PostRecyclerAdapter(ArrayList<Post> postList, ArrayList<User> user_list) {
         this.postList = postList;
         this.user_list = user_list;
     }
@@ -289,7 +290,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
 
     @Override
     public int getItemCount() {
-        return postList.size();
+        return user_list.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -334,6 +335,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
             descView.setText(text);
         }
 
+        @SuppressLint("CheckResult")
         void setPostImage(String downloadUri) {
             imageView = mView.findViewById(R.id.post_imageView);
             RequestOptions placeholder = new RequestOptions();
@@ -341,6 +343,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
             Glide.with(context).applyDefaultRequestOptions(placeholder).load(downloadUri).into(imageView);
         }
 
+        @SuppressLint("CheckResult")
         void setProfileImage(String downloadUri) {
             profile = mView.findViewById(R.id.profile_view);
             RequestOptions placeholder = new RequestOptions();
@@ -357,5 +360,12 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
             dateView = mView.findViewById(R.id.date_tv);
             dateView.setText(date);
         }
+    }
+
+    public void setFilter(ArrayList<User> newUser){
+        user_list = new ArrayList<>();
+        user_list.addAll(newUser);
+        Log.v("madapter", "setFilter called  ");
+        notifyDataSetChanged();
     }
 }
