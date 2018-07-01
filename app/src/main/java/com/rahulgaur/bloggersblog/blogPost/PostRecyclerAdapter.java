@@ -8,9 +8,12 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -71,6 +74,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
         context = parent.getContext();
         auth = FirebaseAuth.getInstance();
         return new ViewHolder(view);
+
     }
 
     @Override
@@ -85,8 +89,6 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
 
         //get current user id
         final String currentUserId = auth.getCurrentUser().getUid();
-
-
 
         String desc_data = postList.get(position).getDesc();
         final String user_id = postList.get(position).getUser_id();
@@ -169,6 +171,32 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
             }
         });
 
+        //menu in card implantation and click listener
+        holder.menuBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PopupMenu popupMenu = new PopupMenu(context, view);
+                MenuInflater inflater = popupMenu.getMenuInflater();
+                inflater.inflate(R.menu.post_menu, popupMenu.getMenu());
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        switch (menuItem.getItemId()) {
+                            case R.id.post_menu_report_btn:
+                                report();
+                                break;
+                            case R.id.post_menu_block_btn:
+                                block();
+                                return true;
+                            default:
+                                return false;
+                        }
+                        return false;
+                    }
+                });
+                popupMenu.show();
+            }
+        });
 
         //likes feature
         holder.likeImage.setOnClickListener(new View.OnClickListener() {
@@ -225,44 +253,29 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
 
                             if (!post_name.isEmpty()) {
                                 final FirebaseStorage storageReference = FirebaseStorage.getInstance();
-                                StorageReference delfile = storageReference.getReferenceFromUrl(image_url);
+                                StorageReference delfile = storageReference.getReferenceFromUrl(thumb_image_url);
                                 delfile.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
                                         ///the post deleted from the storage
                                         if (task.isSuccessful()) {
 
-                                            StorageReference delThumb = storageReference.getReferenceFromUrl(thumb_image_url);
-                                            delThumb.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            firebaseFirestore.collection("Posts").document(blogPostID).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
-                                                public void onSuccess(Void aVoid) {
+                                                public void onComplete(@NonNull Task<Void> task) {
                                                     if (task.isSuccessful()) {
-                                                        //thumbnail deleted successful
-
-                                                        //deleting post from database
-                                                        firebaseFirestore.collection("Posts").document(blogPostID).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                            @Override
-                                                            public void onComplete(@NonNull Task<Void> task) {
-                                                                if (task.isSuccessful()) {
-                                                                    postList.remove(position);
-                                                                    user_list.remove(position);
-                                                                    Toast.makeText(context, "Post deleted", Toast.LENGTH_SHORT).show();
-                                                                } else {
-                                                                    Log.e("deleting post", "error in deleting entries from database " + task.getException().getMessage());
-                                                                    //error in deleting entries from database
-                                                                }
-                                                            }
-                                                        });
+                                                        postList.remove(position);
+                                                        user_list.remove(position);
+                                                        Toast.makeText(context, "Post deleted", Toast.LENGTH_SHORT).show();
                                                     } else {
-                                                        Log.e("deleting post", "error deleting thumbnail from storage " + task.getException().getMessage());
-                                                        //error in thumbnail deletion
+                                                        Log.e("deleting post", "error in deleting entries from database " + task.getException().getMessage());
+                                                        //error in deleting entries from database
                                                     }
                                                 }
                                             });
-
                                         } else {
-                                            Log.e("deleting post", "error deleting file from storage " + task.getException().getMessage());
-                                            //error deleting file from storage
+                                            Log.e("deleting post", "error deleting thumbnail from storage " + task.getException().getMessage());
+                                            //error in thumbnail deletion
                                         }
                                     }
                                 });
@@ -277,7 +290,9 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
         });
 
         //comment feature
-        holder.cmntImage.setOnClickListener(new View.OnClickListener() {
+        holder.cmntImage.setOnClickListener(new View.OnClickListener()
+
+        {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(context, Comments.class);
@@ -288,6 +303,22 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
 
     }
 
+    private void report() {
+        /*
+        report the user
+        if 5 people report the user it will give the user warning
+        and if after warning 5 more people report it will ban the user from the app
+        */
+
+        Toast.makeText(context, "Report Clicked", Toast.LENGTH_SHORT).show();
+    }
+
+    private void block() {
+        //block the user
+
+        Toast.makeText(context, "Block Clicked", Toast.LENGTH_SHORT).show();
+    }
+
     @Override
     public int getItemCount() {
         return user_list.size();
@@ -296,17 +327,21 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         private View mView;
+        private MenuItem reportBtn, blockBtn;
         private TextView descView, userView, dateView, likeView, cmntView;
         private CircleImageView profile;
-        private ImageView imageView, likeImage, deleteImage, cmntImage;
+        private ImageView imageView, likeImage, deleteImage, cmntImage, menuBtn;
 
         ViewHolder(View itemView) {
             super(itemView);
             mView = itemView;
 
+            menuBtn = mView.findViewById(R.id.card_menu);
             deleteImage = mView.findViewById(R.id.delete_imageView);
             likeImage = mView.findViewById(R.id.like_imageView);
             cmntImage = mView.findViewById(R.id.cmnt_imageView);
+            reportBtn = mView.findViewById(R.id.post_menu_report_btn);
+            blockBtn = mView.findViewById(R.id.post_menu_block_btn);
         }
 
         @SuppressLint("SetTextI18n")
@@ -360,9 +395,10 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
             dateView = mView.findViewById(R.id.date_tv);
             dateView.setText(date);
         }
+
     }
 
-    public void setFilter(ArrayList<User> newUser){
+    public void setFilter(ArrayList<User> newUser) {
         user_list = new ArrayList<>();
         user_list.addAll(newUser);
         Log.v("madapter", "setFilter called  ");
