@@ -23,17 +23,17 @@ Blogger's Blog is a Android based application which is a simple Photo Blogging a
 
 ###### What is not working.
 1. Registration
-  - Google.
-  - Facebook.
-  - Twitter.
-  - Anon.
+   - Google.
+   - Facebook.
+   - Twitter.
+   - Anon.
 2. Comment
-  - deleting your comment.
+   - deleting your comment.
 3. Profile
-  - Profile of any other person is not working
+   - Profile of any other person is not working
 4. Search-
-  - Searching any user is not working as I wanted it to be.
-  - It can search Posts of anyone from the RecyclerView.
+   - Searching any user is not working as I wanted it to be.
+   - It can search Posts of anyone from the RecyclerView.
 5. Posts from Profile.
-  - Click on Posts from profile is not oppening anything.
-  - It should show the comments activity.
+   - Click on Posts from profile is not oppening anything.
+   - It should show the comments activity.
