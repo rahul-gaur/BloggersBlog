@@ -10,7 +10,7 @@ Blogger's Blog is a Android based application which is a simple Photo Blogging a
 - You can view someone's profile.
 - You can find people from the app.
 
-###### What is working right now.
+###### **What is working right now.**
 - [x] Registring new user using email and password.
 - [x] Login using email and password.
 - [x] Posting New Photo.
@@ -21,7 +21,7 @@ Blogger's Blog is a Android based application which is a simple Photo Blogging a
 - [x] Changing Name.
 - [x] Viewing your own Profile.
 
-###### What is not working.
+###### **What is not working.**
 1. **Registration**
      - Google.
      - Facebook.
@@ -37,3 +37,6 @@ Blogger's Blog is a Android based application which is a simple Photo Blogging a
 5. **Posts from Profile**
      - Click on Posts from profile is not oppening anything.
      - It should show the comments activity.
+6. **Notification**
+     - Notifications are not working at all.
+     - They should show notification if someone like or comment on your post.
