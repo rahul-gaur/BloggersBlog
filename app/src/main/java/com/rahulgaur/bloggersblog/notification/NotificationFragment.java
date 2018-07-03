@@ -56,7 +56,6 @@ public class NotificationFragment extends Fragment {
 
         Objects.requireNonNull(((AppCompatActivity) getActivity()).getSupportActionBar()).setTitle("Notification");
 
-
         return view;
     }
 

@@ -23,6 +23,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
@@ -38,7 +39,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -53,10 +53,6 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
 
     private FirebaseFirestore firebaseFirestore;
     private FirebaseAuth auth;
-
-    public String postID = "";
-
-    private String postUserID = null;
 
     private postid pd = new postid();
 
@@ -92,8 +88,8 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
 
         String desc_data = postList.get(position).getDesc();
         final String user_id = postList.get(position).getUser_id();
-        final String image_url = postList.get(position).getImage_url();
         final String thumb_image_url = postList.get(position).getThumb_image_url();
+        final String current_user_id = auth.getCurrentUser().getUid();
 
         //getting post ownership
         firebaseFirestore.collection("Posts")
@@ -114,7 +110,6 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
 
         //time feature
         Date date = postList.get(position).getTimestamp();
-        long millisecond = postList.get(position).getTimestamp().getTime();
 
         @SuppressLint("SimpleDateFormat") SimpleDateFormat dateformatMMDDYYYY = new SimpleDateFormat("dd MMMM yyyy");
         StringBuilder nowMMDDYYYY = new StringBuilder(dateformatMMDDYYYY.format(date));
@@ -183,7 +178,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                     public boolean onMenuItemClick(MenuItem menuItem) {
                         switch (menuItem.getItemId()) {
                             case R.id.post_menu_report_btn:
-                                report();
+                                report(current_user_id, user_id, blogPostID);
                                 break;
                             case R.id.post_menu_block_btn:
                                 block();
@@ -267,6 +262,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                                                         postList.remove(position);
                                                         user_list.remove(position);
                                                         Toast.makeText(context, "Post deleted", Toast.LENGTH_SHORT).show();
+                                                        notifyDataSetChanged();
                                                     } else {
                                                         Log.e("deleting post", "error in deleting entries from database " + task.getException().getMessage());
                                                         //error in deleting entries from database
@@ -303,19 +299,28 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
 
     }
 
-    private void report() {
+    private void report(String current_user_id, String post_user_id, String post_id) {
         /*
         report the user
         if 5 people report the user it will give the user warning
         and if after warning 5 more people report it will ban the user from the app
         */
 
-        Toast.makeText(context, "Report Clicked", Toast.LENGTH_SHORT).show();
+        firebaseFirestore.collection("Posts").document(post_id).collection("Report").add(current_user_id)
+                .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentReference> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(context, "Reported..", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Log.e("report", "error: " + task.getException().getMessage());
+                        }
+                    }
+                });
     }
 
     private void block() {
         //block the user
-
         Toast.makeText(context, "Block Clicked", Toast.LENGTH_SHORT).show();
     }
 
@@ -359,6 +364,8 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
         void checkPostOwership(String currentUser, String postUser) {
             if (currentUser.equals(postUser)) {
                 deleteImage.setVisibility(View.VISIBLE);
+                menuBtn.setVisibility(View.INVISIBLE);
+                menuBtn.setEnabled(false);
             } else {
                 deleteImage.setEnabled(false);
                 deleteImage.setVisibility(View.INVISIBLE);

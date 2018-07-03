@@ -28,8 +28,8 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.rahulgaur.bloggersblog.ThemeAndSettings.DayNightTheme;
 import com.rahulgaur.bloggersblog.R;
+import com.rahulgaur.bloggersblog.ThemeAndSettings.DayNightTheme;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,7 +38,6 @@ import java.util.Map;
 
 public class Comments extends AppCompatActivity {
 
-    private DayNightTheme dayNightTheme = new DayNightTheme();
     private EditText comment_field;
     private ImageView comment_postView, postUserImageView;
     private TextView comment_Username;
@@ -56,7 +55,7 @@ public class Comments extends AppCompatActivity {
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (AppCompatDelegate.getDefaultNightMode()== AppCompatDelegate.MODE_NIGHT_YES) {
+        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
             setTheme(R.style.darkTheme);
         } else {
             setTheme(R.style.AppTheme);
@@ -104,10 +103,6 @@ public class Comments extends AppCompatActivity {
                 if (documentSnapshot.exists()) {
                     final String post_user_id = documentSnapshot.getString("user_id");
                     final String post_picture = documentSnapshot.getString("thumb_image_url");
-                    //getting username
-
-                    if (post_user_id.equals(current_user_id)) {
-                    }
 
                     firebaseFirestore.collection("Users").document(post_user_id).addSnapshotListener(Comments.this, new EventListener<DocumentSnapshot>() {
                         @Override

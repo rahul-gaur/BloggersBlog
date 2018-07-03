@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,8 +35,6 @@ public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecycl
     private FirebaseFirestore firebaseFirestore;
     private FirebaseAuth auth;
 
-    private String blog_post_id;
-
     private postid pd = new postid();
 
     CommentsRecyclerAdapter(List<CommentList> cmntList) {
@@ -56,14 +55,11 @@ public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecycl
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         holder.setIsRecyclable(false);
-        final String postID = pd.getPostid();
-        final String currentUserId = auth.getCurrentUser().getUid();
-
-        final String blogPostID = cmntList.get(position).BlogPostID;
-
         String message = cmntList.get(position).getMessage();
         String user_id = cmntList.get(position).getUser_id();
-        Date timestamp = cmntList.get(position).getTimestamp();
+        String current_user_id = auth.getCurrentUser().getUid();
+
+        holder.commentOwership(user_id,current_user_id);
 
         //getting username and profile of the current user
         firebaseFirestore.collection("Users")
@@ -83,17 +79,15 @@ public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecycl
                     }
                 });
 
-        //get timestamp
-      /*  if (!(cmntList.get(position).getTimestamp()).equals(null)) {
-            Date date = cmntList.get(position).getTimestamp();
-            @SuppressLint("SimpleDateFormat") SimpleDateFormat dateformatMMDDYYYY = new SimpleDateFormat("dd MMMM yyyy");
-            StringBuilder nowMMDDYYYY = new StringBuilder(dateformatMMDDYYYY.format(date));
-            holder.setTimestamp(nowMMDDYYYY);
-        }
-*/
         holder.setMessageText(message);
 
-        //comments feature
+        //comment delete feature
+        holder.comment_deleteImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(context, "You clicked Deleted button", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 
@@ -105,8 +99,9 @@ public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecycl
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         private View mView;
-        private TextView name, message, timestamp;
+        private TextView name, message;
         private CircleImageView profile;
+        private ImageView comment_deleteImageView;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -123,15 +118,23 @@ public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecycl
             message = mView.findViewById(R.id.cmnt_messageTV);
             message.setText(messageText);
         }
-/*
-        void setTimestamp(StringBuilder timestampDate) {
-        }*/
 
         void setProfile(String profileUri) {
             profile = mView.findViewById(R.id.cmnt_profileView);
             RequestOptions placeholder = new RequestOptions();
             placeholder.placeholder(R.drawable.default_usr);
             Glide.with(context).applyDefaultRequestOptions(placeholder).load(profileUri).into(profile);
+        }
+
+        private void commentOwership(String comment_user, String current_user_id) {
+            comment_deleteImageView = mView.findViewById(R.id.cmnt_item_dlt_imgView);
+            if (comment_user.equals(current_user_id)) {
+                comment_deleteImageView.setEnabled(true);
+                comment_deleteImageView.setVisibility(View.VISIBLE);
+            } else {
+                comment_deleteImageView.setEnabled(false);
+                comment_deleteImageView.setVisibility(View.INVISIBLE);
+            }
         }
     }
 }
