@@ -77,6 +77,8 @@ public class Comments extends AppCompatActivity {
 
         cmntList = new ArrayList<>();
 
+        blog_post_id = getIntent().getStringExtra("blog_post_id");
+
         commentsRecyclerAdapter = new CommentsRecyclerAdapter(cmntList,blog_post_id);
 
         comment_field = findViewById(R.id.cmntEditText);
@@ -98,8 +100,6 @@ public class Comments extends AppCompatActivity {
         });
 
         current_user_id = auth.getCurrentUser().getUid();
-        blog_post_id = getIntent().getStringExtra("blog_post_id");
-
 
         //post image and username retrieving
         firebaseFirestore.collection("Posts/").document(blog_post_id).addSnapshotListener(Comments.this, new EventListener<DocumentSnapshot>() {

@@ -1,11 +1,9 @@
 package com.rahulgaur.bloggersblog.comment;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,18 +16,13 @@ import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.rahulgaur.bloggersblog.R;
 import com.rahulgaur.bloggersblog.blogPost.Post;
 import com.rahulgaur.bloggersblog.blogPost.postid;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -67,15 +60,15 @@ public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecycl
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         holder.setIsRecyclable(false);
-        String message = cmntList.get(position).getMessage();
+        final String message = cmntList.get(position).getMessage();
         String user_id = cmntList.get(position).getUser_id();
         String current_user_id = auth.getCurrentUser().getUid();
 
-       // String blog_post_id = postList.get(position).BlogPostID;
-        
-        holder.commentOwership(user_id,current_user_id);
+        // String blog_post_id = postList.get(position).BlogPostID;
+        final String comment_id = cmntList.get(position).CommentID;
+        holder.commentOwership(user_id, current_user_id);
 
         //getting username and profile of the current user
         firebaseFirestore.collection("Users")
@@ -94,14 +87,28 @@ public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecycl
                         }
                     }
                 });
-        
+
         holder.setMessageText(message);
 
         //comment delete feature
         holder.comment_deleteImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context, "You clicked Deleted button", Toast.LENGTH_SHORT).show();
+                holder.comment_deleteImageView.setEnabled(false);
+                firebaseFirestore.collection("Posts/").document(blog_post_id).collection("Comments").document(comment_id).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            cmntList.remove(position);
+                            notifyDataSetChanged();
+                            holder.comment_deleteImageView.setEnabled(true);
+                            Toast.makeText(context, "Deleted", Toast.LENGTH_SHORT).show();
+                        } else {
+                            holder.comment_deleteImageView.setEnabled(true);
+                            Toast.makeText(context, "some error", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
             }
         });
     }
