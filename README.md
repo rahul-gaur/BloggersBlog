@@ -20,6 +20,7 @@ Blogger's Blog is a Android based application which is a simple Photo Blogging a
 - [x] Changing Profile picture.
 - [x] Changing Name.
 - [x] Viewing your own Profile.
+- [x] Comments can be deleted now- Randeep's contribution
 
 ###### **What is not working.**
 1. **Registration**
@@ -27,8 +28,8 @@ Blogger's Blog is a Android based application which is a simple Photo Blogging a
      - Facebook.
      - Twitter.
      - Anon.
-2. **Comment**
-     - deleting your comment.
+2. ~~**Comment**~~
+     - ~~deleting your comment.~~
 3. **Profile**
      - Profile of any other person is not working
 4. **Search**
