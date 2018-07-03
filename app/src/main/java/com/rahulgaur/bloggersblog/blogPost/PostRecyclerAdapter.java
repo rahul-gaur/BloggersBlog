@@ -314,6 +314,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
 
     }
 
+    //report feature
     private void report(String current_user_id, String post_user_id, String post_id) {
         /*
         report the user
@@ -334,6 +335,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                 });
     }
 
+    //block feature
     private void block() {
         //block the user
         Toast.makeText(context, "Block Clicked", Toast.LENGTH_SHORT).show();
