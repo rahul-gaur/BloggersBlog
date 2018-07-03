@@ -1,9 +1,11 @@
 package com.rahulgaur.bloggersblog.comment;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +18,17 @@ import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.rahulgaur.bloggersblog.R;
+import com.rahulgaur.bloggersblog.blogPost.Post;
 import com.rahulgaur.bloggersblog.blogPost.postid;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -29,22 +37,28 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecyclerAdapter.ViewHolder> {
 
     private List<CommentList> cmntList;
+    private ArrayList<Post> postList;
     @SuppressLint("StaticFieldLeak")
     private static Context context;
+
+    private String blog_post_id;
 
     private FirebaseFirestore firebaseFirestore;
     private FirebaseAuth auth;
 
     private postid pd = new postid();
 
-    CommentsRecyclerAdapter(List<CommentList> cmntList) {
+    CommentsRecyclerAdapter(List<CommentList> cmntList, String blog_post_id) {
         this.cmntList = cmntList;
+        this.blog_post_id = blog_post_id;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cmnt_card_layout, parent, false);
+
+        postList = new ArrayList<>();
 
         firebaseFirestore = FirebaseFirestore.getInstance();
         context = parent.getContext();
@@ -59,6 +73,8 @@ public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecycl
         String user_id = cmntList.get(position).getUser_id();
         String current_user_id = auth.getCurrentUser().getUid();
 
+       // String blog_post_id = postList.get(position).BlogPostID;
+        
         holder.commentOwership(user_id,current_user_id);
 
         //getting username and profile of the current user
@@ -78,7 +94,7 @@ public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecycl
                         }
                     }
                 });
-
+        
         holder.setMessageText(message);
 
         //comment delete feature

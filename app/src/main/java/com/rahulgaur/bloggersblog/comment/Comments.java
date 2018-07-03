@@ -1,6 +1,7 @@
 package com.rahulgaur.bloggersblog.comment;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -30,6 +31,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.rahulgaur.bloggersblog.R;
 import com.rahulgaur.bloggersblog.ThemeAndSettings.DayNightTheme;
+import com.rahulgaur.bloggersblog.blogPost.Post;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,6 +43,8 @@ public class Comments extends AppCompatActivity {
     private EditText comment_field;
     private ImageView comment_postView, postUserImageView;
     private TextView comment_Username;
+
+    private Post postClass = new Post();
 
     private List<CommentList> cmntList;
 
@@ -73,7 +77,7 @@ public class Comments extends AppCompatActivity {
 
         cmntList = new ArrayList<>();
 
-        commentsRecyclerAdapter = new CommentsRecyclerAdapter(cmntList);
+        commentsRecyclerAdapter = new CommentsRecyclerAdapter(cmntList,blog_post_id);
 
         comment_field = findViewById(R.id.cmntEditText);
         ImageView comment_post_btn = findViewById(R.id.cmntPostImageView);
@@ -95,6 +99,7 @@ public class Comments extends AppCompatActivity {
 
         current_user_id = auth.getCurrentUser().getUid();
         blog_post_id = getIntent().getStringExtra("blog_post_id");
+
 
         //post image and username retrieving
         firebaseFirestore.collection("Posts/").document(blog_post_id).addSnapshotListener(Comments.this, new EventListener<DocumentSnapshot>() {
@@ -140,7 +145,6 @@ public class Comments extends AppCompatActivity {
 
                     }
                 });
-
 
         //comment posting
         comment_post_btn.setOnClickListener(new View.OnClickListener() {

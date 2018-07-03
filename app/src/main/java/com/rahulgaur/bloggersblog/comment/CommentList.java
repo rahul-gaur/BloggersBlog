@@ -1,12 +1,14 @@
 package com.rahulgaur.bloggersblog.comment;
 
+import org.w3c.dom.Comment;
+
 import java.util.Date;
 
-public class CommentList extends com.rahulgaur.bloggersblog.blogPost.BlogPostID {
+public class CommentList extends CommentID {
     private String message, user_id;
     private Date timestamp;
 
-    public CommentList(){
+    public CommentList() {
 
     }
 
