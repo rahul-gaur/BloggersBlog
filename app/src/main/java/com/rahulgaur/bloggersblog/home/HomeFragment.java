@@ -132,43 +132,47 @@ public class HomeFragment extends Fragment {
 
                 @Override
                 public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+                    if (!documentSnapshots.isEmpty()) {
 
-                    if (isfirstPageLoad){
-                        lastVisible = documentSnapshots.getDocuments()
-                                .get(documentSnapshots.size() -1);
-                        postList.clear();
-                        userList.clear();
-                    }
-
-                    for (DocumentChange doc : documentSnapshots.getDocumentChanges()) {
-                        if (doc.getType() == DocumentChange.Type.ADDED) {
-                            String blogPosTID = doc.getDocument().getId();
-                            final Post post = doc.getDocument().toObject(Post.class).withID(blogPosTID);
-
-                            String blogUserID = doc.getDocument().getString("user_id");
-                            firebaseFirestore.collection("Users").document(blogUserID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                    if (task.isSuccessful()){
-                                        User user = task.getResult().toObject(User.class);
-
-                                        if (isfirstPageLoad){
-                                            userList.add(user);
-                                            postList.add(post);
-                                        } else {
-                                            userList.add(0,user);
-                                            postList.add(0,post);
-                                        }
-                                        postRecyclerAdapter.notifyDataSetChanged();
-                                    } else {
-                                        //some error
-                                    }
-                                }
-                            });
-
+                        if (isfirstPageLoad) {
+                            lastVisible = documentSnapshots.getDocuments()
+                                    .get(documentSnapshots.size() - 1);
+                            postList.clear();
+                            userList.clear();
                         }
 
-                        isfirstPageLoad = false;
+                        for (DocumentChange doc : documentSnapshots.getDocumentChanges()) {
+                            if (doc.getType() == DocumentChange.Type.ADDED) {
+                                String blogPosTID = doc.getDocument().getId();
+                                final Post post = doc.getDocument().toObject(Post.class).withID(blogPosTID);
+
+                                String blogUserID = doc.getDocument().getString("user_id");
+                                firebaseFirestore.collection("Users").document(blogUserID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            User user = task.getResult().toObject(User.class);
+
+                                            if (isfirstPageLoad) {
+                                                userList.add(user);
+                                                postList.add(post);
+                                            } else {
+                                                userList.add(0, user);
+                                                postList.add(0, post);
+                                            }
+                                            postRecyclerAdapter.notifyDataSetChanged();
+                                        } else {
+                                            //some error
+                                        }
+                                    }
+                                });
+
+                            }
+
+                            isfirstPageLoad = false;
+                        }
+                    } else {
+                        Toast.makeText(getContext(), "No posts..", Toast.LENGTH_LONG).show();
                     }
                 }
             });

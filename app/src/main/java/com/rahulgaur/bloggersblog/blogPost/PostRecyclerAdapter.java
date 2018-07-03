@@ -2,6 +2,7 @@ package com.rahulgaur.bloggersblog.blogPost;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -53,6 +54,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
 
     private FirebaseFirestore firebaseFirestore;
     private FirebaseAuth auth;
+    private ProgressDialog progressDialog;
 
     private postid pd = new postid();
 
@@ -83,6 +85,8 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
 
         pd.setPostid(blogPostID);
 
+        progressDialog = new ProgressDialog(context);
+
         //get current user id
         final String currentUserId = auth.getCurrentUser().getUid();
 
@@ -104,7 +108,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
         });
 
         String user_data = user_list.get(position).getName();
-        String profile_url = user_list.get(position).getImage();
+        final String profile_url = user_list.get(position).getImage();
         holder.setProfileImage(profile_url);
         holder.setUserText(user_data);
 
@@ -240,6 +244,10 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
             @Override
             public void onClick(View v) {
                 //deleting photos from storage
+                progressDialog.setMessage("Deleting Post Please Wait....");
+                progressDialog.show();
+                progressDialog.setCanceledOnTouchOutside(false);
+
                 firebaseFirestore.collection("Posts").document(blogPostID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull final Task<DocumentSnapshot> task) {
@@ -262,20 +270,27 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                                                         postList.remove(position);
                                                         user_list.remove(position);
                                                         Toast.makeText(context, "Post deleted", Toast.LENGTH_SHORT).show();
+                                                        progressDialog.dismiss();
                                                         notifyDataSetChanged();
                                                     } else {
+                                                        Toast.makeText(context, "Error while deleting post.", Toast.LENGTH_SHORT).show();
                                                         Log.e("deleting post", "error in deleting entries from database " + task.getException().getMessage());
+                                                        progressDialog.dismiss();
                                                         //error in deleting entries from database
                                                     }
                                                 }
                                             });
                                         } else {
+                                            Toast.makeText(context, "Error while deleting post.", Toast.LENGTH_SHORT).show();
+                                            progressDialog.dismiss();
                                             Log.e("deleting post", "error deleting thumbnail from storage " + task.getException().getMessage());
                                             //error in thumbnail deletion
                                         }
                                     }
                                 });
                             } else {
+                                progressDialog.dismiss();
+                                Toast.makeText(context, "Error while deleting post.", Toast.LENGTH_SHORT).show();
                                 Log.e("deleting post", "post not found " + task.getException().getMessage());
                                 //post not found
                             }
