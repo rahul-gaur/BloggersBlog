@@ -24,7 +24,6 @@
         android:layout_width="match_parent"
         android:layout_height="180dp"
         android:layout_marginEnd="8dp"
-
         android:layout_marginStart="8dp"
         android:layout_marginTop="2dp"
         android:contentDescription="@string/app_name"
@@ -52,10 +51,9 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:src="@drawable/default_usr"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cmntToolbar" />
+        app:layout_constraintTop_toBottomOf="@+id/comment_progressBar" />
 
     <EditText
         android:id="@+id/cmntEditText"
@@ -63,11 +61,11 @@
         android:layout_height="40dp"
         android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
-        android:background="?attr/white"
+        android:background="?attr/colorBackground"
         android:hint="@string/write_your_comment"
         android:inputType="text"
         android:textColor="?attr/secondaryTextColor"
-        android:textColorHint="?attr/secondaryDarkColor"
+        android:textColorHint="?attr/hintColor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/cmntPostImageView"
         app:layout_constraintStart_toStartOf="parent" />
@@ -99,5 +97,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cmntImageView" />
+
+    <ProgressBar
+        android:id="@+id/comment_progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cmntToolbar" />
 
 </android.support.constraint.ConstraintLayout>

@@ -12,6 +12,9 @@
         <attr name="secondaryTextColor" format="color"/>
         <attr name="white" format="color"/>
         <attr name="black" format="color"/>
+        <attr name="hintColor" format="color"/>
+        <attr name="cardBackgroundColorDefault" format="color"/>
+        <attr name="bottomNevBarColor" format="color"/>
     </declare-styleable>
     
 </resources>

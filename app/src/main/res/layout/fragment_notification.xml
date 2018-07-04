@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/white"
+    android:background="?attr/colorBackground"
     android:id="@+id/frag_noti_swipeRefresh"
     tools:context=".notification.NotificationFragment">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:background="?attr/white"
+        android:background="?attr/colorBackground"
         android:layout_height="match_parent">
 
         <android.support.v7.widget.Toolbar
@@ -24,8 +24,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <!-- TODO: Update blank fragment layout -->
 
         <TextView
             android:layout_width="wrap_content"

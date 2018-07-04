@@ -14,7 +14,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:padding="10dp"
-        android:background="?attr/colorBackground"
+        android:background="?attr/cardBackgroundColorDefault"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -24,7 +24,7 @@
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:background="?attr/colorBackground"
+            android:background="?attr/cardBackgroundColorDefault"
             android:layout_height="wrap_content">
 
             <ImageView
@@ -79,7 +79,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/profile_view"
-                app:srcCompat="@android:drawable/sym_def_app_icon"
+                android:src="@drawable/ic_launcher_background"
                 android:contentDescription="@string/app_name" />
 
             <TextView

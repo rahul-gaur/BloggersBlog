@@ -12,7 +12,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDelegate;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -34,8 +33,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.rahulgaur.bloggersblog.ThemeAndSettings.DayNightTheme;
 import com.rahulgaur.bloggersblog.R;
+import com.rahulgaur.bloggersblog.ThemeAndSettings.SharedPref;
 import com.rahulgaur.bloggersblog.home.MainActivity;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -53,7 +52,6 @@ import id.zelory.compressor.Compressor;
 
 public class Account extends AppCompatActivity {
 
-    private DayNightTheme dayNightTheme = new DayNightTheme();
     private FirebaseAuth auth = FirebaseAuth.getInstance();
     private Uri mainImageURI = null;
     private CircleImageView profile;
@@ -63,10 +61,12 @@ public class Account extends AppCompatActivity {
     private String user_id;
     private boolean isChanged = false;
     private Bitmap compressedImageFile;
+    private SharedPref sharedPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (AppCompatDelegate.getDefaultNightMode()==AppCompatDelegate.MODE_NIGHT_YES){
+        sharedPref = new SharedPref(this);
+        if (sharedPref.loadNightModeState()){
             setTheme(R.style.darkTheme);
         } else {
             setTheme(R.style.AppTheme);
@@ -238,14 +238,6 @@ public class Account extends AppCompatActivity {
 
             }
         });
-    }
-
-    public void nightMode(String mode) {
-        if (mode.equals("night")) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        }
     }
 
     private void ImagePicker() {

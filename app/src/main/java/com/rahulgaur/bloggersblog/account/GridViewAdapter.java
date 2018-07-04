@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
@@ -20,10 +21,7 @@ import java.util.ArrayList;
 public class GridViewAdapter extends ArrayAdapter {
 
     private Context context;
-    private FirebaseAuth auth;
-    private FirebaseFirestore firebaseFirestore;
-    private ArrayList<GridViewList> objects = new ArrayList<>();
-    private GridViewList gridViewList;
+    private ArrayList<GridViewList> objects;
 
     public GridViewAdapter(@NonNull Context context, int resource, ArrayList<GridViewList> list) {
         super(context, resource, list);
@@ -52,10 +50,17 @@ public class GridViewAdapter extends ArrayAdapter {
         } else {
             holder = (Holder) convertView.getTag();
         }
-        gridViewList = new GridViewList();
+        GridViewList gridViewList = new GridViewList();
         Glide.with(context).load(objects.get(position).getImageURL())
                 .into(holder.post_image);
         holder.progressBar.setVisibility(View.INVISIBLE);
+        holder.post_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(context, "Clicked", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         return row;
     }
 }

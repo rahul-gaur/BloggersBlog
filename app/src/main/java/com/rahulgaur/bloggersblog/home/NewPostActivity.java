@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDelegate;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -29,8 +28,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.rahulgaur.bloggersblog.ThemeAndSettings.DayNightTheme;
 import com.rahulgaur.bloggersblog.R;
+import com.rahulgaur.bloggersblog.ThemeAndSettings.SharedPref;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -45,7 +44,6 @@ import id.zelory.compressor.Compressor;
 
 public class NewPostActivity extends AppCompatActivity {
 
-    private DayNightTheme dayNightTheme = new DayNightTheme();
     private ImageView imageView;
     private EditText postDescET;
     private Button uploadBtn;
@@ -56,10 +54,12 @@ public class NewPostActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     private String current_user_id;
     private Bitmap compressedImageFile;
+    private SharedPref sharedPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
+        sharedPref = new SharedPref(this);
+        if (sharedPref.loadNightModeState()) {
             setTheme(R.style.darkTheme);
         } else {
             setTheme(R.style.AppTheme);
@@ -194,14 +194,6 @@ public class NewPostActivity extends AppCompatActivity {
                 }
             }
         });
-    }
-
-    public void nightMode(String mode) {
-        if (mode.equals("night")) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        }
     }
 
     private void sendToMain() {

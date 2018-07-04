@@ -1,11 +1,9 @@
 package com.rahulgaur.bloggersblog.comment;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -30,8 +28,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.rahulgaur.bloggersblog.R;
-import com.rahulgaur.bloggersblog.ThemeAndSettings.DayNightTheme;
-import com.rahulgaur.bloggersblog.blogPost.Post;
+import com.rahulgaur.bloggersblog.ThemeAndSettings.SharedPref;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,7 +41,7 @@ public class Comments extends AppCompatActivity {
     private ImageView comment_postView, postUserImageView;
     private TextView comment_Username;
 
-    private Post postClass = new Post();
+    private String post_user_id;
 
     private List<CommentList> cmntList;
 
@@ -56,10 +53,13 @@ public class Comments extends AppCompatActivity {
     private FirebaseFirestore firebaseFirestore;
     private FirebaseAuth auth;
 
+    private SharedPref sharedPref;
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
+    public void onCreate(Bundle savedInstanceState) {
+        sharedPref = new SharedPref(this);
+        if (sharedPref.loadNightModeState()) {
             setTheme(R.style.darkTheme);
         } else {
             setTheme(R.style.AppTheme);
@@ -108,6 +108,9 @@ public class Comments extends AppCompatActivity {
                 if (documentSnapshot.exists()) {
                     final String post_user_id = documentSnapshot.getString("user_id");
                     final String post_picture = documentSnapshot.getString("thumb_image_url");
+
+                    String post_user = post_user_id;
+                    setPostUserID(post_user);
 
                     firebaseFirestore.collection("Users").document(post_user_id).addSnapshotListener(Comments.this, new EventListener<DocumentSnapshot>() {
                         @Override
@@ -210,11 +213,11 @@ public class Comments extends AppCompatActivity {
                 .into(postUserImageView);
     }
 
-    public void nightMode(String mode) {
-        if (mode.equals("night")) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        }
+    public void setPostUserID(String user_id) {
+        post_user_id = user_id;
+    }
+
+    public String getPostUserID(){
+        return post_user_id;
     }
 }

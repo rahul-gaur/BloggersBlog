@@ -15,6 +15,11 @@
         <item name="secondaryTextColor">@color/secondaryTextColor</item>
         <item name="white">@color/white</item>
         <item name="black">@color/black</item>
+        <item name="hintColor">@color/hintColor</item>
+        <item name="cardBackgroundColorDefault">@color/white</item>
+        <item name="bottomNevBarColor">@color/white</item>
+        <item name="android:popupBackground">@color/white</item>
+        <item name="android:popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
         <item name="android:windowAnimationStyle">@style/WindowAnimation</item>
     </style>
 
@@ -24,7 +29,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="colorBackground">@color/colorPrimaryDark</item>
+        <item name="colorBackground">@color/black</item>
         <item name="primaryLightColor">@color/primaryLightColor</item>
         <item name="secondaryLightColor">@color/secondaryDarkColor</item>
         <item name="secondaryDarkColor">@color/secondaryDarkColor</item>
@@ -32,6 +37,11 @@
         <item name="secondaryTextColor">@color/primaryTextColor</item>
         <item name="white">@color/black</item>
         <item name="black">@color/white</item>
+        <item name="hintColor">@color/hintColor</item>
+        <item name="android:popupBackground">@color/black</item>
+        <item name="bottomNevBarColor">@color/black</item>
+        <item name="cardBackgroundColorDefault">@color/colorPrimaryDark</item>
+        <item name="android:popupTheme">@style/ThemeOverlay.AppCompat.Dark</item>
         <item name="android:windowAnimationStyle">@style/WindowAnimation</item>
     </style>
 

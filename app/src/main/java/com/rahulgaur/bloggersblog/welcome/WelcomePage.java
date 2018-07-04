@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDelegate;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -22,7 +21,6 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.rahulgaur.bloggersblog.R;
-import com.rahulgaur.bloggersblog.ThemeAndSettings.DayNightTheme;
 import com.rahulgaur.bloggersblog.home.MainActivity;
 
 import java.util.Objects;
@@ -35,15 +33,9 @@ public class WelcomePage extends AppCompatActivity {
     private String email, pass;
     private ImageView backImage;
     private ObjectAnimator forwardObjectAnimator;
-    private DayNightTheme dayNightTheme = new DayNightTheme();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (AppCompatDelegate.getDefaultNightMode()==AppCompatDelegate.MODE_NIGHT_YES){
-            setTheme(R.style.darkTheme);
-        } else {
-            setTheme(R.style.AppTheme);
-        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome_page);
 
@@ -94,14 +86,6 @@ public class WelcomePage extends AppCompatActivity {
             }
         });
 
-    }
-
-    public void nightMode(String mode) {
-        if (mode.equals("night")) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        }
     }
 
     private void setAnimation() {

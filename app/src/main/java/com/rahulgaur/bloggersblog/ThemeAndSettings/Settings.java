@@ -21,12 +21,13 @@ import com.rahulgaur.bloggersblog.welcome.WelcomePage;
 
 public class Settings extends AppCompatActivity {
 
-    private DayNightTheme dayNightTheme = new DayNightTheme();
+    private SharedPref sharedPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        sharedPref = new SharedPref(this);
         //check theme
-        if (AppCompatDelegate.getDefaultNightMode()==AppCompatDelegate.MODE_NIGHT_YES) {
+        if (sharedPref.loadNightModeState()) {
             setTheme(R.style.darkTheme);
         } else {
             setTheme(R.style.AppTheme);
@@ -38,7 +39,7 @@ public class Settings extends AppCompatActivity {
 
         SwitchCompat switchCompat = findViewById(R.id.setting_switchCompat);
 
-        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
+        if (sharedPref.loadNightModeState()) {
             switchCompat.setChecked(true);
         }
 
@@ -46,10 +47,10 @@ public class Settings extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b) {
-                    nightMode("night");
+                    sharedPref.setNightModeState(true);
                     restartApp();
                 } else {
-                    nightMode("day");
+                    sharedPref.setNightModeState(false);
                     restartApp();
                 }
             }
@@ -62,44 +63,5 @@ public class Settings extends AppCompatActivity {
                 .getLaunchIntentForPackage(getBaseContext().getPackageName());
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(i);
-    }
-
-    private void nightMode(String mode) {
-        if (mode.equals("night")) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-            setMode(mode);
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-            setMode(mode);
-        }
-    }
-
-    private void setMode(String mode) {
-        RegisterPage registerPage = new RegisterPage();
-        registerPage.nightMode(mode);
-
-        WelcomePage welcomePage = new WelcomePage();
-        welcomePage.nightMode(mode);
-
-        NotificationFragment notificationFragment = new NotificationFragment();
-        notificationFragment.nightMode(mode);
-
-        NewPostActivity newPostActivity = new NewPostActivity();
-        newPostActivity.nightMode(mode);
-
-        MainActivity mainActivity = new MainActivity();
-        mainActivity.nightMode(mode);
-
-        HomeFragment homeFragment = new HomeFragment();
-        homeFragment.nightMode(mode);
-
-        Comments comments = new Comments();
-        comments.nightMode(mode);
-
-        Account account = new Account();
-        account.nightMode(mode);
-
-        AccountFragment accountFragment = new AccountFragment();
-        accountFragment.nightMode(mode);
     }
 }

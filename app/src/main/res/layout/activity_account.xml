@@ -37,7 +37,7 @@
         android:ems="10"
         android:textSize="25sp"
         android:textColor="?attr/secondaryTextColor"
-        android:textColorHint="?attr/secondaryTextColor"
+        android:textColorHint="?attr/hintColor"
         android:inputType="textPersonName"
         android:hint="@string/enter_your_name"
         app:layout_constraintEnd_toEndOf="parent"

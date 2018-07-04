@@ -9,7 +9,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDelegate;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -19,8 +18,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.rahulgaur.bloggersblog.ThemeAndSettings.DayNightTheme;
 import com.rahulgaur.bloggersblog.R;
+import com.rahulgaur.bloggersblog.ThemeAndSettings.SharedPref;
 import com.rahulgaur.bloggersblog.account.Account;
 import com.rahulgaur.bloggersblog.account.AccountFragment;
 import com.rahulgaur.bloggersblog.notification.NotificationFragment;
@@ -30,8 +29,6 @@ public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth auth = FirebaseAuth.getInstance();
 
-    private DayNightTheme dayNightTheme = new DayNightTheme();
-
     private String current_user_id;
     FirebaseFirestore firebaseFirestore;
 
@@ -39,10 +36,13 @@ public class MainActivity extends AppCompatActivity {
     private NotificationFragment notiFrag;
     private AccountFragment accountFrag;
 
+    private SharedPref sharedPref;
+
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (AppCompatDelegate.getDefaultNightMode()==AppCompatDelegate.MODE_NIGHT_YES){
+        sharedPref = new SharedPref(this);
+        if (sharedPref.loadNightModeState()){
             setTheme(R.style.darkTheme);
         } else {
             setTheme(R.style.AppTheme);
@@ -101,21 +101,9 @@ public class MainActivity extends AppCompatActivity {
         assert current_user != null;
     }
 
-    public void nightMode(String mode) {
-        if (mode.equals("night")) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        }
-    }
     private void sendToNewPost() {
         Intent i = new Intent(MainActivity.this, NewPostActivity.class);
         startActivity(i);
-    }
-
-    private void logout() {
-        auth.signOut();
-        sendUserToWelcome();
     }
 
     @Override

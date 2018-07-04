@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,8 +27,8 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.rahulgaur.bloggersblog.ThemeAndSettings.DayNightTheme;
 import com.rahulgaur.bloggersblog.R;
+import com.rahulgaur.bloggersblog.ThemeAndSettings.SharedPref;
 import com.rahulgaur.bloggersblog.blogPost.postid;
 import com.rahulgaur.bloggersblog.comment.Comments;
 
@@ -41,12 +40,12 @@ import java.util.Objects;
 public class AccountFragment extends Fragment {
 
     private ImageView profileImageView;
-    private DayNightTheme dayNightTheme = new DayNightTheme();
     private String current_userID;
     private String imageURL;
     private String post_id;
     private SwipeRefreshLayout swipeRefreshLayout;
     private String username = "";
+    private SharedPref sharedPref;
 
     GridViewList gridViewList;
     ArrayList<GridViewList> postList = new ArrayList<>();
@@ -61,7 +60,8 @@ public class AccountFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        if (AppCompatDelegate.getDefaultNightMode()==AppCompatDelegate.MODE_NIGHT_YES) {
+        sharedPref = new SharedPref(getContext());
+        if (sharedPref.loadNightModeState()) {
             getActivity().setTheme(R.style.darkTheme);
         } else {
             getActivity().setTheme(R.style.AppTheme);
@@ -161,13 +161,6 @@ public class AccountFragment extends Fragment {
         });
 
         return view;
-    }
-    public void nightMode(String mode) {
-        if (mode.equals("night")) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        }
     }
 
     @SuppressLint("CheckResult")

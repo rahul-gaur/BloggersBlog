@@ -5,10 +5,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,10 +14,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,9 +26,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.rahulgaur.bloggersblog.ThemeAndSettings.DayNightTheme;
 import com.rahulgaur.bloggersblog.R;
 import com.rahulgaur.bloggersblog.ThemeAndSettings.Settings;
+import com.rahulgaur.bloggersblog.ThemeAndSettings.SharedPref;
 import com.rahulgaur.bloggersblog.account.Account;
 import com.rahulgaur.bloggersblog.blogPost.Post;
 import com.rahulgaur.bloggersblog.blogPost.PostRecyclerAdapter;
@@ -40,7 +36,6 @@ import com.rahulgaur.bloggersblog.blogPost.User;
 import com.rahulgaur.bloggersblog.welcome.WelcomePage;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 /**
  * A simple {@link Fragment} subclass.
@@ -52,8 +47,6 @@ public class HomeFragment extends Fragment {
     private ArrayList<Post> postList;
     private ArrayList<User> userList;
 
-    private DayNightTheme dayNightTheme = new DayNightTheme();
-
     private FirebaseFirestore firebaseFirestore;
     private PostRecyclerAdapter postRecyclerAdapter;
     private FirebaseAuth auth;
@@ -63,6 +56,8 @@ public class HomeFragment extends Fragment {
     private DocumentSnapshot lastVisible;
     private SwipeRefreshLayout swipeRefreshLayout;
 
+    private SharedPref sharedPref;
+
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -71,7 +66,8 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        if (AppCompatDelegate.getDefaultNightMode()==AppCompatDelegate.MODE_NIGHT_YES){
+        sharedPref = new SharedPref(getContext());
+        if (sharedPref.loadNightModeState()){
             getActivity().setTheme(R.style.darkTheme);
         } else {
             getActivity().setTheme(R.style.AppTheme);
@@ -282,14 +278,6 @@ public class HomeFragment extends Fragment {
                 return false;
         }
         return false;
-    }
-
-    public void nightMode(String mode) {
-        if (mode.equals("night")) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        }
     }
 
     private void settings() {
