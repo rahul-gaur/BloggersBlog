@@ -31,7 +31,6 @@ import com.rahulgaur.bloggersblog.ThemeAndSettings.Settings;
 import com.rahulgaur.bloggersblog.ThemeAndSettings.SharedPref;
 import com.rahulgaur.bloggersblog.account.Account;
 import com.rahulgaur.bloggersblog.blogPost.Post;
-import com.rahulgaur.bloggersblog.blogPost.PostRecyclerAdapter;
 import com.rahulgaur.bloggersblog.blogPost.User;
 import com.rahulgaur.bloggersblog.welcome.WelcomePage;
 
@@ -220,7 +219,6 @@ public class HomeFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-
         inflater.inflate(R.menu.toolbar_menu, menu);
 
         MenuItem mSearch = menu.findItem(R.id.app_bar_search);

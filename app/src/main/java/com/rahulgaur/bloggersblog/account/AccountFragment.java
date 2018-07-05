@@ -1,4 +1,5 @@
 package com.rahulgaur.bloggersblog.account;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
@@ -34,6 +35,7 @@ import com.rahulgaur.bloggersblog.comment.Comments;
 
 import java.util.ArrayList;
 import java.util.Objects;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -46,8 +48,8 @@ public class AccountFragment extends Fragment {
     private SwipeRefreshLayout swipeRefreshLayout;
     private String username = "";
     private SharedPref sharedPref;
+    private GridViewList gridViewList;
 
-    GridViewList gridViewList;
     ArrayList<GridViewList> postList = new ArrayList<>();
 
     private GridViewAdapter gridViewAdapter;
@@ -82,6 +84,8 @@ public class AccountFragment extends Fragment {
         ((AppCompatActivity) Objects.requireNonNull(getActivity())).setSupportActionBar(account_toolbar);
 
         post_id = pd.getPostid();
+
+        gridViewList = new GridViewList();
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -135,8 +139,12 @@ public class AccountFragment extends Fragment {
                             String post_user_id = doc.getDocument().getString("user_id");
                             String post_thumb_url = doc.getDocument().getString("thumb_image_url");
 
+                            String blog_post_id = doc.getDocument().getId();
+
                             if (post_user_id.equals(current_userID)) {
-                                postList.add(new GridViewList(post_thumb_url));
+                                postList.add(new GridViewList(post_thumb_url, blog_post_id));
+                                gridViewList.setBlogPostID(post_id);
+                                Log.e("accountFragnent","post_id "+blog_post_id);
                                 gridViewAdapter.notifyDataSetChanged();
                             }
 

@@ -1,4 +1,4 @@
-package com.rahulgaur.bloggersblog.blogPost;
+package com.rahulgaur.bloggersblog.home;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -34,6 +35,10 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.rahulgaur.bloggersblog.R;
+import com.rahulgaur.bloggersblog.ThemeAndSettings.SharedPref;
+import com.rahulgaur.bloggersblog.blogPost.Post;
+import com.rahulgaur.bloggersblog.blogPost.User;
+import com.rahulgaur.bloggersblog.blogPost.postid;
 import com.rahulgaur.bloggersblog.comment.Comments;
 
 import java.text.SimpleDateFormat;
@@ -55,10 +60,12 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
     private FirebaseFirestore firebaseFirestore;
     private FirebaseAuth auth;
     private ProgressDialog progressDialog;
+    private SharedPref sharedPref;
+
 
     private postid pd = new postid();
 
-    public PostRecyclerAdapter(ArrayList<Post> postList, ArrayList<User> user_list) {
+    PostRecyclerAdapter(ArrayList<Post> postList, ArrayList<User> user_list) {
         this.postList = postList;
         this.user_list = user_list;
     }
@@ -171,10 +178,18 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
         });
 
         //menu in card implantation and click listener
+        sharedPref = new SharedPref(context);
+
         holder.menuBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PopupMenu popupMenu = new PopupMenu(context, view);
+                Context wrapper;
+                if (sharedPref.loadNightModeState()){
+                    wrapper = new ContextThemeWrapper(context,R.style.popUpThemeDark);
+                } else {
+                    wrapper = new ContextThemeWrapper(context,R.style.popUpThemeLight);
+                }
+                PopupMenu popupMenu = new PopupMenu(wrapper, view);
                 MenuInflater inflater = popupMenu.getMenuInflater();
                 inflater.inflate(R.menu.post_menu, popupMenu.getMenu());
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -201,7 +216,9 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
         holder.likeImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                likeFeature();
+            }
+            private void likeFeature() {
                 firebaseFirestore.collection("Posts/" + blogPostID + "/Likes")
                         .document(currentUserId).get()
                         .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -236,6 +253,50 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                                 }
                             }
                         });
+
+            }
+        });
+        holder.likeView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                likeFeature();
+            }
+            private void likeFeature() {
+                firebaseFirestore.collection("Posts/" + blogPostID + "/Likes")
+                        .document(currentUserId).get()
+                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if (!task.getResult().exists()) {
+                                    //if the like does not exists then add like
+                                    Map<String, Object> likesMap = new HashMap<>();
+                                    likesMap.put("timestamp", FieldValue.serverTimestamp());
+                                    firebaseFirestore.collection("Posts/" + blogPostID + "/Likes")
+                                            .document(currentUserId).set(likesMap)
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if (task.isSuccessful()) {
+                                                        holder.likeImage.setImageResource(R.mipmap.like_pink);
+                                                    }
+                                                }
+                                            });
+                                } else {
+                                    //if like exists delete the like
+                                    firebaseFirestore.collection("Posts/" + blogPostID + "/Likes")
+                                            .document(currentUserId).delete()
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if (task.isSuccessful()) {
+                                                        holder.likeImage.setImageResource(R.mipmap.like_grey);
+                                                    }
+                                                }
+                                            });
+                                }
+                            }
+                        });
+
             }
         });
 
@@ -243,6 +304,9 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
         holder.deleteImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                deleteFeature();
+            }
+            private void deleteFeature() {
                 //deleting photos from storage
                 progressDialog.setMessage("Deleting Post Please Wait....");
                 progressDialog.show();
@@ -301,11 +365,17 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
         });
 
         //comment feature
-        holder.cmntImage.setOnClickListener(new View.OnClickListener()
-
-        {
+        holder.cmntImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent i = new Intent(context, Comments.class);
+                i.putExtra("blog_post_id", blogPostID);
+                context.startActivity(i);
+            }
+        });
+        holder.cmntView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 Intent i = new Intent(context, Comments.class);
                 i.putExtra("blog_post_id", blogPostID);
                 context.startActivity(i);
@@ -361,20 +431,20 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
             menuBtn = mView.findViewById(R.id.card_menu);
             deleteImage = mView.findViewById(R.id.delete_imageView);
             likeImage = mView.findViewById(R.id.like_imageView);
+            likeView = mView.findViewById(R.id.like_tv);
             cmntImage = mView.findViewById(R.id.cmnt_imageView);
+            cmntView = mView.findViewById(R.id.cmnt_tv);
             reportBtn = mView.findViewById(R.id.post_menu_report_btn);
             blockBtn = mView.findViewById(R.id.post_menu_block_btn);
         }
 
         @SuppressLint("SetTextI18n")
         void setLikeView(final int likeCount) {
-            likeView = mView.findViewById(R.id.like_tv);
             likeView.setText(likeCount + "");
         }
 
         @SuppressLint("SetTextI18n")
         void setCmntView(final int cmntCount) {
-            cmntView = mView.findViewById(R.id.cmnt_tv);
             cmntView.setText(cmntCount + "");
         }
 

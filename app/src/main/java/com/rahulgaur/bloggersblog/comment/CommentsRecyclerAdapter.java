@@ -69,6 +69,7 @@ public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecycl
 
         // String blogPostId = postList.get(position).BlogPostID;
         final String commentId = commentList.get(position).CommentID;
+
         holder.commentOwnership(userId, currentUserId, postUserId);
 
         //getting username and profile of the current user
