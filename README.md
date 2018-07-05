@@ -20,7 +20,8 @@ Blogger's Blog is a Android based application which is a simple Photo Blogging a
 - [x] Changing Profile picture.
 - [x] Changing Name.
 - [x] Viewing your own Profile.
-- [x] Comments can be deleted now- Randeep's contribution
+- [x] Comments can be deleted now- Randeep's contribution.
+- [x] Posts from profile working.
 
 ###### **What is not working.**
 1. **Registration**
@@ -35,9 +36,9 @@ Blogger's Blog is a Android based application which is a simple Photo Blogging a
 4. **Search**
      - Searching any user is not working as I wanted it to be.
      - It can search Posts of anyone from the RecyclerView.
-5. **Posts from Profile**
+5. ~~**Posts from Profile**
      - Click on Posts from profile is not oppening anything.
-     - It should show the comments activity.
+     - It should show the comments activity.~~
 6. **Notification**
      - Notifications are not working at all.
      - They should show notification if someone like or comment on your post.
