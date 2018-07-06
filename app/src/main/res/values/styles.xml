@@ -50,7 +50,7 @@
     </style>
 
     <style name="popUpThemeDark" parent="Widget.AppCompat.PopupMenu">
-        <item name="android:textColor">@color/white</item>
+        <item name="android:textColor">@color/hintColor</item>
         <item name="android:itemBackground">@color/black</item>
     </style>
 

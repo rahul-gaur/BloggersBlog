@@ -29,4 +29,5 @@
     <string name="your_comment_here">Your comment here</string>
     <string name="write_your_comment">Write your comment</string>
     <string name="dark_mode">Dark Mode </string>
+    <string name="posts">Posts:</string>
 </resources>

@@ -6,8 +6,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
@@ -38,7 +36,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.rahulgaur.bloggersblog.R;
 import com.rahulgaur.bloggersblog.ThemeAndSettings.SharedPref;
-import com.rahulgaur.bloggersblog.account.AccountFragment;
 import com.rahulgaur.bloggersblog.account.UserAccount;
 import com.rahulgaur.bloggersblog.blogPost.Post;
 import com.rahulgaur.bloggersblog.blogPost.User;
@@ -65,6 +62,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
     private FirebaseAuth auth;
     private ProgressDialog progressDialog;
     private SharedPref sharedPref;
+    private String post_user_id;
 
 
     private postid pd = new postid();
@@ -112,8 +110,8 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
             @Override
             public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
                 if (documentSnapshot.exists()) {
-                    String postUserID = documentSnapshot.getString("user_id");
-                    holder.checkPostOwership(currentUserId, postUserID);
+                    post_user_id = documentSnapshot.getString("user_id");
+                    holder.checkPostOwership(currentUserId, post_user_id);
                 }
             }
         });
@@ -402,25 +400,67 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
             @SuppressLint("CommitTransaction")
             @Override
             public void onClick(View view) {
-                /*MainActivity mainActivity = new MainActivity();
-                Fragment fragment = new AccountFragment();
-                mainActivity.fragmentReplace(fragment);*/
-                Intent i = new Intent(context, UserAccount.class);
-                context.startActivity(i);
+                firebaseFirestore.collection("Posts")
+                        .document(blogPostID).addSnapshotListener((Activity) context, new EventListener<DocumentSnapshot>() {
+                    @Override
+                    public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
+                        if (documentSnapshot.exists()) {
+                            post_user_id = documentSnapshot.getString("user_id");
+                            if (post_user_id.equals(current_user_id)) {
+                                Toast.makeText(context, "Please select profile option from bottom..", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Intent i = new Intent(context, UserAccount.class);
+                                i.putExtra("post_user_id", post_user_id);
+                                context.startActivity(i);
+                                Log.e("Post", "Post user id " + post_user_id);
+                            }
+                        }
+                    }
+                });
             }
         });
         holder.userView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(context, UserAccount.class);
-                context.startActivity(i);
+                firebaseFirestore.collection("Posts")
+                        .document(blogPostID).addSnapshotListener((Activity) context, new EventListener<DocumentSnapshot>() {
+                    @Override
+                    public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
+                        if (documentSnapshot.exists()) {
+                            post_user_id = documentSnapshot.getString("user_id");
+                            if (post_user_id.equals(current_user_id)) {
+                                Toast.makeText(context, "Please select profile option from bottom..", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Intent i = new Intent(context, UserAccount.class);
+                                i.putExtra("post_user_id", post_user_id);
+                                context.startActivity(i);
+                                Log.e("Post", "Post user id " + post_user_id);
+                            }
+                        }
+                    }
+                });
             }
         });
         holder.dateView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(context, UserAccount.class);
-                context.startActivity(i);
+                firebaseFirestore.collection("Posts")
+                        .document(blogPostID).addSnapshotListener((Activity) context, new EventListener<DocumentSnapshot>() {
+                    @Override
+                    public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
+                        if (documentSnapshot.exists()) {
+                            post_user_id = documentSnapshot.getString("user_id");
+                            if (post_user_id.equals(current_user_id)) {
+                                Toast.makeText(context, "Please select profile option from bottom..", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Intent i = new Intent(context, UserAccount.class);
+                                i.putExtra("post_user_id", post_user_id);
+                                context.startActivity(i);
+                                Log.e("Post", "Post user id " + post_user_id);
+                            }
+                        }
+                    }
+                });
             }
         });
     }
