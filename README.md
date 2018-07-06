@@ -22,6 +22,7 @@ Blogger's Blog is a Android based application which is a simple Photo Blogging a
 - [x] Viewing your own Profile.
 - [x] Comments can be deleted now- Randeep's contribution.
 - [x] Posts from profile working.
+- [x] Reporting a perticular post.
 
 ###### **What is not working.**
 1. **Registration**
@@ -46,3 +47,9 @@ Blogger's Blog is a Android based application which is a simple Photo Blogging a
 7. **Firebase Offile**
      - Names and profile pics need to be saved in cache.
      - It will reduce Internet usage and load faster.
+8. **Reporting and Blocking**
+     - ~~Reporting a perticular post.~~
+     - ~~Reporting will hide the post from the user.~~
+     - If a post get's 5 or more reports it will delete it from the database
+     - Blocking will hide all the posts of a particular user.
+     - Unblock option.
