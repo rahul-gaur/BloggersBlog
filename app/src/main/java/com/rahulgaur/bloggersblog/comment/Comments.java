@@ -1,11 +1,13 @@
 package com.rahulgaur.bloggersblog.comment;
 
 import android.annotation.SuppressLint;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -69,7 +71,7 @@ public class Comments extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comments);
 
-        android.support.v7.widget.Toolbar commentToolbar = findViewById(R.id.cmntToolbar);
+        Toolbar commentToolbar = findViewById(R.id.cmntToolbar);
         setSupportActionBar(commentToolbar);
         getSupportActionBar().setTitle("Comments");
 
@@ -91,6 +93,9 @@ public class Comments extends AppCompatActivity {
 
         comment_list.setLayoutManager(new LinearLayoutManager(Comments.this));
         comment_list.setAdapter(commentsRecyclerAdapter);
+
+        comment_field.clearFocus();
+        comment_field.setFocusable(false);
 
         comment_field.setOnTouchListener(new View.OnTouchListener() {
             @Override

@@ -2,11 +2,15 @@ package com.rahulgaur.bloggersblog.home;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.Layout;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
@@ -104,6 +108,26 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
         final String thumb_image_url = postList.get(position).getThumb_image_url();
         final String current_user_id = auth.getCurrentUser().getUid();
 
+        //hiding reported posts
+        firebaseFirestore.collection("Posts").document(blogPostID).collection("Report").document(current_user_id).addSnapshotListener((Activity) context, new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
+                if (documentSnapshot.exists()) {
+                    Log.e("reported posts ", "reported post " + blogPostID + " by " + current_user_id);
+                    try {
+                        holder.mView.setVisibility(View.GONE);
+                        postList.remove(position);
+                        user_list.remove(position);
+                    } catch (IndexOutOfBoundsException exception) {
+                        Log.e("report hide", " post remove exception " + exception.getMessage());
+                    }
+                } else {
+                    holder.mView.setVisibility(View.VISIBLE);
+                    Log.e("reported posts ", "no post exists");
+                }
+            }
+        });
+
         //getting post ownership
         firebaseFirestore.collection("Posts")
                 .document(blogPostID).addSnapshotListener((Activity) context, new EventListener<DocumentSnapshot>() {
@@ -199,10 +223,10 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                     public boolean onMenuItemClick(MenuItem menuItem) {
                         switch (menuItem.getItemId()) {
                             case R.id.post_menu_report_btn:
-                                report(current_user_id, user_id, blogPostID);
+                                report(current_user_id, position, blogPostID);
                                 break;
                             case R.id.post_menu_block_btn:
-                                block();
+                                block(current_user_id,blogPostID,position);
                                 return true;
                             default:
                                 return false;
@@ -303,6 +327,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
 
             }
         });
+
 
         //delete feature
         holder.deleteImage.setOnClickListener(new View.OnClickListener() {
@@ -466,30 +491,79 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
     }
 
     //report feature
-    private void report(String current_user_id, String post_user_id, String post_id) {
+    private void report(final String current_user_id, final int position, final String post_id) {
         /*
         report the user
         if 5 people report the user it will give the user warning
         and if after warning 5 more people report it will ban the user from the app
         */
+        final AlertDialog alertDialog;
 
-        firebaseFirestore.collection("Posts").document(post_id).collection("Report").add(current_user_id)
-                .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+        if (sharedPref.loadNightModeState()) {
+         new AlertDialog.Builder(context, AlertDialog.THEME_HOLO_DARK);
+        } else {
+            new AlertDialog.Builder(context, AlertDialog.THEME_HOLO_LIGHT);
+        }
+        alertDialog = new AlertDialog.Builder(context)
+                .setTitle("Caution!!")
+                .setMessage("With great power comes great responsibility, \n" +
+                        "this post will be removed from your home. " +
+                        "It will also reduce the reputation of the user and may also ban them. " +
+                        "Please use your power carefully")
+                .setPositiveButton("Report", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onComplete(@NonNull Task<DocumentReference> task) {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(context, "Reported..", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Log.e("report", "error: " + task.getException().getMessage());
-                        }
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Map<String, Object> map = new HashMap<>();
+                        map.put("timestamp", FieldValue.serverTimestamp());
+                        firebaseFirestore.collection("Posts/" + post_id + "/Report").document(current_user_id).set(map)
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            postList.remove(position);
+                                            user_list.remove(position);
+                                            notifyDataSetChanged();
+                                            Log.e("Reported", "Post " + post_id + " reported by " + current_user_id);
+                                            Log.e("report","Report clicked");
+                                            Toast.makeText(context, "Reported..", Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            Log.e("report", "error: " + task.getException().getMessage());
+                                        }
+                                    }
+                                });
                     }
-                });
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Log.e("report","No clicked");
+                    }
+                }).show();
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(0xFFFF0000);
     }
 
     //block feature
-    private void block() {
-        //block the user
-        Toast.makeText(context, "Block Clicked", Toast.LENGTH_SHORT).show();
+    private void block(final String current_user_id, final String post_id, final int position) {
+        final AlertDialog alertDialog;
+        alertDialog = new AlertDialog.Builder(context)
+                .setTitle("Caution!!")
+                .setMessage("This action can not be undone, \n it will remove all the post of this particular user" +
+                        "\n you will not see future posts from this user ")
+                .setPositiveButton("Block", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Map<String, Object> map = new HashMap<>();
+                        map.put("timestamp", FieldValue.serverTimestamp());
+                        Log.e("block ","block clicked");
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Log.e("block","No clicked");
+                    }
+                }).show();
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(0xFFFF0000);
     }
 
     @Override

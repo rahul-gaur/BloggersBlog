@@ -14,7 +14,7 @@
         android:background="?attr/colorBackground">
 
         <android.support.v7.widget.Toolbar
-            android:id="@+id/user_account_frag_toolbar"
+            android:id="@+id/account_frag_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
@@ -35,7 +35,7 @@
             android:src="@drawable/border"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/user_account_frag_toolbar" />
+            app:layout_constraintTop_toBottomOf="@+id/account_frag_toolbar" />
 
         <ImageView
             android:id="@+id/user_account_profileImage"

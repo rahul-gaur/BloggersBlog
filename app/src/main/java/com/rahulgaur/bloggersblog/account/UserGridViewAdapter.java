@@ -22,40 +22,43 @@ import com.rahulgaur.bloggersblog.comment.Comments;
 
 import java.util.ArrayList;
 
-public class GridViewAdapter extends ArrayAdapter {
-
+public class UserGridViewAdapter extends ArrayAdapter{
     private Context context;
-    private ArrayList<GridViewList> objects;
+    private ArrayList<GridViewList> list;
 
-
-    GridViewAdapter(@NonNull Context context, int resource, ArrayList<GridViewList> list) {
-        super(context, resource, list);
+    public UserGridViewAdapter(@NonNull Context context, int resource, ArrayList<GridViewList> list1) {
+        super(context, resource, list1);
         this.context = context;
-        objects = list;
+        this.list = list1;
     }
 
-    public class Holder {
+   /* public UserGridViewAdapter(UserAccount userAccount, int grid_view_item, ArrayList<GridViewList> postList) {
+        super(userAccount, grid_view_item, postList);
+        this.list = postList;
+    }
+*/
+    public class Holder{
         ImageView post_image;
         ProgressBar progressBar;
-
     }
 
     @NonNull
     @Override
-    public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         Holder holder;
         View row = convertView;
         final String postID;
-        postID = objects.get(position).BlogPostID;
+        postID = list.get(position).BlogPostID;
         final FirebaseFirestore firebaseFirestore;
         firebaseFirestore = FirebaseFirestore.getInstance();
 
-        if (convertView == null) {
+        if (convertView==null){
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            row = inflater.inflate(R.layout.grid_view_item, parent, false);
+            row = inflater.inflate(R.layout.grid_view_item,parent,false);
             holder = new Holder();
             holder.post_image = row.findViewById(R.id.grid_item_imageView);
             holder.progressBar = row.findViewById(R.id.grid_item_progressBar);
+            holder.progressBar.setIndeterminate(true);
             holder.progressBar.setVisibility(View.VISIBLE);
             row.setTag(holder);
         } else {
@@ -63,9 +66,9 @@ public class GridViewAdapter extends ArrayAdapter {
         }
 
         final GridViewList gridViewList = new GridViewList();
-        final String post_id = objects.get(position).getBlogPostID();
+        final  String post_id = list.get(position).getBlogPostID();
 
-        Glide.with(context).load(objects.get(position).getImageURL())
+        Glide.with(context).load(list.get(position).getImageURL())
                 .into(holder.post_image);
         holder.progressBar.setVisibility(View.INVISIBLE);
         holder.post_image.setOnClickListener(new View.OnClickListener() {

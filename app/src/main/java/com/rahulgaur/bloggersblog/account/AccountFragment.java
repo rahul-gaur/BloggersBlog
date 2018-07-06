@@ -72,16 +72,34 @@ public class AccountFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_account, container, false);
 
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        Toolbar account_toolbar = view.findViewById(R.id.account_frag_toolbar);
+        ((AppCompatActivity) Objects.requireNonNull(getActivity())).setSupportActionBar(account_toolbar);
+        current_userID = Objects.requireNonNull(auth.getCurrentUser()).getUid();
+        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+        firebaseFirestore.collection("Users")
+                .document(current_userID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.getResult().exists()) {
+                    imageURL = task.getResult().getString("thumb_image");
+                    username = task.getResult().getString("name");
+                    setProfile(imageURL);
+                    setToolbarName(username);
+                }
+            }
+
+            private void setToolbarName(String username) {
+                ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(username + "'s Home");
+            }
+        });
+
         final GridView gridView = view.findViewById(R.id.account_postGridView);
         profileImageView = view.findViewById(R.id.user_account_profileImage);
 
         postid pd = new postid();
 
         swipeRefreshLayout = view.findViewById(R.id.frag_account_swipeRefresh);
-
-        Toolbar account_toolbar = view.findViewById(R.id.user_account_frag_toolbar);
-
-        ((AppCompatActivity) Objects.requireNonNull(getActivity())).setSupportActionBar(account_toolbar);
 
         post_id = pd.getPostid();
 
@@ -98,26 +116,6 @@ public class AccountFragment extends Fragment {
         });
 
         gridViewList = new GridViewList();
-
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-
-        current_userID = Objects.requireNonNull(auth.getCurrentUser()).getUid();
-
-        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-
-        firebaseFirestore.collection("Users")
-                .document(current_userID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.getResult().exists()) {
-                    imageURL = task.getResult().getString("thumb_image");
-                    username = task.getResult().getString("name");
-                    setProfile(imageURL);
-                    //setToolbarName(username);
-                    ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(username);
-                }
-            }
-        });
 
 
         gridViewAdapter = new GridViewAdapter(Objects.requireNonNull(getActivity()), R.layout.grid_view_item, postList);
@@ -144,7 +142,7 @@ public class AccountFragment extends Fragment {
                             if (post_user_id.equals(current_userID)) {
                                 postList.add(new GridViewList(post_thumb_url, blog_post_id));
                                 gridViewList.setBlogPostID(post_id);
-                                Log.e("accountFragnent","post_id "+blog_post_id);
+                                Log.e("accountFragnent", "post_id " + blog_post_id);
                                 gridViewAdapter.notifyDataSetChanged();
                             }
 
@@ -158,15 +156,6 @@ public class AccountFragment extends Fragment {
         });
 
         gridView.setAdapter(gridViewAdapter);
-
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                Intent i = new Intent(getActivity(), Comments.class);
-                i.putExtra("blog_post_id", post_id);
-            }
-        });
 
         return view;
     }

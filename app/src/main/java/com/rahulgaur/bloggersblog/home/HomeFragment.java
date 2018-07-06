@@ -56,6 +56,7 @@ public class HomeFragment extends Fragment {
     private SwipeRefreshLayout swipeRefreshLayout;
 
     private SharedPref sharedPref;
+    private android.support.v7.widget.Toolbar toolbar;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -85,17 +86,12 @@ public class HomeFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(postRecyclerAdapter);
 
-        android.support.v7.widget.Toolbar toolbar = view.findViewById(R.id.home_frag_toolbar);
+        auth = FirebaseAuth.getInstance();
+        firebaseFirestore = FirebaseFirestore.getInstance();
 
-        ((AppCompatActivity) Objects.requireNonNull(getActivity())).setSupportActionBar(toolbar);
-
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Blogger's Blog");
         setHasOptionsMenu(true);
 
-        auth = FirebaseAuth.getInstance();
-
         if (auth.getCurrentUser() != null) {
-            firebaseFirestore = FirebaseFirestore.getInstance();
 
             recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
@@ -120,6 +116,10 @@ public class HomeFragment extends Fragment {
                 }
 
             });
+
+            toolbar = view.findViewById(R.id.home_frag_toolbar);
+            ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Blogger's Blog");
 
             //adding 5 posts on create
             Query firstQuery = firebaseFirestore.collection("Posts").orderBy("timestamp", Query.Direction.DESCENDING).limit(5);
@@ -254,9 +254,6 @@ public class HomeFragment extends Fragment {
 
             }
         });
-
-
-
     }
 
     @Override
@@ -294,7 +291,4 @@ public class HomeFragment extends Fragment {
         Intent i = new Intent(getContext(), Account.class);
         startActivity(i);
     }
-
-
-
 }

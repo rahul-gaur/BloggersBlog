@@ -142,7 +142,6 @@ public class NewPostActivity extends AppCompatActivity {
                                         postMap.put("desc", post_desc);
                                         postMap.put("user_id", current_user_id);
                                         postMap.put("timestamp", FieldValue.serverTimestamp());
-                                        postMap.put("post_name", randomName);
 
                                         firebaseFirestore.collection("Posts").add(postMap)
                                                 .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {

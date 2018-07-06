@@ -1,7 +1,5 @@
 package com.rahulgaur.bloggersblog.account;
 
-import com.google.firebase.firestore.FirebaseFirestore;
-
 public class GridViewList extends com.rahulgaur.bloggersblog.blogPost.BlogPostID {
     private String imageURL;
     private String blogPostID;
