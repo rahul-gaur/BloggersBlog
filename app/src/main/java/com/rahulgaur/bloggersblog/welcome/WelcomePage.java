@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -48,6 +50,9 @@ public class WelcomePage extends AppCompatActivity {
         emailTV = findViewById(R.id.login_email);
         backImage = findViewById(R.id.welcome_imageView);
 
+        Window w = getWindow();
+        w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+
         setAnimation();
         register.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,7 +60,6 @@ public class WelcomePage extends AppCompatActivity {
                 sendToRegister();
             }
         });
-
 
         login.setOnClickListener(new View.OnClickListener() {
             @Override

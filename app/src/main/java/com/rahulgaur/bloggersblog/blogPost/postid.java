@@ -2,7 +2,8 @@ package com.rahulgaur.bloggersblog.blogPost;
 
 public class postid {
 
-    public postid(){}
+    public postid() {
+    }
 
     String postId = "";
 

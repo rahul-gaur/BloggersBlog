@@ -1,4 +1,5 @@
 package com.rahulgaur.bloggersblog.home;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -36,8 +37,10 @@ import com.rahulgaur.bloggersblog.welcome.WelcomePage;
 
 import java.util.ArrayList;
 import java.util.Objects;
+
 /**
  * A simple {@link Fragment} subclass.
+ *
  * @author Rahul Gaur
  */
 public class HomeFragment extends Fragment {
@@ -67,13 +70,13 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         sharedPref = new SharedPref(getContext());
-        if (sharedPref.loadNightModeState()){
+        if (sharedPref.loadNightModeState()) {
             getActivity().setTheme(R.style.darkTheme);
         } else {
             getActivity().setTheme(R.style.AppTheme);
         }
         // Inflate the layout for this fragment
-       View view = inflater.inflate(R.layout.fragment_home, container, false);
+        View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         postList = new ArrayList<>();
         userList = new ArrayList<>();
@@ -100,7 +103,7 @@ public class HomeFragment extends Fragment {
 
                     Boolean bottom = !recyclerView.canScrollVertically(1);
 
-                    if (bottom){
+                    if (bottom) {
                         nextQuery();
                     }
                 }
@@ -118,8 +121,8 @@ public class HomeFragment extends Fragment {
             });
 
             toolbar = view.findViewById(R.id.home_frag_toolbar);
-            ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
-            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Blogger's Blog");
+            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Blogger's Blog");
 
             //adding 5 posts on create
             Query firstQuery = firebaseFirestore.collection("Posts").orderBy("timestamp", Query.Direction.DESCENDING).limit(5);
@@ -176,7 +179,7 @@ public class HomeFragment extends Fragment {
     }
 
     //adding 5 more posts
-    public void nextQuery(){
+    public void nextQuery() {
         Query firstQuery = firebaseFirestore.collection("Posts").orderBy("timestamp", Query.Direction.DESCENDING).startAfter(lastVisible).limit(5);
 
         firstQuery.addSnapshotListener(getActivity(), new EventListener<QuerySnapshot>() {
@@ -198,10 +201,10 @@ public class HomeFragment extends Fragment {
                             firebaseFirestore.collection("Users").document(blogUserID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                    if (task.isSuccessful()){
+                                    if (task.isSuccessful()) {
                                         User user = task.getResult().toObject(User.class);
-                                         userList.add(user);
-                                         postList.add(post);
+                                        userList.add(user);
+                                        postList.add(post);
                                         postRecyclerAdapter.notifyDataSetChanged();
                                     } else {
                                         //some error
@@ -241,7 +244,7 @@ public class HomeFragment extends Fragment {
 
                 for (User user : userList) {
                     String fname = user.getName().toLowerCase();
-                    Log.v("onQueryTextChange", ""+fname );
+                    Log.v("onQueryTextChange", "" + fname);
                     if (fname.contains(newText)) {
 
                         newUser.add(user);
@@ -276,7 +279,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void settings() {
-        Intent i = new Intent(getContext(),Settings.class);
+        Intent i = new Intent(getContext(), Settings.class);
         startActivity(i);
     }
 

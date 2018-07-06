@@ -7,10 +7,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.text.Layout;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
@@ -226,7 +224,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                                 report(current_user_id, position, blogPostID);
                                 break;
                             case R.id.post_menu_block_btn:
-                                block(current_user_id,blogPostID,position);
+                                block(current_user_id, post_user_id);
                                 return true;
                             default:
                                 return false;
@@ -500,7 +498,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
         final AlertDialog alertDialog;
 
         if (sharedPref.loadNightModeState()) {
-         new AlertDialog.Builder(context, AlertDialog.THEME_HOLO_DARK);
+            new AlertDialog.Builder(context, AlertDialog.THEME_HOLO_DARK);
         } else {
             new AlertDialog.Builder(context, AlertDialog.THEME_HOLO_LIGHT);
         }
@@ -524,7 +522,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                                             user_list.remove(position);
                                             notifyDataSetChanged();
                                             Log.e("Reported", "Post " + post_id + " reported by " + current_user_id);
-                                            Log.e("report","Report clicked");
+                                            Log.e("report", "Report clicked");
                                             Toast.makeText(context, "Reported..", Toast.LENGTH_SHORT).show();
                                         } else {
                                             Log.e("report", "error: " + task.getException().getMessage());
@@ -536,14 +534,14 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Log.e("report","No clicked");
+                        Log.e("report", "No clicked");
                     }
                 }).show();
         alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(0xFFFF0000);
     }
 
     //block feature
-    private void block(final String current_user_id, final String post_id, final int position) {
+    private void block(final String current_user_id, final String post_user) {
         final AlertDialog alertDialog;
         alertDialog = new AlertDialog.Builder(context)
                 .setTitle("Caution!!")
@@ -552,15 +550,26 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                 .setPositiveButton("Block", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        Log.e("block ", "block clicked");
                         Map<String, Object> map = new HashMap<>();
                         map.put("timestamp", FieldValue.serverTimestamp());
-                        Log.e("block ","block clicked");
+                        firebaseFirestore.collection("Block/"+current_user_id+"/"+post_user).add(map).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentReference> task) {
+                                if (task.isSuccessful()){
+                                    notifyDataSetChanged();
+                                    Log.e("block ", "user "+current_user_id+" blocked "+post_user);
+                                } else {
+                                    Log.e("block ", "block error");
+                                }
+                            }
+                        });
                     }
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Log.e("block","No clicked");
+                        Log.e("block", "No clicked");
                     }
                 }).show();
         alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(0xFFFF0000);

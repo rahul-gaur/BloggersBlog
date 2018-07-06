@@ -32,7 +32,7 @@ public class NotificationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         sharedPref = new SharedPref(Objects.requireNonNull(getContext()));
-        if (sharedPref.loadNightModeState()){
+        if (sharedPref.loadNightModeState()) {
             getActivity().setTheme(R.style.darkTheme);
         } else {
             getActivity().setTheme(R.style.AppTheme);

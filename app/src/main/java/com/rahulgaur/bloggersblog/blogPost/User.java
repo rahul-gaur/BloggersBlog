@@ -3,7 +3,8 @@ package com.rahulgaur.bloggersblog.blogPost;
 public class User {
     public String thumb_image, name;
 
-    public User(){}
+    public User() {
+    }
 
     public User(String image, String name) {
         this.thumb_image = image;

@@ -12,6 +12,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -62,11 +63,12 @@ public class Account extends AppCompatActivity {
     private boolean isChanged = false;
     private Bitmap compressedImageFile;
     private SharedPref sharedPref;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         sharedPref = new SharedPref(this);
-        if (sharedPref.loadNightModeState()){
+        if (sharedPref.loadNightModeState()) {
             setTheme(R.style.darkTheme);
         } else {
             setTheme(R.style.AppTheme);
@@ -78,7 +80,7 @@ public class Account extends AppCompatActivity {
 
         //adMob
         AdView adView;
-        MobileAds.initialize(this,"ca-app-pub-5119226630407445/3355396088");
+        MobileAds.initialize(this, "ca-app-pub-5119226630407445/3355396088");
         adView = findViewById(R.id.newAccountAd);
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
@@ -87,6 +89,11 @@ public class Account extends AppCompatActivity {
         final Button btn = findViewById(R.id.account_subBtn);
         final TextView nameTV = findViewById(R.id.new_post_descET);
         progressBar = findViewById(R.id.account_progressBar);
+
+        toolbar = findViewById(R.id.account_toolBar);
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Profile Update");
 
         storageReference = FirebaseStorage.getInstance().getReference();
         firebaseFirestore = FirebaseFirestore.getInstance();

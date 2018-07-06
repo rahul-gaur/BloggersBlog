@@ -22,7 +22,7 @@ import com.rahulgaur.bloggersblog.comment.Comments;
 
 import java.util.ArrayList;
 
-public class UserGridViewAdapter extends ArrayAdapter{
+public class UserGridViewAdapter extends ArrayAdapter {
     private Context context;
     private ArrayList<GridViewList> list;
 
@@ -32,12 +32,12 @@ public class UserGridViewAdapter extends ArrayAdapter{
         this.list = list1;
     }
 
-   /* public UserGridViewAdapter(UserAccount userAccount, int grid_view_item, ArrayList<GridViewList> postList) {
-        super(userAccount, grid_view_item, postList);
-        this.list = postList;
-    }
-*/
-    public class Holder{
+    /* public UserGridViewAdapter(UserAccount userAccount, int grid_view_item, ArrayList<GridViewList> postList) {
+         super(userAccount, grid_view_item, postList);
+         this.list = postList;
+     }
+ */
+    public class Holder {
         ImageView post_image;
         ProgressBar progressBar;
     }
@@ -52,9 +52,9 @@ public class UserGridViewAdapter extends ArrayAdapter{
         final FirebaseFirestore firebaseFirestore;
         firebaseFirestore = FirebaseFirestore.getInstance();
 
-        if (convertView==null){
+        if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            row = inflater.inflate(R.layout.grid_view_item,parent,false);
+            row = inflater.inflate(R.layout.grid_view_item, parent, false);
             holder = new Holder();
             holder.post_image = row.findViewById(R.id.grid_item_imageView);
             holder.progressBar = row.findViewById(R.id.grid_item_progressBar);
@@ -66,7 +66,7 @@ public class UserGridViewAdapter extends ArrayAdapter{
         }
 
         final GridViewList gridViewList = new GridViewList();
-        final  String post_id = list.get(position).getBlogPostID();
+        final String post_id = list.get(position).getBlogPostID();
 
         Glide.with(context).load(list.get(position).getImageURL())
                 .into(holder.post_image);
