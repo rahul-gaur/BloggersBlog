@@ -6,6 +6,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
@@ -36,6 +38,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.rahulgaur.bloggersblog.R;
 import com.rahulgaur.bloggersblog.ThemeAndSettings.SharedPref;
+import com.rahulgaur.bloggersblog.account.AccountFragment;
+import com.rahulgaur.bloggersblog.account.UserAccount;
 import com.rahulgaur.bloggersblog.blogPost.Post;
 import com.rahulgaur.bloggersblog.blogPost.User;
 import com.rahulgaur.bloggersblog.blogPost.postid;
@@ -184,10 +188,10 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
             @Override
             public void onClick(View view) {
                 Context wrapper;
-                if (sharedPref.loadNightModeState()){
-                    wrapper = new ContextThemeWrapper(context,R.style.popUpThemeDark);
+                if (sharedPref.loadNightModeState()) {
+                    wrapper = new ContextThemeWrapper(context, R.style.popUpThemeDark);
                 } else {
-                    wrapper = new ContextThemeWrapper(context,R.style.popUpThemeLight);
+                    wrapper = new ContextThemeWrapper(context, R.style.popUpThemeLight);
                 }
                 PopupMenu popupMenu = new PopupMenu(wrapper, view);
                 MenuInflater inflater = popupMenu.getMenuInflater();
@@ -218,6 +222,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
             public void onClick(View v) {
                 likeFeature();
             }
+
             private void likeFeature() {
                 firebaseFirestore.collection("Posts/" + blogPostID + "/Likes")
                         .document(currentUserId).get()
@@ -261,6 +266,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
             public void onClick(View view) {
                 likeFeature();
             }
+
             private void likeFeature() {
                 firebaseFirestore.collection("Posts/" + blogPostID + "/Likes")
                         .document(currentUserId).get()
@@ -306,6 +312,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
             public void onClick(View v) {
                 deleteFeature();
             }
+
             private void deleteFeature() {
                 //deleting photos from storage
                 progressDialog.setMessage("Deleting Post Please Wait....");
@@ -381,7 +388,41 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                 context.startActivity(i);
             }
         });
+        holder.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(context, Comments.class);
+                i.putExtra("blog_post_id", blogPostID);
+                context.startActivity(i);
+            }
+        });
 
+        //profile feature
+        holder.profile.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("CommitTransaction")
+            @Override
+            public void onClick(View view) {
+                /*MainActivity mainActivity = new MainActivity();
+                Fragment fragment = new AccountFragment();
+                mainActivity.fragmentReplace(fragment);*/
+                Intent i = new Intent(context, UserAccount.class);
+                context.startActivity(i);
+            }
+        });
+        holder.userView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(context, UserAccount.class);
+                context.startActivity(i);
+            }
+        });
+        holder.dateView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(context, UserAccount.class);
+                context.startActivity(i);
+            }
+        });
     }
 
     //report feature
@@ -436,6 +477,10 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
             cmntView = mView.findViewById(R.id.cmnt_tv);
             reportBtn = mView.findViewById(R.id.post_menu_report_btn);
             blockBtn = mView.findViewById(R.id.post_menu_block_btn);
+            profile = mView.findViewById(R.id.profile_view);
+            dateView = mView.findViewById(R.id.date_tv);
+            userView = mView.findViewById(R.id.username_tv);
+            imageView = mView.findViewById(R.id.post_imageView);
         }
 
         @SuppressLint("SetTextI18n")
@@ -447,6 +492,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
         void setCmntView(final int cmntCount) {
             cmntView.setText(cmntCount + "");
         }
+
 
         void checkPostOwership(String currentUser, String postUser) {
             if (currentUser.equals(postUser)) {
@@ -466,7 +512,6 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
 
         @SuppressLint("CheckResult")
         void setPostImage(String downloadUri) {
-            imageView = mView.findViewById(R.id.post_imageView);
             RequestOptions placeholder = new RequestOptions();
             placeholder.placeholder(R.drawable.ic_launcher_background);
             Glide.with(context).applyDefaultRequestOptions(placeholder).load(downloadUri).into(imageView);
@@ -474,19 +519,16 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
 
         @SuppressLint("CheckResult")
         void setProfileImage(String downloadUri) {
-            profile = mView.findViewById(R.id.profile_view);
             RequestOptions placeholder = new RequestOptions();
             placeholder.placeholder(R.drawable.default_usr);
             Glide.with(context).applyDefaultRequestOptions(placeholder).load(downloadUri).into(profile);
         }
 
         void setUserText(String text) {
-            userView = mView.findViewById(R.id.username_tv);
             userView.setText(text);
         }
 
         void setTime(StringBuilder date) {
-            dateView = mView.findViewById(R.id.date_tv);
             dateView.setText(date);
         }
 

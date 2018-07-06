@@ -26,6 +26,7 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.rahulgaur.bloggersblog.R;
 import com.rahulgaur.bloggersblog.ThemeAndSettings.SharedPref;
@@ -79,7 +80,7 @@ public class Comments extends AppCompatActivity {
 
         blog_post_id = getIntent().getStringExtra("blog_post_id");
 
-        commentsRecyclerAdapter = new CommentsRecyclerAdapter(cmntList,blog_post_id);
+        commentsRecyclerAdapter = new CommentsRecyclerAdapter(cmntList, blog_post_id);
 
         comment_field = findViewById(R.id.cmntEditText);
         ImageView comment_post_btn = findViewById(R.id.cmntPostImageView);
@@ -128,26 +129,26 @@ public class Comments extends AppCompatActivity {
         });
 
         //comments retrieving
-        firebaseFirestore.collection("Posts/" + blog_post_id + "/Comments")
-                .addSnapshotListener(Comments.this, new EventListener<QuerySnapshot>() {
-                    @Override
-                    public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+        Query sortComment = firebaseFirestore.collection("Posts/" + blog_post_id + "/Comments").orderBy("timestamp", Query.Direction.ASCENDING);
+        sortComment.addSnapshotListener(Comments.this, new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
 
-                        if (!documentSnapshots.isEmpty()) {
-                            for (DocumentChange doc : documentSnapshots.getDocumentChanges()) {
-                                if (doc.getType() == DocumentChange.Type.ADDED) {
-                                    String commentid = doc.getDocument().getId();
-                                    CommentList commentList = doc.getDocument().toObject(CommentList.class)
-                                            .withID(commentid);
-                                    cmntList.add(commentList);
-                                    commentsRecyclerAdapter.notifyDataSetChanged();
+                if (!documentSnapshots.isEmpty()) {
+                    for (DocumentChange doc : documentSnapshots.getDocumentChanges()) {
+                        if (doc.getType() == DocumentChange.Type.ADDED) {
+                            String commentid = doc.getDocument().getId();
+                            CommentList commentList = doc.getDocument().toObject(CommentList.class)
+                                    .withID(commentid);
+                            cmntList.add(commentList);
+                            commentsRecyclerAdapter.notifyDataSetChanged();
 
-                                }
-                            }
                         }
-
                     }
-                });
+                }
+
+            }
+        });
 
         //comment posting
         comment_post_btn.setOnClickListener(new View.OnClickListener() {
@@ -217,7 +218,7 @@ public class Comments extends AppCompatActivity {
         post_user_id = user_id;
     }
 
-    public String getPostUserID(){
+    public String getPostUserID() {
         return post_user_id;
     }
 }

@@ -164,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(i);
     }
 
-    private void fragmentReplace(Fragment fragment) {
+    public void fragmentReplace(Fragment fragment) {
 
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         if (fragment == homeFrag) {

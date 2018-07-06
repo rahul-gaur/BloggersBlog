@@ -73,13 +73,13 @@ public class AccountFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_account, container, false);
 
         final GridView gridView = view.findViewById(R.id.account_postGridView);
-        profileImageView = view.findViewById(R.id.account_profileImage);
+        profileImageView = view.findViewById(R.id.user_account_profileImage);
 
         postid pd = new postid();
 
         swipeRefreshLayout = view.findViewById(R.id.frag_account_swipeRefresh);
 
-        Toolbar account_toolbar = view.findViewById(R.id.account_frag_toolbar);
+        Toolbar account_toolbar = view.findViewById(R.id.user_account_frag_toolbar);
 
         ((AppCompatActivity) Objects.requireNonNull(getActivity())).setSupportActionBar(account_toolbar);
 
