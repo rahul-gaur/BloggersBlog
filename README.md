@@ -32,7 +32,8 @@ Blogger's Blog is a Android based application which is a simple Photo Blogging a
 2. ~~**Comment**~~
      - ~~deleting your comment.~~
 3. **Profile**
-     - Profile of any other person is not working
+     - ~~Profile of any other person is not working.~~
+     - Loading posts of that user.
 4. **Search**
      - Searching any user is not working as I wanted it to be.
      - It can search Posts of anyone from the RecyclerView.
