@@ -91,7 +91,7 @@ public class UserAccount extends AppCompatActivity {
         firebaseFirestore = FirebaseFirestore.getInstance();
 
         // TODO: 07-07-2018 constructor now working.
-        gridViewAdapter = new UserGridViewAdapter(context, R.layout.grid_view_item, postList);
+        //gridViewAdapter = new UserGridViewAdapter(context, R.layout.grid_view_item, postList);
 
         //retrieving user profile and name
         firebaseFirestore.collection("Users")
@@ -109,7 +109,9 @@ public class UserAccount extends AppCompatActivity {
             }
         });
 
+        // TODO: 09-07-2018 uncomment this and also fix errors
         //getting posts from the database
+        /*
         firebaseFirestore.collection("Posts/" + post_id).addSnapshotListener(this, new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
@@ -135,6 +137,7 @@ public class UserAccount extends AppCompatActivity {
                 }
             }
         });
+*/
 
         // TODO: 07-07-2018 remove comments
         //gridView.setAdapter(gridViewAdapter);

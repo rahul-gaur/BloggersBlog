@@ -126,7 +126,35 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
             }
         });
 
-        //getting post ownership
+        //hiding blocked posts
+        firebaseFirestore.collection("Users/" + current_user_id + "/Block").document(user_id).addSnapshotListener((Activity) context, new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
+                if (documentSnapshot.exists()) {
+                    String blocked_user = documentSnapshot.getId();
+                    Log.e("blocked posts", "blocked posts " + blocked_user + " by " + current_user_id);
+                    try {
+                        if (blocked_user.equals(post_user_id)) {
+                            try {
+                                postList.remove(position);
+                                user_list.remove(position);
+                            } catch (Exception e1) {
+                                Log.e("Blocked", "Exception while removing blocked posts " + e1.getMessage());
+                            }
+                            Log.e("blocked hide", " post removed");
+                        } else {
+                            Log.e("blocked hide", " post remove else");
+                        }
+                    } catch (IndexOutOfBoundsException exce) {
+                        Log.e("block hide", " post remove exception " + exce.getMessage());
+                    }
+                } else {
+                    Log.e("Blocked posts ", "no blocked posts");
+                }
+            }
+        });
+
+        //getting post ownership11
         firebaseFirestore.collection("Posts")
                 .document(blogPostID).addSnapshotListener((Activity) context, new EventListener<DocumentSnapshot>() {
             @Override
@@ -518,9 +546,13 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()) {
-                                            postList.remove(position);
-                                            user_list.remove(position);
-                                            notifyDataSetChanged();
+                                            try {
+                                                postList.remove(position);
+                                                user_list.remove(position);
+                                                notifyDataSetChanged();
+                                            } catch (Exception e) {
+                                                Log.e("Reported", "Exception while removing list " + e.getMessage());
+                                            }
                                             Log.e("Reported", "Post " + post_id + " reported by " + current_user_id);
                                             Log.e("report", "Report clicked");
                                             Toast.makeText(context, "Reported..", Toast.LENGTH_SHORT).show();
@@ -553,12 +585,13 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                         Log.e("block ", "block clicked");
                         Map<String, Object> map = new HashMap<>();
                         map.put("timestamp", FieldValue.serverTimestamp());
-                        firebaseFirestore.collection("Block/"+current_user_id+"/"+post_user).add(map).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                        firebaseFirestore.collection("Users/" + current_user_id + "/Block").document(post_user).set(map).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
-                            public void onComplete(@NonNull Task<DocumentReference> task) {
-                                if (task.isSuccessful()){
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
                                     notifyDataSetChanged();
-                                    Log.e("block ", "user "+current_user_id+" blocked "+post_user);
+                                    Toast.makeText(context, "Blocked..", Toast.LENGTH_SHORT).show();
+                                    Log.e("block ", "user " + current_user_id + " blocked " + post_user);
                                 } else {
                                     Log.e("block ", "block error");
                                 }

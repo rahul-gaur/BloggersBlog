@@ -29,6 +29,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.ServerTimestamp;
 import com.rahulgaur.bloggersblog.R;
 import com.rahulgaur.bloggersblog.ThemeAndSettings.SharedPref;
 
@@ -94,7 +95,6 @@ public class Comments extends AppCompatActivity {
         comment_list.setAdapter(commentsRecyclerAdapter);
 
         comment_field.clearFocus();
-        comment_field.setFocusable(false);
 
         comment_field.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -173,7 +173,38 @@ public class Comments extends AppCompatActivity {
                             .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                                 @Override
                                 public void onComplete(@NonNull Task<DocumentReference> task) {
-                                    if (!task.isSuccessful()) {
+                                    if (task.isSuccessful()) {
+                                        Log.e("Comment notificaiton","Comment Notification Entered");
+                                        Log.e("Comment notificaiton","Comment Notification current user id "+current_user_id);
+                                        firebaseFirestore.collection("Users").document(current_user_id).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                                            @Override
+                                            public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
+                                                if (documentSnapshot.exists()) {
+                                                    Log.e("Comment notificaiton","Comment Notification current user entered");
+
+                                                    String current_user_name = documentSnapshot.getString("name");
+                                                    Log.e("Comment notificaiton","Comment Notification current user name "+current_user_name);
+
+                                                    Map<String, Object> notificaitonMap = new HashMap<>();
+                                                    notificaitonMap.put("noti_sender", current_user_id);
+                                                    notificaitonMap.put("noti_receiver", post_user_id);
+                                                    notificaitonMap.put("timestamp", FieldValue.serverTimestamp());
+                                                    notificaitonMap.put("message", current_user_name+" Commented: "+comment_message);
+                                                    firebaseFirestore.collection("Users/" + post_user_id + "/Notification").add(notificaitonMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<DocumentReference> task) {
+                                                            if (task.isSuccessful()){
+                                                                Log.e("Comment notificaiton","Comment Notification Added");
+                                                            } else {
+                                                                Log.e("Comment notificaiton","Comment Notification failed");
+                                                            }
+                                                        }
+                                                    });
+                                                } else {
+                                                    Log.e("Comment notificaiton","Comment Notification document not found");
+                                                }
+                                            }
+                                        });
                                     } else {
                                         comment_field.setText(null);
                                         comment_field.clearFocus();
