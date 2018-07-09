@@ -138,7 +138,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                             try {
                                 postList.remove(position);
                                 user_list.remove(position);
-                            } catch (Exception e1) {
+                            } catch (IndexOutOfBoundsException e1) {
                                 Log.e("Blocked", "Exception while removing blocked posts " + e1.getMessage());
                             }
                             Log.e("blocked hide", " post removed");
@@ -550,7 +550,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                                                 postList.remove(position);
                                                 user_list.remove(position);
                                                 notifyDataSetChanged();
-                                            } catch (Exception e) {
+                                            } catch (IndexOutOfBoundsException e) {
                                                 Log.e("Reported", "Exception while removing list " + e.getMessage());
                                             }
                                             Log.e("Reported", "Post " + post_id + " reported by " + current_user_id);
