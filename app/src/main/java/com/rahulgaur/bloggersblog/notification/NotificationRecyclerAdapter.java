@@ -3,6 +3,7 @@ package com.rahulgaur.bloggersblog.notification;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -117,7 +118,7 @@ public class NotificationRecyclerAdapter extends RecyclerView.Adapter<Notificati
 
         void setTextView(String message) {
             textView = mView.findViewById(R.id.noti_item_textView);
-            textView.setText(message);
+            textView.setText(Html.fromHtml(message));
         }
     }
 }

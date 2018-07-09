@@ -188,7 +188,7 @@ public class Comments extends AppCompatActivity {
                                                     Map<String, Object> notificaitonMap = new HashMap<>();
                                                     notificaitonMap.put("post_id",blog_post_id);
                                                     notificaitonMap.put("timestamp", FieldValue.serverTimestamp());
-                                                    notificaitonMap.put("message", current_user_name+" Commented: "+comment_message);
+                                                    notificaitonMap.put("message", "<b>"+current_user_name+"</b> Commented: "+comment_message);
                                                     firebaseFirestore.collection("Users/" + post_user_id + "/Notification").add(notificaitonMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                                                         @Override
                                                         public void onComplete(@NonNull Task<DocumentReference> task) {

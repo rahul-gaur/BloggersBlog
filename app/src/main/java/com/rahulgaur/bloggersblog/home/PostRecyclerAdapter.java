@@ -288,6 +288,34 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                                                 public void onComplete(@NonNull Task<Void> task) {
                                                     if (task.isSuccessful()) {
                                                         holder.likeImage.setImageResource(R.mipmap.like_pink);
+                                                        firebaseFirestore.collection("Users").document(current_user_id).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                                                            @Override
+                                                            public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
+                                                                if (documentSnapshot.exists()) {
+                                                                    Log.e("Like notificaiton", "Like Notification current user entered");
+
+                                                                    String current_user_name = documentSnapshot.getString("name");
+                                                                    Log.e("Like notificaiton", "Like Notification current user name " + current_user_name);
+
+                                                                    Map<String, Object> notificaitonMap = new HashMap<>();
+                                                                    notificaitonMap.put("post_id", blogPostID);
+                                                                    notificaitonMap.put("timestamp", FieldValue.serverTimestamp());
+                                                                    notificaitonMap.put("message", "<b>" + current_user_name + "</b> Liked your photo");
+                                                                    firebaseFirestore.collection("Users/" + post_user_id + "/Notification").add(notificaitonMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                                                        @Override
+                                                                        public void onComplete(@NonNull Task<DocumentReference> task) {
+                                                                            if (task.isSuccessful()) {
+                                                                                Log.e("Like notificaiton", "Like Notification Added");
+                                                                            } else {
+                                                                                Log.e("Like notificaiton", "Like Notification failed");
+                                                                            }
+                                                                        }
+                                                                    });
+                                                                } else {
+                                                                    Log.e("Like notificaiton", "Like Notification document not found");
+                                                                }
+                                                            }
+                                                        });
                                                     }
                                                 }
                                             });
