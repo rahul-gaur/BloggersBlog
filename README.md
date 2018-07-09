@@ -23,6 +23,8 @@ Blogger's Blog is a Android based application which is a simple Photo Blogging a
 - [x] Comments can be deleted now- Randeep's contribution.
 - [x] Posts from profile working.
 - [x] Reporting a perticular post.
+- [x] Blocking a perticular user.
+- [x] Notification fragment showing Liked and Commented notification
 
 ###### **What is not working.**
 1. **Registration**
@@ -42,14 +44,16 @@ Blogger's Blog is a Android based application which is a simple Photo Blogging a
      - ~~Click on Posts from profile is not oppening anything.~~
      - ~~It should show the comments activity.~~
 6. **Notification**
-     - Notifications are not working at all.
-     - They should show notification if someone like or comment on your post.
-7. **Firebase Offile**
+     - ~~Notifications are not working at all.~~
+     - ~~Notification in notification fragment.~~
+     - ~~They should show notification if someone like or comment on your post.~~
+     - Notification in device.
+7. **Firebase Offline**
      - Names and profile pics need to be saved in cache.
      - It will reduce Internet usage and load faster.
 8. **Reporting and Blocking**
      - ~~Reporting a perticular post.~~
      - ~~Reporting will hide the post from the user.~~
      - If a post get's 5 or more reports it will delete it from the database
-     - Blocking will hide all the posts of a particular user.
+     - ~~Blocking will hide all the posts of a particular user.~~
      - Unblock option.
