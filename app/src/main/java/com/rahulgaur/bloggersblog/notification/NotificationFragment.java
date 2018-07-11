@@ -2,6 +2,7 @@ package com.rahulgaur.bloggersblog.notification;
 
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -22,6 +23,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.rahulgaur.bloggersblog.R;
 import com.rahulgaur.bloggersblog.ThemeAndSettings.SharedPref;
+import com.rahulgaur.bloggersblog.account.UserAccount;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,12 +43,11 @@ public class NotificationFragment extends Fragment {
     private FirebaseFirestore firebaseFirestore;
     private FirebaseAuth auth;
     private String current_user_id;
+    private ProgressDialog progressDialog;
 
     public NotificationFragment() {
         // Required empty public constructor
     }
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -66,6 +67,7 @@ public class NotificationFragment extends Fragment {
             @Override
             public void onRefresh() {
                 swipeRefreshLayout.setRefreshing(false);
+                notificationRecyclerAdapter.notifyDataSetChanged();
             }
         });
 

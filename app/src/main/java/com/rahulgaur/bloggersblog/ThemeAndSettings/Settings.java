@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.widget.CompoundButton;
+import android.widget.TextView;
 
 import com.rahulgaur.bloggersblog.R;
 
@@ -30,6 +31,8 @@ public class Settings extends AppCompatActivity {
 
         //TO-DO = Add Toolbar name "Settings".
         toolbar = findViewById(R.id.setting_toolbar);
+
+        textView = findViewById(R.id.setting_block_textView);
 
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle("Settings");

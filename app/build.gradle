@@ -51,6 +51,8 @@ dependencies {
     implementation 'com.google.apis:google-api-services-vision:v1-rev357-1.22.0'
     implementation 'com.google.code.findbugs:jsr305:2.0.1'
     implementation 'commons-io:commons-io:2.5'
+    //facebook shimmer
+    implementation 'com.facebook.shimmer:shimmer:0.2.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

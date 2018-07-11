@@ -1,6 +1,7 @@
 package com.rahulgaur.bloggersblog.account;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -73,7 +74,7 @@ public class AccountFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_account, container, false);
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
-        Toolbar account_toolbar = view.findViewById(R.id.account_frag_toolbar);
+        final Toolbar account_toolbar = view.findViewById(R.id.account_frag_toolbar);
         ((AppCompatActivity) Objects.requireNonNull(getActivity())).setSupportActionBar(account_toolbar);
         current_userID = Objects.requireNonNull(auth.getCurrentUser()).getUid();
         FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
@@ -90,7 +91,7 @@ public class AccountFragment extends Fragment {
             }
 
             private void setToolbarName(String username) {
-                ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(username + "'s Home");
+                account_toolbar.setTitle(username);
             }
         });
 
@@ -128,7 +129,7 @@ public class AccountFragment extends Fragment {
 
 
         //getting posts from the database
-        firebaseFirestore.collection("Posts/" + post_id).addSnapshotListener(getActivity(), new EventListener<QuerySnapshot>() {
+        firebaseFirestore.collection("Posts/" + post_id).addSnapshotListener((Activity) Objects.requireNonNull(getContext()), new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
                 if (!documentSnapshots.isEmpty()) {

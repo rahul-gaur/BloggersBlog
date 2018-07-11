@@ -81,6 +81,7 @@ public class Comments extends AppCompatActivity {
         cmntList = new ArrayList<>();
 
         blog_post_id = getIntent().getStringExtra("blog_post_id");
+        Log.e("Comment ","Intent blog post id "+blog_post_id);
 
         commentsRecyclerAdapter = new CommentsRecyclerAdapter(cmntList, blog_post_id);
 
@@ -188,7 +189,7 @@ public class Comments extends AppCompatActivity {
                                                     Map<String, Object> notificaitonMap = new HashMap<>();
                                                     notificaitonMap.put("post_id",blog_post_id);
                                                     notificaitonMap.put("timestamp", FieldValue.serverTimestamp());
-                                                    notificaitonMap.put("message", "<b>"+current_user_name+"</b> Commented: "+comment_message);
+                                                    notificaitonMap.put("message", "<b>"+current_user_name+"</b> Commented: <br>"+comment_message);
                                                     firebaseFirestore.collection("Users/" + post_user_id + "/Notification").add(notificaitonMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                                                         @Override
                                                         public void onComplete(@NonNull Task<DocumentReference> task) {

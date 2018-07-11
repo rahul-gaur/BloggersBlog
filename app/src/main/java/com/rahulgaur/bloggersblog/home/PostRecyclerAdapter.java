@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -65,8 +66,6 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
     private ProgressDialog progressDialog;
     private SharedPref sharedPref;
     private String post_user_id;
-
-
     private postid pd = new postid();
 
     PostRecyclerAdapter(ArrayList<Post> postList, ArrayList<User> user_list) {
@@ -288,7 +287,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                                                 public void onComplete(@NonNull Task<Void> task) {
                                                     if (task.isSuccessful()) {
                                                         holder.likeImage.setImageResource(R.mipmap.like_pink);
-                                                        firebaseFirestore.collection("Users").document(current_user_id).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                                                        firebaseFirestore.collection("Users").document(current_user_id).addSnapshotListener((Activity) context,new EventListener<DocumentSnapshot>() {
                                                             @Override
                                                             public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
                                                                 if (documentSnapshot.exists()) {
@@ -300,7 +299,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                                                                     Map<String, Object> notificaitonMap = new HashMap<>();
                                                                     notificaitonMap.put("post_id", blogPostID);
                                                                     notificaitonMap.put("timestamp", FieldValue.serverTimestamp());
-                                                                    notificaitonMap.put("message", "<b>" + current_user_name + "</b> Liked your photo");
+                                                                    notificaitonMap.put("message", "<b>" + current_user_name + "</b> <br>Liked your photo");
                                                                     firebaseFirestore.collection("Users/" + post_user_id + "/Notification").add(notificaitonMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                                                                         @Override
                                                                         public void onComplete(@NonNull Task<DocumentReference> task) {
@@ -652,7 +651,6 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
         ViewHolder(View itemView) {
             super(itemView);
             mView = itemView;
-
             menuBtn = mView.findViewById(R.id.card_menu);
             deleteImage = mView.findViewById(R.id.delete_imageView);
             likeImage = mView.findViewById(R.id.like_imageView);
@@ -718,10 +716,11 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
 
     }
 
+    /*
     public void setFilter(ArrayList<User> newUser) {
         user_list = new ArrayList<>();
         user_list.addAll(newUser);
         Log.v("madapter", "setFilter called  ");
         notifyDataSetChanged();
-    }
+    }*/
 }

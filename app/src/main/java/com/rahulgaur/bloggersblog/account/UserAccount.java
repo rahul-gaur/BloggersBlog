@@ -1,13 +1,13 @@
 package com.rahulgaur.bloggersblog.account;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -33,7 +33,6 @@ import java.util.ArrayList;
 
 public class UserAccount extends AppCompatActivity {
 
-    Context context;
     private String post_user_id;
     private String name;
     private String imageURL;
@@ -44,9 +43,11 @@ public class UserAccount extends AppCompatActivity {
     private android.support.v7.widget.Toolbar toolbar;
     private SwipeRefreshLayout swipeRefreshLayout;
     private ProgressDialog progressDialog;
+    private ArrayList<GridViewList> postList = new ArrayList<>();
+    private RecyclerView recyclerView;
     private GridViewList gridViewList;
-    ArrayList<GridViewList> postList = new ArrayList<>();
-    private UserGridViewAdapter gridViewAdapter;
+
+    private UserAdapter userAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,32 +67,35 @@ public class UserAccount extends AppCompatActivity {
 
         toolbar = findViewById(R.id.user_account_frag_toolbar);
         setSupportActionBar(toolbar);
+        recyclerView = findViewById(R.id.user_account_recyclerView);
 
         firebaseAuth = FirebaseAuth.getInstance();
 
         final String current_userID = firebaseAuth.getCurrentUser().getUid();
+
+        gridViewList = new GridViewList();
 
         progressDialog = new ProgressDialog(UserAccount.this);
         progressDialog.setMessage("Loading Please Wait..");
         progressDialog.show();
         progressDialog.setCancelable(false);
 
-        final GridView gridView = findViewById(R.id.user_account_postGridView);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+        userAdapter = new UserAdapter(postList);
+        recyclerView.setAdapter(userAdapter);
 
         profileImage = findViewById(R.id.user_account_profileImage);
         swipeRefreshLayout = findViewById(R.id.user_account_swipeRefresh);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                userAdapter.notifyDataSetChanged();
                 Toast.makeText(UserAccount.this, "Refreshed..", Toast.LENGTH_SHORT).show();
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
 
         firebaseFirestore = FirebaseFirestore.getInstance();
-
-        // TODO: 07-07-2018 constructor now working.
-        //gridViewAdapter = new UserGridViewAdapter(context, R.layout.grid_view_item, postList);
 
         //retrieving user profile and name
         firebaseFirestore.collection("Users")
@@ -111,7 +115,6 @@ public class UserAccount extends AppCompatActivity {
 
         // TODO: 09-07-2018 uncomment this and also fix errors
         //getting posts from the database
-        /*
         firebaseFirestore.collection("Posts/" + post_id).addSnapshotListener(this, new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
@@ -123,24 +126,20 @@ public class UserAccount extends AppCompatActivity {
                             String blog_post_id = doc.getDocument().getId();
 
                             if (post_user_id.equals(blog_user_id)) {
-                                postList.add(new GridViewList(post_thumb_url, blog_post_id));
-                                //gridViewList.setBlogPostID(post_id);
-                                Log.e("accountFragnent", "post_id " + blog_post_id);
-                                gridViewAdapter.notifyDataSetChanged();
+                                postList.add(new GridViewList(post_thumb_url,blog_post_id));
+                                gridViewList.setBlogPostID(blog_post_id);
+                                Log.e("userAccount", "post id " + blog_post_id+" post url "+post_thumb_url);
+                                userAdapter.notifyDataSetChanged();
                             }
 
                         }
                     }
                 } else {
                     //some error
-                    Log.e("Account Fragment", "error in user_id and image url");
+                    Log.e("userFragment", "error in user_id and image url");
                 }
             }
         });
-*/
-
-        // TODO: 07-07-2018 remove comments
-        //gridView.setAdapter(gridViewAdapter);
     }
 
     public void setProfileImage(String profile) {

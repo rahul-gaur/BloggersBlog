@@ -1,6 +1,9 @@
 package com.rahulgaur.bloggersblog.notification;
 
+import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -18,8 +21,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.rahulgaur.bloggersblog.R;
+import com.rahulgaur.bloggersblog.comment.Comments;
 
 import java.util.List;
 
@@ -52,8 +55,8 @@ public class NotificationRecyclerAdapter extends RecyclerView.Adapter<Notificati
         noti_message = notificationLists.get(position).getMessage();
         noti_postID = notificationLists.get(position).getPost_id();
 
-        Log.e("Notification","message "+noti_message);
-        Log.e("Notification","post id "+noti_postID);
+        Log.e("Notification", "message " + noti_message);
+        Log.e("Notification", "post id " + noti_postID);
 
         final String notificationID = notificationLists.get(position).NotificationID;
 
@@ -62,12 +65,12 @@ public class NotificationRecyclerAdapter extends RecyclerView.Adapter<Notificati
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     String postURL = task.getResult().getString("thumb_image_url");
-                    Log.e("Notification","post_id "+noti_postID);
-                    Log.e("Notification","image url "+postURL);
+                    Log.e("Notification", "post_id " + noti_postID);
+                    Log.e("Notification", "image url " + postURL);
                     holder.setPostImage(postURL);
                     notifyDataSetChanged();
                 } else {
-                    Log.e("Notification","else image url");
+                    Log.e("Notification", "else image url");
                 }
             }
         });
@@ -82,13 +85,24 @@ public class NotificationRecyclerAdapter extends RecyclerView.Adapter<Notificati
                             noti_message = task.getResult().getString("message");
                             holder.setTextView(noti_message);
                             notifyDataSetChanged();
-                            Log.e("Notification","current user id "+current_user_id);
-                            Log.e("Notification","message "+noti_message);
+                            Log.e("Notification", "current user id " + current_user_id);
+                            Log.e("Notification", "message " + noti_message);
                         } else {
-                            Log.e("Notification","else message ");
+                            Log.e("Notification", "else message ");
                         }
                     }
                 });
+
+        final String notification_post_id = notificationLists.get(position).NotificationID;
+        holder.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.e("Notification", "OnClick position" + notification_post_id);
+                Intent i = new Intent(context, Comments.class);
+                i.putExtra("blog_post_id", notification_post_id);
+                context.startActivity(i);
+            }
+        });
     }
 
     @Override
@@ -101,19 +115,26 @@ public class NotificationRecyclerAdapter extends RecyclerView.Adapter<Notificati
         private ImageView imageView;
         private TextView textView;
         private View mView;
+        private ProgressDialog progressDialog;
 
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
             mView = itemView;
+            imageView = mView.findViewById(R.id.noti_item_imageView);
+            progressDialog = new ProgressDialog(context);
+            progressDialog.setMessage("Loading Please Wait..");
+            //progressDialog.show();
+            progressDialog.setCancelable(false);
         }
 
+        @SuppressLint("CheckResult")
         void setPostImage(String imageURL) {
-            imageView = mView.findViewById(R.id.noti_item_imageView);
             RequestOptions requestOptions = new RequestOptions();
             requestOptions.placeholder(R.drawable.ic_launcher_background);
             Glide.with(context)
                     .applyDefaultRequestOptions(requestOptions)
                     .load(imageURL).into(imageView);
+            //progressDialog.dismiss();
         }
 
         void setTextView(String message) {

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -101,7 +102,11 @@ public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecycl
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            commentList.remove(position);
+                            try {
+                                commentList.remove(position);
+                            } catch (IndexOutOfBoundsException e){
+                                Log.e("comment remove","Comment remove exception "+e.getMessage());
+                            }
                             notifyDataSetChanged();
                             holder.commentDeleteImageView.setEnabled(true);
                             Toast.makeText(context, "Deleted", Toast.LENGTH_SHORT).show();

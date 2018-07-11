@@ -1,5 +1,7 @@
 package com.rahulgaur.bloggersblog.home;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -8,7 +10,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -52,10 +53,6 @@ public class HomeFragment extends Fragment {
     private FirebaseFirestore firebaseFirestore;
     private PostRecyclerAdapter postRecyclerAdapter;
     private FirebaseAuth auth;
-
-    private Boolean isfirstPageLoad = true;
-
-    private DocumentSnapshot lastVisible;
     private SwipeRefreshLayout swipeRefreshLayout;
 
     private SharedPref sharedPref;
@@ -66,6 +63,7 @@ public class HomeFragment extends Fragment {
     }
 
 
+    @SuppressLint("RestrictedApi")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -92,22 +90,8 @@ public class HomeFragment extends Fragment {
         auth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
 
-        setHasOptionsMenu(true);
 
         if (auth.getCurrentUser() != null) {
-
-            recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-                @Override
-                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                    super.onScrolled(recyclerView, dx, dy);
-
-                    Boolean bottom = !recyclerView.canScrollVertically(1);
-
-                    if (bottom) {
-                        nextQuery();
-                    }
-                }
-            });
 
             swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
@@ -121,24 +105,17 @@ public class HomeFragment extends Fragment {
             });
 
             toolbar = view.findViewById(R.id.home_frag_toolbar);
-            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Blogger's Blog");
+            toolbar.setTitle("Blogger's Blog");
+            ((AppCompatActivity) Objects.requireNonNull(getActivity())).setSupportActionBar(toolbar);
+            setHasOptionsMenu(true);
 
             //adding 5 posts on create
-            Query firstQuery = firebaseFirestore.collection("Posts").orderBy("timestamp", Query.Direction.DESCENDING).limit(5);
+            Query firstQuery = firebaseFirestore.collection("Posts").orderBy("timestamp", Query.Direction.DESCENDING);
             firstQuery.addSnapshotListener(getActivity(), new EventListener<QuerySnapshot>() {
 
                 @Override
                 public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
                     if (!documentSnapshots.isEmpty()) {
-
-                        if (isfirstPageLoad) {
-                            lastVisible = documentSnapshots.getDocuments()
-                                    .get(documentSnapshots.size() - 1);
-                            postList.clear();
-                            userList.clear();
-                        }
-
                         for (DocumentChange doc : documentSnapshots.getDocumentChanges()) {
                             if (doc.getType() == DocumentChange.Type.ADDED) {
                                 String blogPosTID = doc.getDocument().getId();
@@ -150,14 +127,8 @@ public class HomeFragment extends Fragment {
                                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                         if (task.isSuccessful()) {
                                             User user = task.getResult().toObject(User.class);
-
-                                            if (isfirstPageLoad) {
-                                                userList.add(user);
-                                                postList.add(post);
-                                            } else {
-                                                userList.add(0, user);
-                                                postList.add(0, post);
-                                            }
+                                            userList.add(user);
+                                            postList.add(post);
                                             postRecyclerAdapter.notifyDataSetChanged();
                                         } else {
                                             //some error
@@ -166,8 +137,6 @@ public class HomeFragment extends Fragment {
                                 });
 
                             }
-
-                            isfirstPageLoad = false;
                         }
                     } else {
                         Toast.makeText(getContext(), "No posts..", Toast.LENGTH_LONG).show();
@@ -178,85 +147,10 @@ public class HomeFragment extends Fragment {
         return view;
     }
 
-    //adding 5 more posts
-    public void nextQuery() {
-        Query firstQuery = firebaseFirestore.collection("Posts").orderBy("timestamp", Query.Direction.DESCENDING).startAfter(lastVisible).limit(5);
-
-        firstQuery.addSnapshotListener(getActivity(), new EventListener<QuerySnapshot>() {
-
-            @Override
-            public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
-
-                if (!documentSnapshots.isEmpty()) {
-                    lastVisible = documentSnapshots.getDocuments()
-                            .get(documentSnapshots.size() - 1);
-
-                    for (DocumentChange doc : documentSnapshots.getDocumentChanges()) {
-                        if (doc.getType() == DocumentChange.Type.ADDED) {
-                            String blogPosTID = doc.getDocument().getId();
-                            final Post post = doc.getDocument().toObject(Post.class).withID(blogPosTID);
-
-
-                            String blogUserID = doc.getDocument().getString("user_id");
-                            firebaseFirestore.collection("Users").document(blogUserID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        User user = task.getResult().toObject(User.class);
-                                        userList.add(user);
-                                        postList.add(post);
-                                        postRecyclerAdapter.notifyDataSetChanged();
-                                    } else {
-                                        //some error
-                                    }
-                                }
-                            });
-                        }
-                    }
-                } else {
-                    Toast.makeText(getContext(), "No more posts..", Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-    }
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.toolbar_menu, menu);
-
-        MenuItem mSearch = menu.findItem(R.id.app_bar_search);
-        android.widget.SearchView searchView = (android.widget.SearchView) mSearch.getActionView();
-
-        searchView.setQueryHint("Settings");
-
-        searchView.setOnQueryTextListener(new android.widget.SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-
-                newText = newText.toLowerCase();
-
-                ArrayList<User> newUser = new ArrayList<>();
-
-                for (User user : userList) {
-                    String fname = user.getName().toLowerCase();
-                    Log.v("onQueryTextChange", "" + fname);
-                    if (fname.contains(newText)) {
-
-                        newUser.add(user);
-
-                    }
-                    postRecyclerAdapter.setFilter(newUser);
-
-                }
-                return true;
-
-            }
-        });
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override

@@ -30,4 +30,6 @@
     <string name="dark_mode">Dark Mode </string>
     <string name="posts">Posts:</string>
     <string name="some_notification">Some Notification</string>
+    <string name="blocked_users">Blocked Users</string>
+    <string name="unblock">unblock</string>
 </resources>
