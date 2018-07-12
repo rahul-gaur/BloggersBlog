@@ -93,7 +93,7 @@ public class NotificationRecyclerAdapter extends RecyclerView.Adapter<Notificati
                     }
                 });
 
-        final String notification_post_id = notificationLists.get(position).NotificationID;
+        final String notification_post_id = notificationLists.get(position).getPost_id().trim();
         holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -131,9 +131,13 @@ public class NotificationRecyclerAdapter extends RecyclerView.Adapter<Notificati
         void setPostImage(String imageURL) {
             RequestOptions requestOptions = new RequestOptions();
             requestOptions.placeholder(R.drawable.ic_launcher_background);
-            Glide.with(context)
-                    .applyDefaultRequestOptions(requestOptions)
-                    .load(imageURL).into(imageView);
+            try {
+                Glide.with(context)
+                        .applyDefaultRequestOptions(requestOptions)
+                        .load(imageURL).into(imageView);
+            } catch (Exception e1){
+                Log.e("Notification","Glide exceptioin "+ e1.getMessage());
+            }
             //progressDialog.dismiss();
         }
 

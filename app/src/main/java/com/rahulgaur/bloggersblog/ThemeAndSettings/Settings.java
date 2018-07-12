@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.widget.CompoundButton;
-import android.widget.TextView;
 
 import com.rahulgaur.bloggersblog.R;
 
@@ -16,6 +15,7 @@ public class Settings extends AppCompatActivity {
 
     private SharedPref sharedPref;
     private Toolbar toolbar;
+    private BlockFragment blockFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +32,7 @@ public class Settings extends AppCompatActivity {
         //TO-DO = Add Toolbar name "Settings".
         toolbar = findViewById(R.id.setting_toolbar);
 
-        textView = findViewById(R.id.setting_block_textView);
+        blockFragment = new BlockFragment();
 
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle("Settings");
@@ -55,7 +55,7 @@ public class Settings extends AppCompatActivity {
                 }
             }
         });
-
+        setFragment();
     }
 
     private void restartApp() {
@@ -63,5 +63,11 @@ public class Settings extends AppCompatActivity {
                 .getLaunchIntentForPackage(getBaseContext().getPackageName());
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(i);
+    }
+
+    public void setFragment() {
+        android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.add(R.id.setting_block_fragmentFrame, blockFragment);
+        fragmentTransaction.commit();
     }
 }

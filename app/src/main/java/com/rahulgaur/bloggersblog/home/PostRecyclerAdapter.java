@@ -100,10 +100,33 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
         //get current user id
         final String currentUserId = auth.getCurrentUser().getUid();
 
-        String desc_data = postList.get(position).getDesc();
+        final String desc_data = postList.get(position).getDesc();
         final String user_id = postList.get(position).getUser_id();
         final String thumb_image_url = postList.get(position).getThumb_image_url();
         final String current_user_id = auth.getCurrentUser().getUid();
+
+        //getting post ownership11
+        firebaseFirestore.collection("Posts")
+                .document(blogPostID).addSnapshotListener((Activity) context, new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
+                if (documentSnapshot.exists()) {
+                    post_user_id = documentSnapshot.getString("user_id");
+                    holder.checkPostOwership(currentUserId, post_user_id);
+                }
+            }
+        });
+
+        String user_data = user_list.get(position).getName();
+        final String profile_url = user_list.get(position).getImage();
+        holder.setProfileImage(profile_url);
+        holder.setUserText(user_data);
+
+        //time feature
+        Date date = postList.get(position).getTimestamp();
+
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat dateformatMMDDYYYY = new SimpleDateFormat("dd MMMM yyyy");
+        final StringBuilder nowMMDDYYYY = new StringBuilder(dateformatMMDDYYYY.format(date));
 
         //hiding reported posts
         firebaseFirestore.collection("Posts").document(blogPostID).collection("Report").document(current_user_id).addSnapshotListener((Activity) context, new EventListener<DocumentSnapshot>() {
@@ -119,12 +142,15 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                         Log.e("report hide", " post remove exception " + exception.getMessage());
                     }
                 } else {
+                    holder.setTime(nowMMDDYYYY);
+                    holder.setPostImage(thumb_image_url);
+                    holder.setDescText(desc_data);
+
                     holder.mView.setVisibility(View.VISIBLE);
                     Log.e("reported posts ", "no post exists");
                 }
             }
         });
-
         //hiding blocked posts
         firebaseFirestore.collection("Users/" + current_user_id + "/Block").document(user_id).addSnapshotListener((Activity) context, new EventListener<DocumentSnapshot>() {
             @Override
@@ -148,37 +174,14 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                         Log.e("block hide", " post remove exception " + exce.getMessage());
                     }
                 } else {
+                    holder.setTime(nowMMDDYYYY);
+                    holder.setPostImage(thumb_image_url);
+                    holder.setDescText(desc_data);
+
                     Log.e("Blocked posts ", "no blocked posts");
                 }
             }
         });
-
-        //getting post ownership11
-        firebaseFirestore.collection("Posts")
-                .document(blogPostID).addSnapshotListener((Activity) context, new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
-                if (documentSnapshot.exists()) {
-                    post_user_id = documentSnapshot.getString("user_id");
-                    holder.checkPostOwership(currentUserId, post_user_id);
-                }
-            }
-        });
-
-        String user_data = user_list.get(position).getName();
-        final String profile_url = user_list.get(position).getImage();
-        holder.setProfileImage(profile_url);
-        holder.setUserText(user_data);
-
-        //time feature
-        Date date = postList.get(position).getTimestamp();
-
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat dateformatMMDDYYYY = new SimpleDateFormat("dd MMMM yyyy");
-        StringBuilder nowMMDDYYYY = new StringBuilder(dateformatMMDDYYYY.format(date));
-
-        holder.setTime(nowMMDDYYYY);
-        holder.setPostImage(thumb_image_url);
-        holder.setDescText(desc_data);
 
         //get likes count
         firebaseFirestore.collection("Posts/" + blogPostID + "/Likes")

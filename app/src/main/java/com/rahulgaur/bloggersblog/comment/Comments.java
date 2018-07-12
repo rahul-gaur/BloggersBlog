@@ -12,6 +12,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,6 +56,7 @@ public class Comments extends AppCompatActivity {
 
     private FirebaseFirestore firebaseFirestore;
     private FirebaseAuth auth;
+    private ProgressBar progressBar;
 
     private SharedPref sharedPref;
 
@@ -80,8 +82,6 @@ public class Comments extends AppCompatActivity {
 
         cmntList = new ArrayList<>();
 
-        blog_post_id = getIntent().getStringExtra("blog_post_id");
-        Log.e("Comment ","Intent blog post id "+blog_post_id);
 
         commentsRecyclerAdapter = new CommentsRecyclerAdapter(cmntList, blog_post_id);
 
@@ -91,6 +91,7 @@ public class Comments extends AppCompatActivity {
         comment_postView = findViewById(R.id.cmntImageView);
         comment_Username = findViewById(R.id.cmnt_usernameTV);
         postUserImageView = findViewById(R.id.cmntProfileImageView);
+        progressBar = findViewById(R.id.comment_progressBar);
 
         comment_list.setLayoutManager(new LinearLayoutManager(Comments.this));
         comment_list.setAdapter(commentsRecyclerAdapter);
@@ -105,6 +106,9 @@ public class Comments extends AppCompatActivity {
             }
         });
 
+        blog_post_id = getIntent().getStringExtra("blog_post_id").trim();
+        Log.e("Comment ", "Intent blog post id " + blog_post_id);
+
         current_user_id = auth.getCurrentUser().getUid();
 
         //post image and username retrieving
@@ -112,6 +116,7 @@ public class Comments extends AppCompatActivity {
             @Override
             public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
                 if (documentSnapshot.exists()) {
+                    progressBar.setVisibility(View.VISIBLE);
                     final String post_user_id = documentSnapshot.getString("user_id");
                     final String post_picture = documentSnapshot.getString("thumb_image_url");
 
@@ -125,10 +130,16 @@ public class Comments extends AppCompatActivity {
                                 final String post_username = documentSnapshot.getString("name");
                                 final String post_userProfile = documentSnapshot.getString("thumb_image");
                                 setPostImage(post_picture);
+                                Log.e("Comments.java", "post image is loaded ");
                                 setUsernameAndProfile(post_username, post_userProfile);
+                                progressBar.setVisibility(View.INVISIBLE);
+                            } else {
+                                Log.e("Comments.java","No user found");
                             }
                         }
                     });
+                } else {
+                    Log.e("Comments.java", "No data comment.java "+blog_post_id);
                 }
             }
         });
@@ -159,6 +170,8 @@ public class Comments extends AppCompatActivity {
         comment_post_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progressBar.setVisibility(View.VISIBLE);
+
                 final String comment_message = comment_field.getText().toString();
                 comment_field.setText(null);
 
@@ -175,33 +188,34 @@ public class Comments extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<DocumentReference> task) {
                                     if (task.isSuccessful()) {
-                                        Log.e("Comment notificaiton","Comment Notification Entered");
-                                        Log.e("Comment notificaiton","Comment Notification current user id "+current_user_id);
+                                        Log.e("Comment notificaiton", "Comment Notification Entered");
+                                        Log.e("Comment notificaiton", "Comment Notification current user id " + current_user_id);
                                         firebaseFirestore.collection("Users").document(current_user_id).addSnapshotListener(new EventListener<DocumentSnapshot>() {
                                             @Override
                                             public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
                                                 if (documentSnapshot.exists()) {
-                                                    Log.e("Comment notificaiton","Comment Notification current user entered");
+                                                    Log.e("Comment notificaiton", "Comment Notification current user entered");
 
                                                     String current_user_name = documentSnapshot.getString("name");
-                                                    Log.e("Comment notificaiton","Comment Notification current user name "+current_user_name);
+                                                    Log.e("Comment notificaiton", "Comment Notification current user name " + current_user_name);
 
                                                     Map<String, Object> notificaitonMap = new HashMap<>();
-                                                    notificaitonMap.put("post_id",blog_post_id);
+                                                    notificaitonMap.put("post_id", blog_post_id);
                                                     notificaitonMap.put("timestamp", FieldValue.serverTimestamp());
-                                                    notificaitonMap.put("message", "<b>"+current_user_name+"</b> Commented: <br>"+comment_message);
+                                                    notificaitonMap.put("message", "<b>" + current_user_name + "</b> Commented: <br>" + comment_message);
                                                     firebaseFirestore.collection("Users/" + post_user_id + "/Notification").add(notificaitonMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                                                         @Override
                                                         public void onComplete(@NonNull Task<DocumentReference> task) {
-                                                            if (task.isSuccessful()){
-                                                                Log.e("Comment notificaiton","Comment Notification Added");
+                                                            if (task.isSuccessful()) {
+                                                                Log.e("Comment notificaiton", "Comment Notification Added");
+                                                                progressBar.setVisibility(View.INVISIBLE);
                                                             } else {
-                                                                Log.e("Comment notificaiton","Comment Notification failed");
+                                                                Log.e("Comment notificaiton", "Comment Notification failed");
                                                             }
                                                         }
                                                     });
                                                 } else {
-                                                    Log.e("Comment notificaiton","Comment Notification document not found");
+                                                    Log.e("Comment notificaiton", "Comment Notification document not found");
                                                 }
                                             }
                                         });
