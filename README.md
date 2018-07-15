@@ -23,7 +23,7 @@ Blogger's Blog is a Android based application which is a simple Photo Blogging a
 - [x] Comments can be deleted now- Randeep's contribution.
 - [x] Posts from profile working.
 - [x] Reporting a perticular post.
-- [x] Blocking a perticular user.
+- [x] Blocking and Unblocking perticular user.
 - [x] Notification fragment showing Liked and Commented notification
 
 ###### **What is not working.**
@@ -36,7 +36,7 @@ Blogger's Blog is a Android based application which is a simple Photo Blogging a
      - ~~deleting your comment.~~
 3. **Profile**
      - ~~Profile of any other person is not working.~~
-     - Loading posts of that user.
+     - ~~Loading posts of that user.~~
 4. **Search**
      - Searching any user is not working as I wanted it to be.
      - It can search Posts of anyone from the RecyclerView.
@@ -56,4 +56,5 @@ Blogger's Blog is a Android based application which is a simple Photo Blogging a
      - ~~Reporting will hide the post from the user.~~
      - If a post get's 5 or more reports it will delete it from the database
      - ~~Blocking will hide all the posts of a particular user.~~
-     - Unblock option.
+     - ~~Unblock option.~~
+     - Post list is showing blocked posts and need refreshes to hide them.
