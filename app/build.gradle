@@ -53,6 +53,17 @@ dependencies {
     implementation 'commons-io:commons-io:2.5'
     //facebook shimmer
     implementation 'com.facebook.shimmer:shimmer:0.2.0'
+
+    //firebase notification
+    implementation 'com.google.firebase:firebase-messaging:11.8.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
+
+    //airbnb gif loader
+    implementation 'com.airbnb.android:lottie:2.5.5'
+
+    //loading buttons
+    implementation 'com.github.dmytrodanylyk.android-process-button:library:1.0.4'
 }
 
 apply plugin: 'com.google.gms.google-services'

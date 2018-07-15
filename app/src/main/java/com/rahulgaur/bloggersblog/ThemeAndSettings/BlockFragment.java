@@ -32,7 +32,7 @@ public class BlockFragment extends Fragment {
     private FirebaseFirestore firebaseFirestore;
     private FirebaseAuth firebaseAuth;
     private String current_user_id;
-    private List<BlockList> BlockLists;
+    private List<BlockList> list;
     private blockAdapter blockAdapter;
 
     public BlockFragment() {
@@ -52,7 +52,9 @@ public class BlockFragment extends Fragment {
         }
         View view = inflater.inflate(R.layout.fragment_block, container, false);
 
-        blockAdapter = new blockAdapter(BlockLists);
+        list = new ArrayList<>();
+
+        blockAdapter = new blockAdapter(list);
 
         RecyclerView recyclerView = view.findViewById(R.id.block_recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -63,8 +65,6 @@ public class BlockFragment extends Fragment {
 
         current_user_id = firebaseAuth.getCurrentUser().getUid();
 
-        BlockLists = new ArrayList<>();
-
         firebaseFirestore.collection("Users/" + current_user_id + "/Block")
                 .addSnapshotListener((Activity) getContext(), new EventListener<QuerySnapshot>() {
                     @Override
@@ -74,12 +74,9 @@ public class BlockFragment extends Fragment {
                                 if (doc.getType() == DocumentChange.Type.ADDED) {
                                     String user_id = doc.getDocument().getId();
                                     Log.e("BlockFragment","user_id "+user_id);
-                                    BlockList list = doc.getDocument().toObject(BlockList.class).withID(user_id);
-                                    /*BlockList BlockList = new BlockList();
-                                    BlockLists.add(BlockList);
-                                    */
-                                    BlockLists.add(list);
-                                    list.setUser_id(user_id);
+                                    BlockList blockList = doc.getDocument().toObject(BlockList.class)
+                                            .withID(user_id);
+                                    list.add(blockList);
                                     blockAdapter.notifyDataSetChanged();
                                 }
                             }

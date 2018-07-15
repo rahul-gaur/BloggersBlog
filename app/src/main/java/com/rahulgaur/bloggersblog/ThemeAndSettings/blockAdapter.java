@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -23,6 +24,8 @@ import com.rahulgaur.bloggersblog.R;
 
 import java.util.List;
 
+import static android.support.constraint.Constraints.TAG;
+
 public class blockAdapter extends RecyclerView.Adapter<blockAdapter.ViewHolder> {
 
     private List<BlockList> list;
@@ -33,6 +36,7 @@ public class blockAdapter extends RecyclerView.Adapter<blockAdapter.ViewHolder> 
     private String user_name;
     private String user_profile;
     private String current_user_id;
+    private BlockList bl;
 
     public blockAdapter(List<BlockList> list) {
         this.list = list;
@@ -41,7 +45,7 @@ public class blockAdapter extends RecyclerView.Adapter<blockAdapter.ViewHolder> 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.setting_block_item,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.setting_block_item, parent, false);
         firebaseFirestore = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
         context = parent.getContext();
@@ -50,20 +54,19 @@ public class blockAdapter extends RecyclerView.Adapter<blockAdapter.ViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-        user_id = list.get(position).getUser_id();
+    public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         final String blocked_user_id = list.get(position).BlockID;
         current_user_id = auth.getCurrentUser().getUid();
-
-        firebaseFirestore.collection("Users").document(user_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        Log.e("Setting block", "user_id " + blocked_user_id);
+        firebaseFirestore.collection("Users").document(blocked_user_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()){
+                if (task.isSuccessful()) {
                     user_name = task.getResult().getString("name");
                     user_profile = task.getResult().getString("thumb_image");
-                    Log.e("Setting block", "user_name "+user_name);
-                    Log.e("Setting block", "user_id "+user_id);
-                    Log.e("Setting block", "blocked_user_id "+blocked_user_id);
+                    Log.e("Setting block", "user_name " + user_name);
+                    Log.e("Setting block", "user_id " + user_id);
+                    Log.e("Setting block", "blocked_user_id ");
                     holder.setProfileImage(user_profile);
                     holder.setTextView(user_name);
                     notifyDataSetChanged();
@@ -72,11 +75,30 @@ public class blockAdapter extends RecyclerView.Adapter<blockAdapter.ViewHolder> 
                 }
             }
         });
+
+        holder.button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                firebaseFirestore.collection("Users").document(blocked_user_id)
+                        .delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()){
+                            list.remove(position);
+                            Toast.makeText(context, "User Unblocked", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Log.e(TAG, "onComplete: unable to delete blocked user "+blocked_user_id);
+                        }
+                    }
+                });
+
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        return 2;
+        return list.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -95,15 +117,19 @@ public class blockAdapter extends RecyclerView.Adapter<blockAdapter.ViewHolder> 
         }
 
         @SuppressLint("CheckResult")
-        void setProfileImage(String url){
+        void setProfileImage(String url) {
             RequestOptions requestOptions = new RequestOptions();
             requestOptions.placeholder(R.drawable.ic_launcher_background);
-            Glide.with(context)
-                    .applyDefaultRequestOptions(requestOptions)
-                    .load(url).into(imageView);
+            try {
+                Glide.with(context)
+                        .applyDefaultRequestOptions(requestOptions)
+                        .load(url).into(imageView);
+            } catch (Exception e){
+                Log.e("blockAdapter","Exception glide "+e.getMessage());
+            }
         }
 
-        void setTextView(String text){
+        void setTextView(String text) {
             textView.setText(text);
         }
     }

@@ -49,14 +49,28 @@
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="12dp"
         android:background="?attr/colorAccent"
         android:padding="10dp"
         android:text="@string/submit"
         android:textSize="25sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/new_post_descET" />
+
+    <com.dd.processbutton.FlatButton
+        android:id="@+id/account_subBtn_Flat"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="12dp"
+        android:background="?attr/colorAccent"
+        android:padding="10dp"
+        android:text="@string/submit"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        pb_colorNormal="@android:color/holo_blue_light"
+        pb_colorPressed="@android:color/holo_blue_dark"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/new_post_descET" />
 

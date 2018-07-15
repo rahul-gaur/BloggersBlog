@@ -9,6 +9,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -18,11 +19,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.rahulgaur.bloggersblog.R;
 import com.rahulgaur.bloggersblog.ThemeAndSettings.SharedPref;
 import com.rahulgaur.bloggersblog.account.Account;
 import com.rahulgaur.bloggersblog.account.AccountFragment;
 import com.rahulgaur.bloggersblog.notification.NotificationFragment;
+import com.rahulgaur.bloggersblog.notification.notificationServices.Common;
 import com.rahulgaur.bloggersblog.welcome.WelcomePage;
 
 public class MainActivity extends AppCompatActivity {
@@ -51,9 +54,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Common.currentToken = FirebaseInstanceId.getInstance().getToken();
+
+        Log.d("Main Activity","token "+Common.currentToken);
+
         final FirebaseUser current_user = auth.getCurrentUser();
         assert current_user != null;
         current_user_id = current_user.getUid();
+
+        //
 
         FloatingActionButton addPost = findViewById(R.id.main_add_post);
 

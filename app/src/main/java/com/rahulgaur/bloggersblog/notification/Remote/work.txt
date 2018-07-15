@@ -1,0 +1,16 @@
+fcm key = AAAA9dNx_hQ:APA91bG650cuT1xEVYNqsya-FUOxyHIBeuebwXAzDBIX3IsnlPkfwNxRP2OX-XzLDnR-RuD16oIApx1c4ODyOqXVn1EFERZvSLl5imP7LDwzSTwKyveFJRBXO0AwzK0VDA9lxSnDMtMC
+
+{
+"multicast_id":
+6882651280199741000
+,
+"success": 1,
+"failure": 0,
+"canonical_ids": 0,
+"results": [
+  {
+"message_id": "0:1531641548310182%94c6299794c62997"
+}
+],
+}
+

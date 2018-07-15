@@ -23,7 +23,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -44,6 +43,10 @@ import com.rahulgaur.bloggersblog.blogPost.Post;
 import com.rahulgaur.bloggersblog.blogPost.User;
 import com.rahulgaur.bloggersblog.blogPost.postid;
 import com.rahulgaur.bloggersblog.comment.Comments;
+import com.rahulgaur.bloggersblog.notification.Remote.APIService;
+import com.rahulgaur.bloggersblog.notification.notificationServices.Common;
+import com.rahulgaur.bloggersblog.notification.notificationServices.MyResponse;
+import com.rahulgaur.bloggersblog.notification.notificationServices.Sender;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -52,6 +55,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapter.ViewHolder> {
 
@@ -67,6 +73,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
     private SharedPref sharedPref;
     private String post_user_id;
     private postid pd = new postid();
+    private APIService apiService;
 
     PostRecyclerAdapter(ArrayList<Post> postList, ArrayList<User> user_list) {
         this.postList = postList;
@@ -96,6 +103,8 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
         pd.setPostid(blogPostID);
 
         progressDialog = new ProgressDialog(context);
+
+        apiService = Common.getFCMCLient();
 
         //get current user id
         final String currentUserId = auth.getCurrentUser().getUid();
@@ -290,16 +299,16 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                                                 public void onComplete(@NonNull Task<Void> task) {
                                                     if (task.isSuccessful()) {
                                                         holder.likeImage.setImageResource(R.mipmap.like_pink);
-                                                        firebaseFirestore.collection("Users").document(current_user_id).addSnapshotListener((Activity) context,new EventListener<DocumentSnapshot>() {
+                                                        firebaseFirestore.collection("Users").document(current_user_id).addSnapshotListener((Activity) context, new EventListener<DocumentSnapshot>() {
                                                             @Override
                                                             public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
                                                                 if (documentSnapshot.exists()) {
                                                                     Log.e("Like notificaiton", "Like Notification current user entered");
 
-                                                                    String current_user_name = documentSnapshot.getString("name");
+                                                                    final String current_user_name = documentSnapshot.getString("name");
                                                                     Log.e("Like notificaiton", "Like Notification current user name " + current_user_name);
 
-                                                                    Map<String, Object> notificaitonMap = new HashMap<>();
+                                                                    final Map<String, Object> notificaitonMap = new HashMap<>();
                                                                     notificaitonMap.put("post_id", blogPostID);
                                                                     notificaitonMap.put("timestamp", FieldValue.serverTimestamp());
                                                                     notificaitonMap.put("message", "<b>" + current_user_name + "</b> <br>Liked your photo");
@@ -307,6 +316,24 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                                                                         @Override
                                                                         public void onComplete(@NonNull Task<DocumentReference> task) {
                                                                             if (task.isSuccessful()) {
+                                                                                com.rahulgaur.bloggersblog.notification.notificationServices.Notification notification = new com.rahulgaur.bloggersblog.notification.notificationServices.Notification("Likes", current_user_name + " Liked your Photo");
+                                                                                Sender sender = new Sender(notification, Common.currentToken); //send notification to itself
+                                                                                apiService.sendNotification(sender)
+                                                                                        .enqueue(new Callback<MyResponse>() {
+                                                                                            @Override
+                                                                                            public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
+                                                                                                if (response.body().success == 1) {
+                                                                                                    Log.e("Notification service ", "Success");
+                                                                                                } else {
+                                                                                                    Log.e("Notification service ", "Failed");
+                                                                                                }
+                                                                                            }
+
+                                                                                            @Override
+                                                                                            public void onFailure(Call<MyResponse> call, Throwable t) {
+                                                                                                Log.e("Notification service ", "Failed");
+                                                                                            }
+                                                                                        });
                                                                                 Log.e("Like notificaiton", "Like Notification Added");
                                                                             } else {
                                                                                 Log.e("Like notificaiton", "Like Notification failed");
@@ -614,6 +641,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                     public void onClick(DialogInterface dialogInterface, int i) {
                         Log.e("block ", "block clicked");
                         Map<String, Object> map = new HashMap<>();
+                        map.put("user_id", post_user);
                         map.put("timestamp", FieldValue.serverTimestamp());
                         firebaseFirestore.collection("Users/" + current_user_id + "/Block").document(post_user).set(map).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override

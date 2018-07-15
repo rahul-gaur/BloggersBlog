@@ -30,14 +30,21 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.ServerTimestamp;
 import com.rahulgaur.bloggersblog.R;
 import com.rahulgaur.bloggersblog.ThemeAndSettings.SharedPref;
+import com.rahulgaur.bloggersblog.notification.Remote.APIService;
+import com.rahulgaur.bloggersblog.notification.notificationServices.Common;
+import com.rahulgaur.bloggersblog.notification.notificationServices.MyResponse;
+import com.rahulgaur.bloggersblog.notification.notificationServices.Sender;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Comments extends AppCompatActivity {
 
@@ -48,6 +55,7 @@ public class Comments extends AppCompatActivity {
     private String post_user_id;
 
     private List<CommentList> cmntList;
+    private APIService apiService;
 
     private String blog_post_id;
     private String current_user_id;
@@ -82,6 +90,7 @@ public class Comments extends AppCompatActivity {
 
         cmntList = new ArrayList<>();
 
+        apiService = Common.getFCMCLient();
 
         commentsRecyclerAdapter = new CommentsRecyclerAdapter(cmntList, blog_post_id);
 
@@ -134,12 +143,12 @@ public class Comments extends AppCompatActivity {
                                 setUsernameAndProfile(post_username, post_userProfile);
                                 progressBar.setVisibility(View.INVISIBLE);
                             } else {
-                                Log.e("Comments.java","No user found");
+                                Log.e("Comments.java", "No user found");
                             }
                         }
                     });
                 } else {
-                    Log.e("Comments.java", "No data comment.java "+blog_post_id);
+                    Log.e("Comments.java", "No data comment.java " + blog_post_id);
                 }
             }
         });
@@ -196,7 +205,7 @@ public class Comments extends AppCompatActivity {
                                                 if (documentSnapshot.exists()) {
                                                     Log.e("Comment notificaiton", "Comment Notification current user entered");
 
-                                                    String current_user_name = documentSnapshot.getString("name");
+                                                    final String current_user_name = documentSnapshot.getString("name");
                                                     Log.e("Comment notificaiton", "Comment Notification current user name " + current_user_name);
 
                                                     Map<String, Object> notificaitonMap = new HashMap<>();
@@ -207,6 +216,24 @@ public class Comments extends AppCompatActivity {
                                                         @Override
                                                         public void onComplete(@NonNull Task<DocumentReference> task) {
                                                             if (task.isSuccessful()) {
+                                                                com.rahulgaur.bloggersblog.notification.notificationServices.Notification notification = new com.rahulgaur.bloggersblog.notification.notificationServices.Notification("Likes", current_user_name + " Liked your Photo");
+                                                                Sender sender = new Sender(notification, Common.currentToken); //send notification to itself
+                                                                apiService.sendNotification(sender)
+                                                                        .enqueue(new Callback<MyResponse>() {
+                                                                            @Override
+                                                                            public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
+                                                                                if (response.body().success == 1) {
+                                                                                    Log.e("Notification service ", "Success");
+                                                                                } else {
+                                                                                    Log.e("Notification service ", "Failed");
+                                                                                }
+                                                                            }
+
+                                                                            @Override
+                                                                            public void onFailure(Call<MyResponse> call, Throwable t) {
+                                                                                Log.e("Notification service ", "Failed");
+                                                                            }
+                                                                        });
                                                                 Log.e("Comment notificaiton", "Comment Notification Added");
                                                                 progressBar.setVisibility(View.INVISIBLE);
                                                             } else {
