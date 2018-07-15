@@ -3,18 +3,18 @@ package com.rahulgaur.bloggersblog.blogPost;
 import java.util.Date;
 
 public class Post extends BlogPostID {
-    public String image_url, thumb_image_url, desc, user_id;
+    public String image_url, thumb_image_url, desc, user_id, token;
     public Date timestamp;
 
     public Post() {
     }
 
-    public Post(String image_url, String thumb_image_url, String desc, String user_id, Date timestamp) {
-
+    public Post(String image_url, String thumb_image_url, String desc, String user_id, String token, Date timestamp) {
         this.image_url = image_url;
         this.thumb_image_url = thumb_image_url;
         this.desc = desc;
         this.user_id = user_id;
+        this.token = token;
         this.timestamp = timestamp;
     }
 
@@ -50,6 +50,14 @@ public class Post extends BlogPostID {
         this.user_id = user_id;
     }
 
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
     public Date getTimestamp() {
         return timestamp;
     }
@@ -57,5 +65,4 @@ public class Post extends BlogPostID {
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
     }
-
 }

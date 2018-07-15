@@ -62,8 +62,6 @@ public class MainActivity extends AppCompatActivity {
         assert current_user != null;
         current_user_id = current_user.getUid();
 
-        //
-
         FloatingActionButton addPost = findViewById(R.id.main_add_post);
 
         if (auth.getCurrentUser() != null) {

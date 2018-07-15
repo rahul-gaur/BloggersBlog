@@ -113,6 +113,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
         final String user_id = postList.get(position).getUser_id();
         final String thumb_image_url = postList.get(position).getThumb_image_url();
         final String current_user_id = auth.getCurrentUser().getUid();
+        final String post_user_token = postList.get(position).getToken();
 
         //getting post ownership11
         firebaseFirestore.collection("Posts")
@@ -317,7 +318,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                                                                         public void onComplete(@NonNull Task<DocumentReference> task) {
                                                                             if (task.isSuccessful()) {
                                                                                 com.rahulgaur.bloggersblog.notification.notificationServices.Notification notification = new com.rahulgaur.bloggersblog.notification.notificationServices.Notification("Likes", current_user_name + " Liked your Photo");
-                                                                                Sender sender = new Sender(notification, Common.currentToken); //send notification to itself
+                                                                                Sender sender = new Sender(notification, post_user_token); //send notification to itself
                                                                                 apiService.sendNotification(sender)
                                                                                         .enqueue(new Callback<MyResponse>() {
                                                                                             @Override

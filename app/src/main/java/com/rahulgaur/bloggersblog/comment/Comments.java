@@ -53,6 +53,7 @@ public class Comments extends AppCompatActivity {
     private TextView comment_Username;
 
     private String post_user_id;
+    private String post_user_token;
 
     private List<CommentList> cmntList;
     private APIService apiService;
@@ -128,7 +129,9 @@ public class Comments extends AppCompatActivity {
                     progressBar.setVisibility(View.VISIBLE);
                     final String post_user_id = documentSnapshot.getString("user_id");
                     final String post_picture = documentSnapshot.getString("thumb_image_url");
+                    final String token = documentSnapshot.getString("token");
 
+                    setPostUserToken(token);
                     String post_user = post_user_id;
                     setPostUserID(post_user);
 
@@ -217,7 +220,7 @@ public class Comments extends AppCompatActivity {
                                                         public void onComplete(@NonNull Task<DocumentReference> task) {
                                                             if (task.isSuccessful()) {
                                                                 com.rahulgaur.bloggersblog.notification.notificationServices.Notification notification = new com.rahulgaur.bloggersblog.notification.notificationServices.Notification("Likes", current_user_name + " Liked your Photo");
-                                                                Sender sender = new Sender(notification, Common.currentToken); //send notification to itself
+                                                                Sender sender = new Sender(notification, getPostUserToken()); //send notification to itself
                                                                 apiService.sendNotification(sender)
                                                                         .enqueue(new Callback<MyResponse>() {
                                                                             @Override
@@ -258,6 +261,13 @@ public class Comments extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void setPostUserToken(String token) {
+        post_user_token = token;
+    }
+    public String getPostUserToken() {
+        return post_user_token;
     }
 
     @SuppressLint("CheckResult")

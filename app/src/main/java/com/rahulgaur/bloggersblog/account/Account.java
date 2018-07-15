@@ -31,12 +31,14 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.rahulgaur.bloggersblog.R;
 import com.rahulgaur.bloggersblog.ThemeAndSettings.SharedPref;
 import com.rahulgaur.bloggersblog.home.MainActivity;
+import com.rahulgaur.bloggersblog.notification.notificationServices.Common;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -64,6 +66,7 @@ public class Account extends AppCompatActivity {
     private Bitmap compressedImageFile;
     private SharedPref sharedPref;
     private Toolbar toolbar;
+    private String current_user_token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +87,8 @@ public class Account extends AppCompatActivity {
         adView = findViewById(R.id.newAccountAd);
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
+
+        current_user_token = Common.currentToken = FirebaseInstanceId.getInstance().getToken();
 
         profile = findViewById(R.id.circleImageView);
         final Button btn = findViewById(R.id.account_subBtn);
@@ -220,6 +225,7 @@ public class Account extends AppCompatActivity {
                 Map<String, String> userMap = new HashMap<>();
                 userMap.put("thumb_image", downloadThumbUri);
                 userMap.put("name", name);
+                userMap.put("token",current_user_token);
 
                 firebaseFirestore.collection("Users").document(user_id).set(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
