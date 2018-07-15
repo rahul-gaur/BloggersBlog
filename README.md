@@ -1,6 +1,8 @@
 # Blogger's Blog
 Blogger's Blog is a Android based application which is a simple Photo Blogging app.
 
+<img src="screenshots/welcomepage.png" alt="Welcome page" title = "Welcome Page"/>
+
 ## what you can do in Blogger's Blog
 - You can Post photos you like and want to share.
 - You can like other's Posts.
