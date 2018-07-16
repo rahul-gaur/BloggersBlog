@@ -50,7 +50,8 @@ Blogger's Blog is a Android based application which is a simple Photo Blogging a
      - ~~Notification in notification fragment.~~
      - ~~They should show notification if someone like or comment on your post.~~
      - ~~Notification in device.~~
-     - Notifications showing only in own device.
+     - ~~Notifications showing only in own device.~~
+     - Notification fragment is not working properly, sometime stucks in infinite loop.
 7. **Firebase Offline**
      - Names and profile pics need to be saved in cache.
      - It will reduce Internet usage and load faster.
