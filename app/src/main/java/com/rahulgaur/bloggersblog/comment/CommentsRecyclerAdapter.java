@@ -98,14 +98,17 @@ public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecycl
             @Override
             public void onClick(View view) {
                 holder.commentDeleteImageView.setEnabled(false);
+                Log.e("commentid delete",commentId);
+                Log.e("blogpostid delete",blogPostId);
                 firebaseFirestore.collection("Posts/").document(blogPostId).collection("Comments").document(commentId).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
+
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             try {
                                 commentList.remove(position);
-                            } catch (IndexOutOfBoundsException e){
-                                Log.e("comment remove","Comment remove exception "+e.getMessage());
+                            } catch (IndexOutOfBoundsException e) {
+                                Log.e("comment remove", "Comment remove exception " + e.getMessage());
                             }
                             notifyDataSetChanged();
                             holder.commentDeleteImageView.setEnabled(true);
@@ -159,7 +162,10 @@ public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecycl
 
         private void commentOwnership(String commentUser, String currentUserId, String postUserId) {
             commentDeleteImageView = mView.findViewById(R.id.cmnt_item_dlt_imgView);
-            if (commentUser.equals(currentUserId) || currentUserId.equals(postUserId)) {
+            if (currentUserId.equals(postUserId)) {
+                commentDeleteImageView.setEnabled(true);
+                commentDeleteImageView.setVisibility(View.VISIBLE);
+            } else if (commentUser.equals(currentUserId)) {
                 commentDeleteImageView.setEnabled(true);
                 commentDeleteImageView.setVisibility(View.VISIBLE);
             } else {

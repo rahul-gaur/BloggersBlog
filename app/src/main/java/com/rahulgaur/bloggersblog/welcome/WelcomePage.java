@@ -78,7 +78,7 @@ public class WelcomePage extends AppCompatActivity {
                                 sendToMain();
                             } else {
                                 String msg = Objects.requireNonNull(task.getException()).getMessage();
-                                Toast.makeText(WelcomePage.this, "Error: " + msg, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(WelcomePage.this, "Error: " + msg, Toast.LENGTH_LONG).show();
                                 progressBar.setVisibility(View.INVISIBLE);
                                 passTV.setText(null);
                             }

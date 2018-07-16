@@ -131,6 +131,8 @@ public class Comments extends AppCompatActivity {
                     final String post_picture = documentSnapshot.getString("thumb_image_url");
                     final String token = documentSnapshot.getString("token");
 
+                    post_user_token = token;
+
                     setPostUserToken(token);
                     String post_user = post_user_id;
                     setPostUserID(post_user);
@@ -219,44 +221,68 @@ public class Comments extends AppCompatActivity {
                                                         @Override
                                                         public void onComplete(@NonNull Task<DocumentReference> task) {
                                                             if (task.isSuccessful()) {
-                                                                com.rahulgaur.bloggersblog.notification.notificationServices.Notification notification = new com.rahulgaur.bloggersblog.notification.notificationServices.Notification("Likes", current_user_name + " Liked your Photo");
-                                                                Sender sender = new Sender(notification, getPostUserToken()); //send notification to itself
-                                                                apiService.sendNotification(sender)
-                                                                        .enqueue(new Callback<MyResponse>() {
-                                                                            @Override
-                                                                            public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
-                                                                                if (response.body().success == 1) {
-                                                                                    Log.e("Notification service ", "Success");
-                                                                                } else {
-                                                                                    Log.e("Notification service ", "Failed");
-                                                                                }
-                                                                            }
+                                                                firebaseFirestore.collection("Users/").document(post_user_id).addSnapshotListener(Comments.this, new EventListener<DocumentSnapshot>() {
+                                                                    @Override
+                                                                    public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
+                                                                        if (documentSnapshot.exists()) {
+                                                                            String token = documentSnapshot.getString("token");
+                                                                            com.rahulgaur.bloggersblog.notification.notificationServices.Notification notification = new com.rahulgaur.bloggersblog.notification.notificationServices.Notification("Likes", current_user_name + " Liked your Photo");
+                                                                            Sender sender = new Sender(notification, token); //send notification to itself
+                                                                            Log.e("Sender Token", "" + token);
+                                                                            apiService.sendNotification(sender)
+                                                                                    .enqueue(new Callback<MyResponse>() {
+                                                                                        @Override
+                                                                                        public void onResponse
+                                                                                                (Call<MyResponse> call, Response<MyResponse> response) {
+                                                                                            try {
+                                                                                                if (response.body().success == 1) {
+                                                                                                    Log.e("Notification service ", "Success");
+                                                                                                } else {
+                                                                                                    Log.e("Notification service ", "Failed");
+                                                                                                }
+                                                                                            } catch (NullPointerException ne) {
+                                                                                                Log.e("Notification", "Exception " + ne.getMessage());
+                                                                                            }
+                                                                                        }
 
-                                                                            @Override
-                                                                            public void onFailure(Call<MyResponse> call, Throwable t) {
-                                                                                Log.e("Notification service ", "Failed");
-                                                                            }
-                                                                        });
-                                                                Log.e("Comment notificaiton", "Comment Notification Added");
-                                                                progressBar.setVisibility(View.INVISIBLE);
-                                                            } else {
+                                                                                        @Override
+                                                                                        public void onFailure
+                                                                                                (Call<MyResponse> call, Throwable
+                                                                                                        t) {
+                                                                                            Log.e("Notification service ", "Failed");
+                                                                                        }
+                                                                                    });
+                                                                            Log.e("Comment notificaiton", "Comment Notification Added");
+                                                                            progressBar.setVisibility(View.INVISIBLE);
+                                                                        }
+                                                                    }
+                                                                });
+                                                            } else
+
+                                                            {
                                                                 Log.e("Comment notificaiton", "Comment Notification failed");
                                                             }
                                                         }
                                                     });
-                                                } else {
+                                                } else
+
+                                                {
                                                     Log.e("Comment notificaiton", "Comment Notification document not found");
                                                 }
                                             }
                                         });
-                                    } else {
+                                    } else
+
+                                    {
                                         comment_field.setText(null);
                                         comment_field.clearFocus();
                                     }
                                 }
                             });
 
-                } else {
+                } else
+
+                {
                     Toast.makeText(Comments.this, "Please write the comment", Toast.LENGTH_LONG).show();
                 }
             }
@@ -266,6 +292,7 @@ public class Comments extends AppCompatActivity {
     private void setPostUserToken(String token) {
         post_user_token = token;
     }
+
     public String getPostUserToken() {
         return post_user_token;
     }

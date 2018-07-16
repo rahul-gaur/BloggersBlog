@@ -159,7 +159,7 @@ public class Account extends AppCompatActivity {
 
                 if (isChanged) {
 
-                    if (!TextUtils.isEmpty(name)) {
+                    if (!TextUtils.isEmpty(name) && !mainImageURI.toString().isEmpty()) {
 
                         StorageReference image_path = storageReference.child("profile_images").child(user_id + ".jpg");
 
@@ -171,7 +171,7 @@ public class Account extends AppCompatActivity {
                                 } else {
                                     progressBar.setVisibility(View.INVISIBLE);
                                     String message = Objects.requireNonNull(task.getException()).getMessage();
-                                    Toast.makeText(Account.this, "Image Error: " + message, Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(Account.this, "Image Error: " + message, Toast.LENGTH_LONG).show();
                                 }
                             }
                         });
@@ -211,7 +211,7 @@ public class Account extends AppCompatActivity {
         }
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        compressedImageFile.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        compressedImageFile.compress(Bitmap.CompressFormat.JPEG, 50, baos);
         byte[] profileThumb = baos.toByteArray();
 
         UploadTask uploadTask = storageReference.child("profile_images/thumbs")

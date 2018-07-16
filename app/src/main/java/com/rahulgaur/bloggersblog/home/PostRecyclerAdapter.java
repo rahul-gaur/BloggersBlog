@@ -317,25 +317,40 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                                                                         @Override
                                                                         public void onComplete(@NonNull Task<DocumentReference> task) {
                                                                             if (task.isSuccessful()) {
-                                                                                com.rahulgaur.bloggersblog.notification.notificationServices.Notification notification = new com.rahulgaur.bloggersblog.notification.notificationServices.Notification("Likes", current_user_name + " Liked your Photo");
-                                                                                Sender sender = new Sender(notification, post_user_token); //send notification to itself
-                                                                                apiService.sendNotification(sender)
-                                                                                        .enqueue(new Callback<MyResponse>() {
-                                                                                            @Override
-                                                                                            public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
-                                                                                                if (response.body().success == 1) {
-                                                                                                    Log.e("Notification service ", "Success");
-                                                                                                } else {
-                                                                                                    Log.e("Notification service ", "Failed");
-                                                                                                }
-                                                                                            }
+                                                                                firebaseFirestore.collection("Users/").document(post_user_id).addSnapshotListener((Activity) context, new EventListener<DocumentSnapshot>() {
+                                                                                    @Override
+                                                                                    public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
+                                                                                        if (documentSnapshot.exists()) {
+                                                                                            String token = documentSnapshot.getString("token");
 
-                                                                                            @Override
-                                                                                            public void onFailure(Call<MyResponse> call, Throwable t) {
-                                                                                                Log.e("Notification service ", "Failed");
-                                                                                            }
-                                                                                        });
-                                                                                Log.e("Like notificaiton", "Like Notification Added");
+                                                                                            com.rahulgaur.bloggersblog.notification.notificationServices.Notification notification = new com.rahulgaur.bloggersblog.notification.notificationServices.Notification("Likes", current_user_name + " Liked your Photo");
+                                                                                            Sender sender = new Sender(notification, token); //send notification to itself
+                                                                                            Log.e("Sender Token", " " + token);
+                                                                                            apiService.sendNotification(sender)
+                                                                                                    .enqueue(new Callback<MyResponse>() {
+                                                                                                        @Override
+                                                                                                        public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
+                                                                                                            try {
+                                                                                                                if (response.body().success == 1) {
+                                                                                                                    Log.e("Notification service ", "Success");
+                                                                                                                } else {
+                                                                                                                    Log.e("Notification service ", "Failed");
+                                                                                                                }
+                                                                                                            } catch (NullPointerException ne) {
+                                                                                                                Log.e("Notificaiton", "Exception " + ne.getMessage());
+                                                                                                            }
+                                                                                                        }
+
+                                                                                                        @Override
+                                                                                                        public void onFailure(Call<MyResponse> call, Throwable t) {
+                                                                                                            Log.e("Notification service ", "Failed");
+                                                                                                        }
+                                                                                                    });
+                                                                                            Log.e("Like notificaiton", "Like Notification Added");
+
+                                                                                        }
+                                                                                    }
+                                                                                });
                                                                             } else {
                                                                                 Log.e("Like notificaiton", "Like Notification failed");
                                                                             }
@@ -430,48 +445,39 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                     @Override
                     public void onComplete(@NonNull final Task<DocumentSnapshot> task) {
                         if (task.getResult().exists()) {
-                            String post_name = task.getResult().getString("post_name");
+                            final FirebaseStorage storageReference = FirebaseStorage.getInstance();
+                            StorageReference delfile = storageReference.getReferenceFromUrl(thumb_image_url);
+                            delfile.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    ///the post deleted from the storage
+                                    if (task.isSuccessful()) {
 
-                            if (!post_name.isEmpty()) {
-                                final FirebaseStorage storageReference = FirebaseStorage.getInstance();
-                                StorageReference delfile = storageReference.getReferenceFromUrl(thumb_image_url);
-                                delfile.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        ///the post deleted from the storage
-                                        if (task.isSuccessful()) {
-
-                                            firebaseFirestore.collection("Posts").document(blogPostID).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Void> task) {
-                                                    if (task.isSuccessful()) {
-                                                        postList.remove(position);
-                                                        user_list.remove(position);
-                                                        Toast.makeText(context, "Post deleted", Toast.LENGTH_SHORT).show();
-                                                        progressDialog.dismiss();
-                                                        notifyDataSetChanged();
-                                                    } else {
-                                                        Toast.makeText(context, "Error while deleting post.", Toast.LENGTH_SHORT).show();
-                                                        Log.e("deleting post", "error in deleting entries from database " + task.getException().getMessage());
-                                                        progressDialog.dismiss();
-                                                        //error in deleting entries from database
-                                                    }
+                                        firebaseFirestore.collection("Posts").document(blogPostID).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (task.isSuccessful()) {
+                                                    postList.remove(position);
+                                                    user_list.remove(position);
+                                                    Toast.makeText(context, "Post deleted", Toast.LENGTH_SHORT).show();
+                                                    progressDialog.dismiss();
+                                                    notifyDataSetChanged();
+                                                } else {
+                                                    Toast.makeText(context, "Error while deleting post.", Toast.LENGTH_SHORT).show();
+                                                    Log.e("deleting post", "error in deleting entries from database " + task.getException().getMessage());
+                                                    progressDialog.dismiss();
+                                                    //error in deleting entries from database
                                                 }
-                                            });
-                                        } else {
-                                            Toast.makeText(context, "Error while deleting post.", Toast.LENGTH_SHORT).show();
-                                            progressDialog.dismiss();
-                                            Log.e("deleting post", "error deleting thumbnail from storage " + task.getException().getMessage());
-                                            //error in thumbnail deletion
-                                        }
+                                            }
+                                        });
+                                    } else {
+                                        Toast.makeText(context, "Error while deleting post.", Toast.LENGTH_SHORT).show();
+                                        progressDialog.dismiss();
+                                        Log.e("deleting post", "error deleting thumbnail from storage " + task.getException().getMessage());
+                                        //error in thumbnail deletion
                                     }
-                                });
-                            } else {
-                                progressDialog.dismiss();
-                                Toast.makeText(context, "Error while deleting post.", Toast.LENGTH_SHORT).show();
-                                Log.e("deleting post", "post not found " + task.getException().getMessage());
-                                //post not found
-                            }
+                                }
+                            });
                         }
                     }
                 });

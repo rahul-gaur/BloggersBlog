@@ -77,7 +77,7 @@ public class RegisterPage extends AppCompatActivity {
                                 } else {
                                     String msg = Objects.requireNonNull(task.getException()).getMessage();
                                     progressBar.setVisibility(View.INVISIBLE);
-                                    Toast.makeText(RegisterPage.this, "Error: " + msg, Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(RegisterPage.this, "Error: " + msg, Toast.LENGTH_LONG).show();
                                 }
                             }
                         });

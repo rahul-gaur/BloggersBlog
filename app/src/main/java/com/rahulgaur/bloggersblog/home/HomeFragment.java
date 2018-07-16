@@ -114,7 +114,7 @@ public class HomeFragment extends Fragment {
             firstQuery.addSnapshotListener(getActivity(), new EventListener<QuerySnapshot>() {
 
                 @Override
-                public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+                public void onEvent(final QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
                     if (!documentSnapshots.isEmpty()) {
                         for (DocumentChange doc : documentSnapshots.getDocumentChanges()) {
                             if (doc.getType() == DocumentChange.Type.ADDED) {

@@ -97,7 +97,7 @@ public class NewPostActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 final String post_desc = postDescET.getText().toString();
-                if (!TextUtils.isEmpty(post_desc)) {
+                if (!TextUtils.isEmpty(post_desc) && !postUri.toString().isEmpty()) {
                     progressBar.setVisibility(View.VISIBLE);
                     Toast.makeText(NewPostActivity.this, "Please wait..", Toast.LENGTH_LONG).show();
                     uploadBtn.setEnabled(false);
@@ -125,7 +125,7 @@ public class NewPostActivity extends AppCompatActivity {
                                 }
 
                                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                                compressedImageFile.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                                compressedImageFile.compress(Bitmap.CompressFormat.JPEG, 50, baos);
                                 byte[] dataThumb = baos.toByteArray();
 
                                 UploadTask uploadTask = storageReference
