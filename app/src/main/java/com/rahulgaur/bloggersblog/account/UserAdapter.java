@@ -24,13 +24,10 @@ import java.util.ArrayList;
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
     private ArrayList<GridViewList> postList;
-    private FirebaseAuth auth;
-    private FirebaseFirestore firebaseFirestore;
     private String postURL;
     private String postID;
     @SuppressLint("StaticFieldLeak")
     private static Context context;
-    private String current_userID;
 
     UserAdapter(ArrayList<GridViewList> postList) {
         this.postList = postList;
@@ -40,9 +37,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_profile_item, parent, false);
-        firebaseFirestore = FirebaseFirestore.getInstance();
         context = parent.getContext();
-        auth = FirebaseAuth.getInstance();
+        FirebaseAuth auth = FirebaseAuth.getInstance();
         return new ViewHolder(view);
     }
 

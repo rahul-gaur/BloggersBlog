@@ -14,8 +14,8 @@
         android:label="@string/app_name"
         android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true"
         android:screenOrientation="portrait"
+        android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
             android:name=".home.MainActivity"
@@ -46,21 +46,26 @@
         <activity
             android:name=".comment.Comments"
             android:screenOrientation="portrait" />
-        <activity android:name=".ThemeAndSettings.Settings"
+        <activity
+            android:name=".ThemeAndSettings.Settings"
             android:screenOrientation="portrait"
             tools:ignore="InnerclassSeparator" />
-        <activity android:name=".account.UserAccount"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".account.UserAccount"
+            android:screenOrientation="portrait" />
+
         <service android:name=".notification.notificationServices.MyFirebaseIdService">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
         <service android:name=".notification.notificationServices.MyFirebaseMessaging">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
+        <activity android:name=".Search.Search"></activity>
     </application>
 
 </manifest>
