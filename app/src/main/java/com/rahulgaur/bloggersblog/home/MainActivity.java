@@ -12,11 +12,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
+import com.airbnb.lottie.L;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -27,6 +30,10 @@ import com.rahulgaur.bloggersblog.account.AccountFragment;
 import com.rahulgaur.bloggersblog.notification.NotificationFragment;
 import com.rahulgaur.bloggersblog.notification.notificationServices.Common;
 import com.rahulgaur.bloggersblog.welcome.WelcomePage;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -45,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         sharedPref = new SharedPref(this);
-        if (sharedPref.loadNightModeState()){
+        if (sharedPref.loadNightModeState()) {
             setTheme(R.style.darkTheme);
         } else {
             setTheme(R.style.AppTheme);
@@ -56,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
 
         Common.currentToken = FirebaseInstanceId.getInstance().getToken();
 
-        Log.d("Main Activity","token "+Common.currentToken);
+        Log.d("Main Activity", "token " + Common.currentToken);
 
         final FirebaseUser current_user = auth.getCurrentUser();
         assert current_user != null;
@@ -127,6 +134,25 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                     if (task.isSuccessful()) {
+                        String token = task.getResult().getString("token");
+                        if (token.isEmpty() || token.equals(null)) {
+                            final String current_user_token = Common.currentToken = FirebaseInstanceId.getInstance().getToken();
+
+                            Map<String, Object> userMap = new HashMap<>();
+                            userMap.put("token", current_user_token);
+
+                            firebaseFirestore.collection("Users").document(current_user_id).update(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()){
+                                        Log.e("token main","token "+current_user_token);
+                                    } else {
+                                        Log.e("token main","else ");
+                                    }
+                                }
+                            });
+
+                        }
                         if (!task.getResult().exists()) {
                             sendToAccount();
                         }

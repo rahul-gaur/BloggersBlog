@@ -226,7 +226,7 @@ public class Comments extends AppCompatActivity {
                                                                     public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
                                                                         if (documentSnapshot.exists()) {
                                                                             String token = documentSnapshot.getString("token");
-                                                                            com.rahulgaur.bloggersblog.notification.notificationServices.Notification notification = new com.rahulgaur.bloggersblog.notification.notificationServices.Notification("Likes", current_user_name + " Liked your Photo");
+                                                                            com.rahulgaur.bloggersblog.notification.notificationServices.Notification notification = new com.rahulgaur.bloggersblog.notification.notificationServices.Notification("Likes", current_user_name + " Commented "+comment_message);
                                                                             Sender sender = new Sender(notification, token); //send notification to itself
                                                                             Log.e("Sender Token", "" + token);
                                                                             apiService.sendNotification(sender)

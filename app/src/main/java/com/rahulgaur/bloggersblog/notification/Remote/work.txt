@@ -14,3 +14,15 @@ fcm key = AAAA9dNx_hQ:APA91bG650cuT1xEVYNqsya-FUOxyHIBeuebwXAzDBIX3IsnlPkfwNxRP2
 ],
 }
 
+private void UpdateData() {
+        DocumentReference contact = db.collection("PhoneBook").document("Contacts");
+        contact.update(NAME_KEY, "Kenny");
+        contact.update(EMAIL_KEY, "kenny@gmail.com");
+        contact.update(PHONE_KEY, "090-911-419")
+            .addOnSuccessListener(new OnSuccessListener < Void > () {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Toast.makeText(MainActivity.this, "Updated Successfully",
+                        Toast.LENGTH_SHORT).show();
+                }
+            });

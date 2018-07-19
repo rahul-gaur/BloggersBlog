@@ -753,12 +753,4 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
         }
 
     }
-
-    /*
-    public void setFilter(ArrayList<User> newUser) {
-        user_list = new ArrayList<>();
-        user_list.addAll(newUser);
-        Log.v("madapter", "setFilter called  ");
-        notifyDataSetChanged();
-    }*/
 }
