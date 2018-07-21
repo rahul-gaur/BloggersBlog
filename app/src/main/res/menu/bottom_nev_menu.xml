@@ -4,13 +4,17 @@
     <item
         android:id="@+id/bottom_home"
         android:icon="@drawable/baseline_home_24"
-        android:title="Home" />
+        android:title="@string/home" />
+    <item
+        android:id="@+id/bottom_search"
+        android:icon="@mipmap/search_ico"
+        android:title="@string/searchUser"/>
     <item
         android:id="@+id/bottom_notification"
         android:icon="@drawable/baseline_notification_important_24"
-        android:title="Notification" />
+        android:title="@string/notification" />
     <item
         android:id="@+id/bottom_profile"
         android:icon="@drawable/baseline_person_24"
-        android:title="Profile" />
+        android:title="@string/profile" />
 </menu>

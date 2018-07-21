@@ -7,7 +7,6 @@
     android:background="?attr/colorBackground"
     tools:context=".home.NewPostActivity">
 
-
     <ImageView
         android:id="@+id/new_post_imageView"
         android:layout_width="0dp"
@@ -16,26 +15,36 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_launcher_background" />
+        app:srcCompat="@drawable/ic_launcher_background"
+        android:contentDescription="Post"
+        tools:ignore="HardcodedText" />
 
-    <EditText
-        android:id="@+id/new_post_descET"
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/new_post_descETEditTextLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:ems="10"
-        android:hint="@string/enter_description"
-        android:inputType="textMultiLine"
-        android:padding="10dp"
-        android:textColor="?attr/secondaryTextColor"
-        android:textColorHint="?attr/hintColor"
-        android:textSize="25sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/newAccountAd" />
+        app:layout_constraintTop_toBottomOf="@+id/newAccountAd">
+
+        <EditText
+            android:id="@+id/new_post_descET"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:ems="10"
+            android:hint="@string/enter_description"
+            android:inputType="textMultiLine"
+            android:padding="10dp"
+            android:textColor="?attr/secondaryTextColor"
+            android:textColorHint="?attr/hintColor"
+            android:textSize="25sp" />
+
+    </android.support.design.widget.TextInputLayout>
 
     <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
         android:id="@+id/newAccountAd"
@@ -66,7 +75,7 @@
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/new_post_descET" />
+        app:layout_constraintTop_toBottomOf="@+id/new_post_descETEditTextLayout" />
 
     <ProgressBar
         android:id="@+id/new_post_progressBar"

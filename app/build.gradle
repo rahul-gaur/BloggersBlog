@@ -64,6 +64,12 @@ dependencies {
 
     //loading buttons
     implementation 'com.github.dmytrodanylyk.android-process-button:library:1.0.4'
+
+    //google design
+    implementation 'com.android.support:design:27.1.1'
+
+    //apache lib for capitalizing 1st letter
+    implementation 'org.apache.commons:commons-lang3:3.6'
 }
 
 apply plugin: 'com.google.gms.google-services'

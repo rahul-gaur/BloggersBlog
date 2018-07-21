@@ -11,11 +11,11 @@
         android:id="@+id/account_backImage"
         android:layout_width="1000dp"
         android:layout_height="0dp"
+        android:contentDescription="@string/profile"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="?attr/primaryLightColor"
-        android:contentDescription="@string/profile" />
+        app:srcCompat="?attr/primaryLightColor" />
 
     <ProgressBar
         android:id="@+id/reg_progressBar"
@@ -23,6 +23,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:indeterminate="true"
+        android:paddingTop="10dp"
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -45,56 +46,76 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <android.support.v7.widget.AppCompatAutoCompleteTextView
-        android:id="@+id/reg_email"
-        android:layout_width="0dp"
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/reg_emailLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:ems="10"
-        android:textColorHint="?attr/primaryTextColor"
-        android:theme="@style/Theme.AppCompat.Light"
-        android:textColor="?attr/primaryTextColor"
-        android:hint="@string/please_enter_a_email"
-        android:inputType="textEmailAddress"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/register_logo" />
+        app:layout_constraintTop_toBottomOf="@+id/register_logo">
 
-    <EditText
-        android:id="@+id/reg_pass"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:ems="10"
-        android:textColorHint="?attr/primaryTextColor"
-        android:theme="@style/Theme.AppCompat.Light"
-        android:textColor="?attr/primaryTextColor"
-        android:hint="@string/please_enter_a_password"
-        android:inputType="textPassword"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/reg_email" />
+        <android.support.v7.widget.AppCompatAutoCompleteTextView
+            android:id="@+id/reg_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:ems="10"
+            android:hint="@string/please_enter_a_email"
+            android:inputType="textEmailAddress"
+            android:textColor="?attr/primaryTextColor"
+            android:textColorHint="?attr/primaryTextColor"
+            android:theme="@style/Theme.AppCompat.Light" />
 
-    <EditText
-        android:id="@+id/reg_passConfirm"
-        android:layout_width="0dp"
-        android:theme="@style/Theme.AppCompat.Light"
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/reg_passLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColorHint="?attr/primaryTextColor"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:ems="10"
-        android:textColor="?attr/primaryTextColor"
-        android:hint="@string/please_confirm_password"
-        android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/reg_pass" />
+        app:layout_constraintTop_toBottomOf="@+id/reg_emailLayout">
+
+        <EditText
+            android:id="@+id/reg_pass"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:ems="10"
+            android:hint="@string/please_enter_a_password"
+            android:inputType="textPassword"
+            android:textColor="?attr/primaryTextColor"
+            android:textColorHint="?attr/primaryTextColor"
+            android:theme="@style/Theme.AppCompat.Light" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/reg_passConfirmLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/reg_passLayout">
+
+        <EditText
+            android:id="@+id/reg_passConfirm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:ems="10"
+            android:hint="@string/please_confirm_password"
+            android:inputType="textPassword"
+            android:textColor="?attr/primaryTextColor"
+            android:textColorHint="?attr/primaryTextColor"
+            android:theme="@style/Theme.AppCompat.Light" />
+    </android.support.design.widget.TextInputLayout>
 
     <Button
         android:id="@+id/reg_regBtn"
@@ -105,8 +126,8 @@
         android:layout_marginStart="8dp"
         android:background="?attr/colorAccent"
         android:padding="10dp"
-        android:textSize="15sp"
         android:text="@string/register_to_blogger_s_blog"
+        android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

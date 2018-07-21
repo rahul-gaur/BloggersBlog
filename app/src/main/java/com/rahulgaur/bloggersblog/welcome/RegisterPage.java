@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -49,6 +50,9 @@ public class RegisterPage extends AppCompatActivity {
         final TextView emailTV = findViewById(R.id.reg_email);
         final TextView passTV = findViewById(R.id.reg_pass);
         final TextView passConfirmTV = findViewById(R.id.reg_passConfirm);
+        final TextInputLayout emailLayout = findViewById(R.id.reg_emailLayout);
+        final TextInputLayout passLayout = findViewById(R.id.reg_passLayout);
+        final TextInputLayout passConfirmLayout = findViewById(R.id.reg_passConfirmLayout);
 
         Window w = getWindow();
         w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
@@ -60,9 +64,9 @@ public class RegisterPage extends AppCompatActivity {
         reg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String email = emailTV.getText().toString();
-                String pass = passTV.getText().toString();
-                String passConfirm = passConfirmTV.getText().toString();
+                String email = emailLayout.getEditText().getText().toString();
+                String pass = passLayout.getEditText().getText().toString();
+                String passConfirm = passConfirmLayout.getEditText().getText().toString();
 
                 if (!TextUtils.isEmpty(email) && !TextUtils.isEmpty(pass) && !TextUtils.isEmpty(passConfirm)) {
                     if (pass.equals(passConfirm)) {
@@ -83,6 +87,8 @@ public class RegisterPage extends AppCompatActivity {
                         });
                     } else {
                         Toast.makeText(RegisterPage.this, "Password didn't match..", Toast.LENGTH_SHORT).show();
+                        passConfirmLayout.setError("Password didn't match");
+                        passLayout.setError("Password didn't match");
                     }
                 } else {
                     Toast.makeText(RegisterPage.this, "Please fill all the fields..", Toast.LENGTH_SHORT).show();

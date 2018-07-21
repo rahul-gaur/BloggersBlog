@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.dd.processbutton.iml.ActionProcessButton;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
@@ -41,6 +43,8 @@ import com.rahulgaur.bloggersblog.home.MainActivity;
 import com.rahulgaur.bloggersblog.notification.notificationServices.Common;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -67,6 +71,8 @@ public class Account extends AppCompatActivity {
     private SharedPref sharedPref;
     private Toolbar toolbar;
     private String current_user_token;
+    private TextInputLayout textInputLayout;
+    private ActionProcessButton btn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,10 +97,10 @@ public class Account extends AppCompatActivity {
         current_user_token = Common.currentToken = FirebaseInstanceId.getInstance().getToken();
 
         profile = findViewById(R.id.circleImageView);
-        final Button btn = findViewById(R.id.account_subBtn);
+        btn = findViewById(R.id.account_subBtn_Flat);
         final TextView nameTV = findViewById(R.id.new_post_descET);
         progressBar = findViewById(R.id.account_progressBar);
-
+        textInputLayout = findViewById(R.id.username_editTextLayout);
         toolbar = findViewById(R.id.account_toolBar);
 
         setSupportActionBar(toolbar);
@@ -154,12 +160,15 @@ public class Account extends AppCompatActivity {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String name = nameTV.getText().toString();
+                final String name = StringUtils.capitalize(Objects.requireNonNull(textInputLayout.getEditText()).getText().toString());
                 progressBar.setVisibility(View.VISIBLE);
+
+                btn.setMode(ActionProcessButton.Mode.ENDLESS);
 
                 if (isChanged) {
 
                     if (!TextUtils.isEmpty(name) && !mainImageURI.toString().isEmpty()) {
+
 
                         StorageReference image_path = storageReference.child("profile_images").child(user_id + ".jpg");
 
@@ -169,6 +178,7 @@ public class Account extends AppCompatActivity {
                                 if (task.isSuccessful()) {
                                     firebaseStore(task, name);
                                 } else {
+                                    btn.setProgress(-1);
                                     progressBar.setVisibility(View.INVISIBLE);
                                     String message = Objects.requireNonNull(task.getException()).getMessage();
                                     Toast.makeText(Account.this, "Image Error: " + message, Toast.LENGTH_LONG).show();
@@ -177,6 +187,7 @@ public class Account extends AppCompatActivity {
                         });
 
                     } else {
+                        btn.setProgress(-1);
                         Toast.makeText(Account.this, "Please write your full name..", Toast.LENGTH_SHORT).show();
                     }
                 } else {
@@ -206,51 +217,53 @@ public class Account extends AppCompatActivity {
                     .setMaxWidth(200)
                     .setQuality(10)
                     .compressToBitmap(newImageFile);
+
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            compressedImageFile.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+            byte[] profileThumb = baos.toByteArray();
+
+            UploadTask uploadTask = storageReference.child("profile_images/thumbs")
+                    .child(randomName + ".jpg").putBytes(profileThumb);
+
+            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    String downloadThumbUri = taskSnapshot.getDownloadUrl().toString();
+
+                    Map<String, String> userMap = new HashMap<>();
+                    userMap.put("thumb_image", downloadThumbUri);
+                    userMap.put("name", name);
+                    userMap.put("token", current_user_token);
+
+                    firebaseFirestore.collection("Users").document(user_id).set(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+
+                            if (task.isSuccessful()) {
+                                progressBar.setVisibility(View.INVISIBLE);
+                                Toast.makeText(Account.this, "Profile updated..", Toast.LENGTH_SHORT).show();
+                                Intent i = new Intent(Account.this, MainActivity.class);
+                                startActivity(i);
+                                finish();
+                                btn.setProgress(100);
+                            } else {
+                                progressBar.setVisibility(View.INVISIBLE);
+                                String message = Objects.requireNonNull(task.getException()).getMessage();
+                                Toast.makeText(Account.this, "Firestore error: " + message, Toast.LENGTH_SHORT).show();
+                                btn.setProgress(-1);
+                            }
+
+                        }
+                    });
+
+                    progressBar.setVisibility(View.INVISIBLE);
+
+                }
+            });
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        compressedImageFile.compress(Bitmap.CompressFormat.JPEG, 50, baos);
-        byte[] profileThumb = baos.toByteArray();
-
-        UploadTask uploadTask = storageReference.child("profile_images/thumbs")
-                .child(randomName + ".jpg").putBytes(profileThumb);
-
-        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                String downloadThumbUri = taskSnapshot.getDownloadUrl().toString();
-
-                Map<String, String> userMap = new HashMap<>();
-                userMap.put("thumb_image", downloadThumbUri);
-                userMap.put("name", name);
-                userMap.put("token",current_user_token);
-
-                firebaseFirestore.collection("Users").document(user_id).set(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-
-                        if (task.isSuccessful()) {
-                            progressBar.setVisibility(View.INVISIBLE);
-                            Toast.makeText(Account.this, "Profile updated..", Toast.LENGTH_SHORT).show();
-                            Intent i = new Intent(Account.this, MainActivity.class);
-                            startActivity(i);
-                            finish();
-                        } else {
-                            progressBar.setVisibility(View.INVISIBLE);
-                            String message = Objects.requireNonNull(task.getException()).getMessage();
-                            Toast.makeText(Account.this, "Firestore error: " + message, Toast.LENGTH_SHORT).show();
-
-                        }
-
-                    }
-                });
-
-                progressBar.setVisibility(View.INVISIBLE);
-
-            }
-        });
     }
 
     private void ImagePicker() {

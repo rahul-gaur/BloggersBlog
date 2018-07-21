@@ -65,7 +65,6 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".Search.Search"></activity>
     </application>
 
 </manifest>

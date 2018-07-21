@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Blogger\'s Blog</string>
     <string name="welcome_to_blogger_s_blog">WELCOME TO BLOGGER\'S BLOG</string>
     <string name="register_to_blogger_s_blog">Register to Blogger\'s Blog</string>
@@ -10,7 +10,7 @@
     <string name="please_enter_a_password">Please enter a password</string>
     <string name="please_enter_a_email">Please enter a Email</string>
     <string name="please_confirm_password">Please confirm password</string>
-    <string name="search">Search</string>
+    <string name="searchUser">Search</string>
     <string name="profile">Profile</string>
     <string name="log_out_appBar">Log Out</string>
     <string name="enter_your_name">Enter your name</string>
@@ -32,4 +32,9 @@
     <string name="some_notification">Some Notification</string>
     <string name="blocked_users">Blocked Users</string>
     <string name="unblock">unblock</string>
+    <string name="home">Home</string>
+    <string name="notification">Notification</string>
+    <string name="search_name">Search Name</string>
+    <string name="search_btn">Search</string>
+    <string name="forgot_password">Forgot Password</string>
 </resources>

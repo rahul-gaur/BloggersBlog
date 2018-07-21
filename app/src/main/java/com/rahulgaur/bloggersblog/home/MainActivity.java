@@ -12,18 +12,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
-import com.airbnb.lottie.L;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.rahulgaur.bloggersblog.R;
+import com.rahulgaur.bloggersblog.Search.SearchFragment;
 import com.rahulgaur.bloggersblog.ThemeAndSettings.SharedPref;
 import com.rahulgaur.bloggersblog.account.Account;
 import com.rahulgaur.bloggersblog.account.AccountFragment;
@@ -33,7 +31,6 @@ import com.rahulgaur.bloggersblog.welcome.WelcomePage;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -45,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private HomeFragment homeFrag;
     private NotificationFragment notiFrag;
     private AccountFragment accountFrag;
+    private SearchFragment searchFrag;
 
     private SharedPref sharedPref;
 
@@ -73,14 +71,15 @@ public class MainActivity extends AppCompatActivity {
 
         if (auth.getCurrentUser() != null) {
 
+            //initializing fragments
             homeFrag = new HomeFragment();
             notiFrag = new NotificationFragment();
             accountFrag = new AccountFragment();
-
+            searchFrag = new SearchFragment();
             initializeFragment();
 
+            //bottom navigation
             BottomNavigationView bottomNavigationView = findViewById(R.id.main_bottomNev);
-
             bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -94,6 +93,9 @@ public class MainActivity extends AppCompatActivity {
                             return true;
                         case R.id.bottom_profile:
                             fragmentReplace(accountFrag);
+                            return true;
+                        case R.id.bottom_search:
+                            fragmentReplace(searchFrag);
                             return true;
                         default:
                             return false;
@@ -144,10 +146,10 @@ public class MainActivity extends AppCompatActivity {
                             firebaseFirestore.collection("Users").document(current_user_id).update(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()){
-                                        Log.e("token main","token "+current_user_token);
+                                    if (task.isSuccessful()) {
+                                        Log.e("token main", "token " + current_user_token);
                                     } else {
-                                        Log.e("token main","else ");
+                                        Log.e("token main", "else ");
                                     }
                                 }
                             });
@@ -184,9 +186,11 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.add(R.id.main_fragLayout, homeFrag);
         fragmentTransaction.add(R.id.main_fragLayout, notiFrag);
         fragmentTransaction.add(R.id.main_fragLayout, accountFrag);
+        fragmentTransaction.add(R.id.main_fragLayout, searchFrag);
 
         fragmentTransaction.hide(notiFrag);
         fragmentTransaction.hide(accountFrag);
+        fragmentTransaction.hide(searchFrag);
 
         fragmentTransaction.commit();
 
@@ -203,14 +207,22 @@ public class MainActivity extends AppCompatActivity {
         if (fragment == homeFrag) {
             fragmentTransaction.hide(accountFrag);
             fragmentTransaction.hide(notiFrag);
+            fragmentTransaction.hide(searchFrag);
         }
         if (fragment == accountFrag) {
             fragmentTransaction.hide(homeFrag);
             fragmentTransaction.hide(notiFrag);
+            fragmentTransaction.hide(searchFrag);
         }
         if (fragment == notiFrag) {
             fragmentTransaction.hide(accountFrag);
             fragmentTransaction.hide(homeFrag);
+            fragmentTransaction.hide(searchFrag);
+        }
+        if (fragment == searchFrag) {
+            fragmentTransaction.hide(accountFrag);
+            fragmentTransaction.hide(homeFrag);
+            fragmentTransaction.hide(notiFrag);
         }
         fragmentTransaction.show(fragment);
         fragmentTransaction.commit();

@@ -65,11 +65,15 @@ public class NotificationRecyclerAdapter extends RecyclerView.Adapter<Notificati
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
-                    String postURL = task.getResult().getString("thumb_image_url");
-                    Log.e("Notification", "post_id " + noti_postID);
-                    Log.e("Notification", "image url " + postURL);
-                    holder.setPostImage(postURL);
-                    notifyDataSetChanged();
+                    try {
+                        String postURL = task.getResult().getString("thumb_image_url");
+                        Log.e("Notification", "post_id " + noti_postID);
+                        Log.e("Notification", "image url " + postURL);
+                        holder.setPostImage(postURL);
+                        notifyDataSetChanged();
+                    } catch (Exception e){
+                        Log.e("Notification getting","Exception "+e.getMessage());
+                    }
                 } else {
                     Log.e("Notification", "else image url");
                 }
