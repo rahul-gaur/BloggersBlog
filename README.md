@@ -39,9 +39,9 @@ Blogger's Blog is a Android based application which is a simple Photo Blogging a
 3. **Profile**
      - ~~Profile of any other person is not working.~~
      - ~~Loading posts of that user.~~
-4. **Search**
-     - Searching any user is not working as I wanted it to be.
-     - It can search Posts of anyone from the RecyclerView.
+4. ~~**Search**~~
+     - ~~Searching any user is not working as I wanted it to be.~~
+     - ~~It can search Posts of anyone from the RecyclerView.~~
 5. ~~**Posts from Profile**~~
      - ~~Click on Posts from profile is not oppening anything.~~
      - ~~It should show the comments activity.~~
