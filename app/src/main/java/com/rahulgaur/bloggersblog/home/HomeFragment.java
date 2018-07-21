@@ -1,7 +1,6 @@
 package com.rahulgaur.bloggersblog.home;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -90,7 +89,6 @@ public class HomeFragment extends Fragment {
         auth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
 
-
         if (auth.getCurrentUser() != null) {
 
             swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -109,7 +107,7 @@ public class HomeFragment extends Fragment {
             ((AppCompatActivity) Objects.requireNonNull(getActivity())).setSupportActionBar(toolbar);
             setHasOptionsMenu(true);
 
-            //adding 5 posts on create
+            //adding posts
             Query firstQuery = firebaseFirestore.collection("Posts").orderBy("timestamp", Query.Direction.DESCENDING);
             firstQuery.addSnapshotListener(getActivity(), new EventListener<QuerySnapshot>() {
 

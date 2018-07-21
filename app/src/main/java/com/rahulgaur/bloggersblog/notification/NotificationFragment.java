@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -23,7 +22,6 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.rahulgaur.bloggersblog.R;
 import com.rahulgaur.bloggersblog.ThemeAndSettings.SharedPref;
-import com.rahulgaur.bloggersblog.account.UserAccount;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +46,7 @@ public class NotificationFragment extends Fragment {
     public NotificationFragment() {
         // Required empty public constructor
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -63,14 +62,6 @@ public class NotificationFragment extends Fragment {
 
         swipeRefreshLayout = view.findViewById(R.id.frag_noti_swipeRefresh);
 
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                swipeRefreshLayout.setRefreshing(false);
-                notificationRecyclerAdapter.notifyDataSetChanged();
-            }
-        });
-
         toolbar = view.findViewById(R.id.noti_frag_toolbar);
 
         ((AppCompatActivity) Objects.requireNonNull(getActivity())).setSupportActionBar(toolbar);
@@ -85,12 +76,22 @@ public class NotificationFragment extends Fragment {
 
         notificationRecyclerAdapter = new NotificationRecyclerAdapter(notificationLists);
 
-        RecyclerView notiRecyclerView = view.findViewById(R.id.notification_recyclerView);
+        final RecyclerView notiRecyclerView = view.findViewById(R.id.notification_recyclerView);
         notiRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         notiRecyclerView.setAdapter(notificationRecyclerAdapter);
 
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeRefreshLayout.setRefreshing(false);
+                notiRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                notiRecyclerView.setAdapter(notificationRecyclerAdapter);
+                notificationRecyclerAdapter.notifyDataSetChanged();
+            }
+        });
+
         //notification retrieving
-        Query sortNotification = firebaseFirestore.collection("Users/" + current_user_id + "/Notification").orderBy("timestamp", Query.Direction.ASCENDING);
+        Query sortNotification = firebaseFirestore.collection("Users/" + current_user_id + "/Notification").orderBy("timestamp", Query.Direction.DESCENDING);
         sortNotification.addSnapshotListener((Activity) getContext(), new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {

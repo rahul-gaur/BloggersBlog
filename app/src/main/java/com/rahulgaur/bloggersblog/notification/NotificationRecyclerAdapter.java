@@ -19,7 +19,6 @@ import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.rahulgaur.bloggersblog.R;
@@ -53,6 +52,7 @@ public class NotificationRecyclerAdapter extends RecyclerView.Adapter<Notificati
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
+        //holder.setIsRecyclable(false);
         noti_message = notificationLists.get(position).getMessage();
         noti_postID = notificationLists.get(position).getPost_id();
 
@@ -61,6 +61,7 @@ public class NotificationRecyclerAdapter extends RecyclerView.Adapter<Notificati
 
         final String notificationID = notificationLists.get(position).NotificationID;
 
+        //getting post image
         firebaseFirestore.collection("Posts").document(noti_postID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -70,9 +71,8 @@ public class NotificationRecyclerAdapter extends RecyclerView.Adapter<Notificati
                         Log.e("Notification", "post_id " + noti_postID);
                         Log.e("Notification", "image url " + postURL);
                         holder.setPostImage(postURL);
-                        notifyDataSetChanged();
-                    } catch (Exception e){
-                        Log.e("Notification getting","Exception "+e.getMessage());
+                    } catch (Exception e) {
+                        Log.e("Notification getting", "Exception " + e.getMessage());
                     }
                 } else {
                     Log.e("Notification", "else image url");
@@ -87,11 +87,14 @@ public class NotificationRecyclerAdapter extends RecyclerView.Adapter<Notificati
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                         if (task.isSuccessful()) {
-                            noti_message = task.getResult().getString("message");
-                            holder.setTextView(noti_message);
-                            notifyDataSetChanged();
-                            Log.e("Notification", "current user id " + current_user_id);
-                            Log.e("Notification", "message " + noti_message);
+                            try {
+                                noti_message = task.getResult().getString("message");
+                                holder.setTextView(noti_message);
+                                Log.e("Notification", "current user id " + current_user_id);
+                                Log.e("Notification", "message " + noti_message);
+                            } catch (Exception e) {
+                                Log.e("NotiRecycler", "Exception " + e.getMessage());
+                            }
                         } else {
                             Log.e("Notification", "else message ");
                         }
@@ -140,8 +143,8 @@ public class NotificationRecyclerAdapter extends RecyclerView.Adapter<Notificati
                 Glide.with(context)
                         .applyDefaultRequestOptions(requestOptions)
                         .load(imageURL).into(imageView);
-            } catch (Exception e1){
-                Log.e("Notification","Glide exceptioin "+ e1.getMessage());
+            } catch (Exception e1) {
+                Log.e("Notification", "Glide exceptioin " + e1.getMessage());
             }
             //progressDialog.dismiss();
         }

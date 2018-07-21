@@ -84,15 +84,19 @@ public class SearchFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
                 if (count > 0) {
+                    //this is to capital the First letter from the editText
                     String name = StringUtils.capitalize(charSequence.toString());
                     Log.e("Search", "name " + name);
                     CollectionReference ref = firebaseFirestore.collection("Users");
+                    //this is the workaround for "LIKE" query of SQL
                     Query query = ref.orderBy("name").startAt(name).endAt(name + "\uf8ff");
                     query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                             if (task.isSuccessful()) {
+                                //to remove items from the list every time before loop
                                 userList.removeAll(userList);
+
                                 for (DocumentSnapshot documentSnapshot : task.getResult()) {
                                     String user_id = documentSnapshot.getId();
                                     SearchList user = documentSnapshot.toObject(SearchList.class).withID(user_id);

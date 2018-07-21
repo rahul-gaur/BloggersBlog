@@ -98,8 +98,8 @@ public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecycl
             @Override
             public void onClick(View view) {
                 holder.commentDeleteImageView.setEnabled(false);
-                Log.e("commentid delete",commentId);
-                Log.e("blogpostid delete",blogPostId);
+                Log.e("commentid delete", commentId);
+                Log.e("blogpostid delete", blogPostId);
                 firebaseFirestore.collection("Posts/").document(blogPostId).collection("Comments").document(commentId).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
 
@@ -168,9 +168,6 @@ public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecycl
             } else if (commentUser.equals(currentUserId)) {
                 commentDeleteImageView.setEnabled(true);
                 commentDeleteImageView.setVisibility(View.VISIBLE);
-            } else {
-                commentDeleteImageView.setEnabled(false);
-                commentDeleteImageView.setVisibility(View.INVISIBLE);
             }
         }
     }
