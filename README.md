@@ -36,7 +36,7 @@ Blogger's Blog is a Android based application which is a simple Photo Blogging a
      - Anon.
 2. ~~**Comment**~~
      - ~~deleting your comment.~~
-3. **Profile**
+3. ~~**Profile**~~
      - ~~Profile of any other person is not working.~~
      - ~~Loading posts of that user.~~
 4. ~~**Search**~~
@@ -45,13 +45,13 @@ Blogger's Blog is a Android based application which is a simple Photo Blogging a
 5. ~~**Posts from Profile**~~
      - ~~Click on Posts from profile is not oppening anything.~~
      - ~~It should show the comments activity.~~
-6. **Notification**
+6. ~~**Notification**~~
      - ~~Notifications are not working at all.~~
      - ~~Notification in notification fragment.~~
      - ~~They should show notification if someone like or comment on your post.~~
      - ~~Notification in device.~~
      - ~~Notifications showing only in own device.~~
-     - Notification fragment is not working properly, sometime stucks in infinite loop.
+     - ~~Notification fragment is not working properly, sometime stucks in infinite loop.~~
 7. **Firebase Offline**
      - Names and profile pics need to be saved in cache.
      - It will reduce Internet usage and load faster.
