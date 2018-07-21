@@ -6,7 +6,11 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -35,15 +39,19 @@ import com.rahulgaur.bloggersblog.blogPost.User;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class SearchFragment extends Fragment {
-    String name;
-    FirebaseFirestore firebaseFirestore;
-    FirebaseAuth auth;
+    private String name;
+    private FirebaseFirestore firebaseFirestore;
+    private FirebaseAuth auth;
+    private ArrayList<SearchList> userList;
+    private RecyclerView recyclerView;
+    private SearchRecyclerAdapter searchRecyclerAdapter;
 
     public SearchFragment() {
         // Required empty public constructor
@@ -55,41 +63,57 @@ public class SearchFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_search, container, false);
-        Button searchBtn = view.findViewById(R.id.searchFrag_btn);
         final TextInputLayout textInputLayout = view.findViewById(R.id.searchFrag_textlayout);
         EditText editText = view.findViewById(R.id.searchFrag_textView);
+
+        userList = new ArrayList<>();
+
+        recyclerView = view.findViewById(R.id.searchFrag_recyclerView);
+        searchRecyclerAdapter = new SearchRecyclerAdapter(userList);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setAdapter(searchRecyclerAdapter);
 
         firebaseFirestore = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
 
-        searchBtn.setOnClickListener(new View.OnClickListener() {
+        editText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onClick(View view) {
-                name = textInputLayout.getEditText().getText().toString();
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
 
-                if (name.isEmpty() || name.equals("") || name.equals(" ")) {
-                    textInputLayout.setError("Please write some name");
-                } else {
-                    name = StringUtils.capitalize(name);
-                    Log.e("Search", "name entered "+name);
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                if (count > 0) {
+                    String name = StringUtils.capitalize(charSequence.toString());
+                    Log.e("Search", "name " + name);
                     CollectionReference ref = firebaseFirestore.collection("Users");
-                    Query query = ref.orderBy("name").startAt(name).endAt(name+"\uf8ff");
+                    Query query = ref.orderBy("name").startAt(name).endAt(name + "\uf8ff");
                     query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful()){
-                                for (DocumentSnapshot documentSnapshot : task.getResult()){
-                                    User user = documentSnapshot.toObject(User.class);
+                            if (task.isSuccessful()) {
+                                userList.removeAll(userList);
+                                for (DocumentSnapshot documentSnapshot : task.getResult()) {
+                                    String user_id = documentSnapshot.getId();
+                                    SearchList user = documentSnapshot.toObject(SearchList.class).withID(user_id);
+                                    userList.add(user);
                                     String user_name = documentSnapshot.getString("name");
-                                    Log.e("Search", "Name "+user_name);
+                                    Log.e("Search", "Name " + user_name + " user id " + user_id);
+                                    searchRecyclerAdapter.notifyDataSetChanged();
                                 }
                             } else {
                                 Log.e("Search", "No data");
+                                userList.removeAll(userList);
                             }
                         }
                     });
-
+                } else {
+                    Log.e("Search", "count = " + count);
                 }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
             }
         });
 

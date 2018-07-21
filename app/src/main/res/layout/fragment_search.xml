@@ -27,7 +27,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toStartOf="@+id/searchFrag_btn"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -35,23 +35,9 @@
             android:id="@+id/searchFrag_textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:hint="@string/search_name"
             android:textColor="?attr/black"
-            android:textColorHint="?attr/black"
-            android:hint="@string/search_name" />
+            android:textColorHint="?attr/black" />
     </android.support.design.widget.TextInputLayout>
-
-    <Button
-        android:id="@+id/searchFrag_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp"
-        android:background="?attr/colorAccent"
-        android:text="@string/search_btn"
-        app:layout_constraintBottom_toBottomOf="@+id/searchFrag_textlayout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/searchFrag_textlayout"
-        tools:text="Search" />
 
 </android.support.constraint.ConstraintLayout>

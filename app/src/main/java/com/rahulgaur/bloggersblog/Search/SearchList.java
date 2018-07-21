@@ -1,30 +1,40 @@
 package com.rahulgaur.bloggersblog.Search;
 
-public class SearchList {
-    String user_profile;
-    String user_name;
+public class SearchList extends SearchID{
+    String thumb_image;
+    String name;
+    String user_id;
 
     SearchList() {
     }
 
-    public SearchList(String user_profile, String user_name) {
-        this.user_profile = user_profile;
-        this.user_name = user_name;
+    public SearchList(String thumb_image, String name, String user_id) {
+        this.thumb_image = thumb_image;
+        this.name = name;
+        this.user_id = user_id;
     }
 
-    public String getUser_profile() {
-        return user_profile;
+    public String getThumb_image() {
+        return thumb_image;
     }
 
-    public void setUser_profile(String user_profile) {
-        this.user_profile = user_profile;
+    public void setThumb_image(String thumb_image) {
+        this.thumb_image = thumb_image;
     }
 
-    public String getUser_name() {
-        return user_name;
+    public String getName() {
+        return name;
     }
 
-    public void setUser_name(String user_name) {
-        this.user_name = user_name;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
     }
 }

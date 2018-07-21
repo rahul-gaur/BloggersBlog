@@ -112,6 +112,8 @@ public class Account extends AppCompatActivity {
         progressBar.setVisibility(View.VISIBLE);
         btn.setEnabled(false);
 
+        btn.setMode(ActionProcessButton.Mode.PROGRESS);
+
         firebaseFirestore.collection("Users").document(user_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @SuppressLint("CheckResult")
             @Override
@@ -199,7 +201,7 @@ public class Account extends AppCompatActivity {
 
     private void firebaseStore(@NonNull Task<UploadTask.TaskSnapshot> task, final String name) {
 
-        final Uri download_uri;
+        Uri download_uri;
 
         final String randomName = UUID.randomUUID().toString();
 
