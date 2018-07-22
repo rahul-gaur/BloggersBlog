@@ -1,9 +1,9 @@
-# Blogger's Blog
-Blogger's Blog is a Android based application which is a simple Photo Blogging app.
+# Blogger's Blogs
+Blogger's Blogs is a Android based application which is a simple Photo Blogging app.
 
 <img src="screenshots/welcomepage.png" alt="Welcome page" title = "Welcome Page"/>
 
-## what you can do in Blogger's Blog
+## what you can do in Blogger's Blogs
 - You can Post photos you like and want to share.
 - You can like other's Posts.
 - You can comment any post you like.
@@ -62,3 +62,5 @@ Blogger's Blog is a Android based application which is a simple Photo Blogging a
      - ~~Blocking will hide all the posts of a particular user.~~
      - ~~Unblock option.~~
      - Post list is showing blocked posts and need refreshes to hide them.
+ 9. **Safe Search Filters**
+      - No Explicit content can be uploaded.
