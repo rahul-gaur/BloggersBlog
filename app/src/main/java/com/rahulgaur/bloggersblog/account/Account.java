@@ -217,7 +217,7 @@ public class Account extends AppCompatActivity {
             compressedImageFile = new Compressor(Account.this)
                     .setMaxHeight(200)
                     .setMaxWidth(200)
-                    .setQuality(10)
+                    .setQuality(50)
                     .compressToBitmap(newImageFile);
 
 

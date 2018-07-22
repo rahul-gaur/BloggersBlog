@@ -102,13 +102,17 @@ public class UserAccount extends AppCompatActivity {
                 .document(post_user_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    imageURL = task.getResult().getString("thumb_image");
-                    name = task.getResult().getString("name");
+                try {
+                    if (task.isSuccessful()) {
+                        imageURL = task.getResult().getString("thumb_image");
+                        name = task.getResult().getString("name");
 
-                    setProfileImage(imageURL);
-                    getSupportActionBar().setTitle(name + "'s Profile");
-                    progressDialog.dismiss();
+                        setProfileImage(imageURL);
+                        getSupportActionBar().setTitle(name + "'s Profile");
+                        progressDialog.dismiss();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         });
@@ -118,25 +122,29 @@ public class UserAccount extends AppCompatActivity {
         firebaseFirestore.collection("Posts/" + post_id).addSnapshotListener(this, new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
-                if (!documentSnapshots.isEmpty()) {
-                    for (DocumentChange doc : documentSnapshots.getDocumentChanges()) {
-                        if (doc.getType() == DocumentChange.Type.ADDED) {
-                            String post_thumb_url = doc.getDocument().getString("thumb_image_url");
-                            String blog_user_id = doc.getDocument().getString("user_id");
-                            String blog_post_id = doc.getDocument().getId();
+                try {
+                    if (!documentSnapshots.isEmpty()) {
+                        for (DocumentChange doc : documentSnapshots.getDocumentChanges()) {
+                            if (doc.getType() == DocumentChange.Type.ADDED) {
+                                String post_thumb_url = doc.getDocument().getString("thumb_image_url");
+                                String blog_user_id = doc.getDocument().getString("user_id");
+                                String blog_post_id = doc.getDocument().getId();
 
-                            if (post_user_id.equals(blog_user_id)) {
-                                postList.add(new GridViewList(post_thumb_url,blog_post_id));
-                                gridViewList.setBlogPostID(blog_post_id);
-                                Log.e("userAccount", "post id " + blog_post_id+" post url "+post_thumb_url);
-                                userAdapter.notifyDataSetChanged();
+                                if (post_user_id.equals(blog_user_id)) {
+                                    postList.add(new GridViewList(post_thumb_url,blog_post_id));
+                                    gridViewList.setBlogPostID(blog_post_id);
+                                    Log.e("userAccount", "post id " + blog_post_id+" post url "+post_thumb_url);
+                                    userAdapter.notifyDataSetChanged();
+                                }
+
                             }
-
                         }
+                    } else {
+                        //some error
+                        Log.e("userFragment", "error in user_id and image url");
                     }
-                } else {
-                    //some error
-                    Log.e("userFragment", "error in user_id and image url");
+                } catch (Exception e1) {
+                    e1.printStackTrace();
                 }
             }
         });

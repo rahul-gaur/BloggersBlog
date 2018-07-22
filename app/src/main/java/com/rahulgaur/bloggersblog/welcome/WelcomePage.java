@@ -34,7 +34,7 @@ public class WelcomePage extends AppCompatActivity {
     private TextView passTV, forgotPass;
     private ProgressBar progressBar;
     private String email, pass;
-    private ImageView backImage;
+    private ImageView backImage, logoImageView;
     private ObjectAnimator forwardObjectAnimator;
     private TextInputLayout emailLayout, passLayout;
 
@@ -54,8 +54,16 @@ public class WelcomePage extends AppCompatActivity {
         emailLayout = findViewById(R.id.login_emailLayout);
         passLayout = findViewById(R.id.login_passLayout);
         forgotPass = findViewById(R.id.welcome_forgotPass);
+        logoImageView = findViewById(R.id.logoImageView);
+        try {
+            Glide.with(WelcomePage.this)
+                    .load(R.drawable.app_logo_acc).into(logoImageView);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        forgotPass.setEnabled(false);
+        forgotPass.setEnabled(true);
+        forgotPass.setVisibility(View.VISIBLE);
 
         Window w = getWindow();
         w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
@@ -65,14 +73,6 @@ public class WelcomePage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 sendToRegister();
-            }
-        });
-
-        emailTV.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                forgotPass.setVisibility(View.VISIBLE);
-                forgotPass.setEnabled(true);
             }
         });
 
@@ -87,12 +87,13 @@ public class WelcomePage extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
-                                        Log.d("Welcome page ", "Email sent.");
+                                        Log.d("Welcome page ", "Forget pass Email sent.");
                                         Toast.makeText(WelcomePage.this, "Email send", Toast.LENGTH_LONG).show();
                                     }
                                 }
                             });
                 } else {
+                    Log.d("Welcome page ", "forget pass Email sent error");
                     Toast.makeText(WelcomePage.this, "Please write Your Email Address", Toast.LENGTH_SHORT).show();
                 }
             }

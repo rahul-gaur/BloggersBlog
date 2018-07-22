@@ -135,9 +135,9 @@ public class MainActivity extends AppCompatActivity {
             firebaseFirestore.collection("Users").document(current_user_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful()) {
-                        String token = task.getResult().getString("token");
-                        if (token.isEmpty() || token.equals(null)) {
+                    try {
+                        if (task.isSuccessful()) {
+                            String token = task.getResult().getString("token");
                             final String current_user_token = Common.currentToken = FirebaseInstanceId.getInstance().getToken();
 
                             Map<String, Object> userMap = new HashMap<>();
@@ -146,18 +146,24 @@ public class MainActivity extends AppCompatActivity {
                             firebaseFirestore.collection("Users").document(current_user_id).update(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()) {
-                                        Log.e("token main", "token " + current_user_token);
-                                    } else {
-                                        Log.e("token main", "else ");
+                                    try {
+                                        if (task.isSuccessful()) {
+                                            Log.e("token main", "token " + current_user_token);
+                                        } else {
+                                            Log.e("token main", "else ");
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
                                     }
                                 }
                             });
 
+                            if (!task.getResult().exists()) {
+                                sendToAccount();
+                            }
                         }
-                        if (!task.getResult().exists()) {
-                            sendToAccount();
-                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
             });

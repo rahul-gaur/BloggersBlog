@@ -95,15 +95,19 @@ public class NotificationFragment extends Fragment {
         sortNotification.addSnapshotListener((Activity) getContext(), new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
-                if (!documentSnapshots.isEmpty()) {
-                    for (DocumentChange doc : documentSnapshots.getDocumentChanges()) {
-                        if (doc.getType() == DocumentChange.Type.ADDED) {
-                            String notification_id = doc.getDocument().getId();
-                            NotificationList notificationList = doc.getDocument().toObject(NotificationList.class).withID(notification_id);
-                            notificationLists.add(notificationList);
-                            notificationRecyclerAdapter.notifyDataSetChanged();
+                try {
+                    if (!documentSnapshots.isEmpty()) {
+                        for (DocumentChange doc : documentSnapshots.getDocumentChanges()) {
+                            if (doc.getType() == DocumentChange.Type.ADDED) {
+                                String notification_id = doc.getDocument().getId();
+                                NotificationList notificationList = doc.getDocument().toObject(NotificationList.class).withID(notification_id);
+                                notificationLists.add(notificationList);
+                                notificationRecyclerAdapter.notifyDataSetChanged();
+                            }
                         }
                     }
+                } catch (Exception e1) {
+                    e1.printStackTrace();
                 }
             }
         });

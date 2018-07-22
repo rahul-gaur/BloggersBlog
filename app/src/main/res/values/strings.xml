@@ -1,7 +1,7 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <string name="app_name">Blogger\'s Blog</string>
-    <string name="welcome_to_blogger_s_blog">WELCOME TO BLOGGER\'S BLOG</string>
-    <string name="register_to_blogger_s_blog">Register to Blogger\'s Blog</string>
+    <string name="welcome_to_blogger_s_blogs">WELCOME TO BLOGGER\'S BLOGS</string>
+    <string name="register_to_blogger_s_blogs">Register to Blogger\'s Blogs</string>
     <string name="login_to_your_blog">Login to your Blog!!</string>
     <string name="please_enter_your_emailid">Please enter your email</string>
     <string name="please_enter_your_password">Please enter your Password</string>

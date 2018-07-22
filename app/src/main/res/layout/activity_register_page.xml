@@ -29,22 +29,26 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
+    <ImageView
         android:id="@+id/register_logo"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="190dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="40dp"
-        android:fontFamily="@font/andika"
-        android:gravity="center"
-        android:text="@string/welcome_to_blogger_s_blog"
-        android:textColor="?attr/primaryTextColor"
-        android:textSize="30sp"
-        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#4d000000"
+        app:layout_constraintBottom_toBottomOf="@+id/reg_passConfirmLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/reg_emailLayout" />
+
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/reg_emailLayout"
@@ -121,12 +125,12 @@
         android:id="@+id/reg_regBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="48dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:background="?attr/colorAccent"
         android:padding="10dp"
-        android:text="@string/register_to_blogger_s_blog"
+        android:text="@string/register_to_blogger_s_blogs"
         android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

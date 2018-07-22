@@ -36,8 +36,6 @@ public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecycl
     @SuppressLint("StaticFieldLeak")
     private static Context context;
 
-    private Comments c = new Comments();
-
     private String blogPostId;
 
     private FirebaseFirestore firebaseFirestore;
@@ -66,7 +64,7 @@ public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecycl
         String userId = commentList.get(position).getUser_id();
         String currentUserId = Objects.requireNonNull(auth.getCurrentUser()).getUid();
 
-        String postUserId = c.getPostUserID();
+        String postUserId = commentList.get(position).getPost_user_id();
 
         // String blogPostId = postList.get(position).BlogPostID;
         final String commentId = commentList.get(position).CommentID;
@@ -79,14 +77,18 @@ public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecycl
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            String userData = task.getResult().getString("name");
-                            String profileUrl = task.getResult().getString("thumb_image");
-                            holder.setProfile(profileUrl);
-                            holder.setNameText(userData);
-                        } else {
-                            String msg = Objects.requireNonNull(task.getException()).getMessage();
-                            Toast.makeText(context, "Error: " + msg, Toast.LENGTH_SHORT).show();
+                        try {
+                            if (task.isSuccessful()) {
+                                String userData = task.getResult().getString("name");
+                                String profileUrl = task.getResult().getString("thumb_image");
+                                holder.setProfile(profileUrl);
+                                holder.setNameText(userData);
+                            } else {
+                                String msg = Objects.requireNonNull(task.getException()).getMessage();
+                                Toast.makeText(context, "Error: " + msg, Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
                     }
                 });
@@ -104,18 +106,22 @@ public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecycl
                     @Override
 
                     public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            try {
-                                commentList.remove(position);
-                            } catch (IndexOutOfBoundsException e) {
-                                Log.e("comment remove", "Comment remove exception " + e.getMessage());
+                        try {
+                            if (task.isSuccessful()) {
+                                try {
+                                    commentList.remove(position);
+                                } catch (IndexOutOfBoundsException e) {
+                                    Log.e("comment remove", "Comment remove exception " + e.getMessage());
+                                }
+                                notifyDataSetChanged();
+                                holder.commentDeleteImageView.setEnabled(true);
+                                Toast.makeText(context, "Deleted", Toast.LENGTH_SHORT).show();
+                            } else {
+                                holder.commentDeleteImageView.setEnabled(true);
+                                Toast.makeText(context, "some error", Toast.LENGTH_SHORT).show();
                             }
-                            notifyDataSetChanged();
-                            holder.commentDeleteImageView.setEnabled(true);
-                            Toast.makeText(context, "Deleted", Toast.LENGTH_SHORT).show();
-                        } else {
-                            holder.commentDeleteImageView.setEnabled(true);
-                            Toast.makeText(context, "some error", Toast.LENGTH_SHORT).show();
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
                     }
                 });
@@ -157,17 +163,27 @@ public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecycl
             profile = mView.findViewById(R.id.cmnt_profileView);
             RequestOptions placeholder = new RequestOptions();
             placeholder.placeholder(R.drawable.default_usr);
-            Glide.with(context).applyDefaultRequestOptions(placeholder).load(profileUri).into(profile);
+            try {
+                Glide.with(context).applyDefaultRequestOptions(placeholder).load(profileUri).into(profile);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         private void commentOwnership(String commentUser, String currentUserId, String postUserId) {
             commentDeleteImageView = mView.findViewById(R.id.cmnt_item_dlt_imgView);
             if (currentUserId.equals(postUserId)) {
+                Log.e("comment delete","currentUserId "+currentUserId+" currentUserID "+currentUserId+" 1nd if");
                 commentDeleteImageView.setEnabled(true);
                 commentDeleteImageView.setVisibility(View.VISIBLE);
             } else if (commentUser.equals(currentUserId)) {
+                Log.e("comment delete","CommentUser "+commentUser+" currentUserID "+currentUserId+" 2nd if else");
                 commentDeleteImageView.setEnabled(true);
                 commentDeleteImageView.setVisibility(View.VISIBLE);
+            } else if (!commentUser.equals(currentUserId) || !currentUserId.equals(postUserId)){
+                Log.e("comment delete","CommentUser "+commentUser+" currentUserID "+currentUserId+" postUserId "+postUserId+" 3nd if else");
+                commentDeleteImageView.setEnabled(false);
+                commentDeleteImageView.setVisibility(View.INVISIBLE);
             }
         }
     }

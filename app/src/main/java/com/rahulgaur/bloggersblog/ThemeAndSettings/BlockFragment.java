@@ -69,17 +69,21 @@ public class BlockFragment extends Fragment {
                 .addSnapshotListener((Activity) getContext(), new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
-                        if (!documentSnapshots.isEmpty()) {
-                            for (DocumentChange doc : documentSnapshots.getDocumentChanges()) {
-                                if (doc.getType() == DocumentChange.Type.ADDED) {
-                                    String user_id = doc.getDocument().getId();
-                                    Log.e("BlockFragment","user_id "+user_id);
-                                    BlockList blockList = doc.getDocument().toObject(BlockList.class)
-                                            .withID(user_id);
-                                    list.add(blockList);
-                                    blockAdapter.notifyDataSetChanged();
+                        try {
+                            if (!documentSnapshots.isEmpty()) {
+                                for (DocumentChange doc : documentSnapshots.getDocumentChanges()) {
+                                    if (doc.getType() == DocumentChange.Type.ADDED) {
+                                        String user_id = doc.getDocument().getId();
+                                        Log.e("BlockFragment","user_id "+user_id);
+                                        BlockList blockList = doc.getDocument().toObject(BlockList.class)
+                                                .withID(user_id);
+                                        list.add(blockList);
+                                        blockAdapter.notifyDataSetChanged();
+                                    }
                                 }
                             }
+                        } catch (Exception e1) {
+                            e1.printStackTrace();
                         }
                     }
                 });

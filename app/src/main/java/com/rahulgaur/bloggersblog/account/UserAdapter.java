@@ -84,9 +84,13 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         void setPostImage(String image) {
             RequestOptions placeHolder = new RequestOptions();
             placeHolder.placeholder(R.drawable.ic_launcher_background);
-            Glide.with(context)
-                    .applyDefaultRequestOptions(placeHolder)
-                    .load(image).into(imageView);
+            try {
+                Glide.with(context)
+                        .applyDefaultRequestOptions(placeHolder)
+                        .load(image).into(imageView);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             progressBar.setVisibility(View.INVISIBLE);
         }
     }

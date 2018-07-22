@@ -61,17 +61,21 @@ public class blockAdapter extends RecyclerView.Adapter<blockAdapter.ViewHolder> 
         firebaseFirestore.collection("Users").document(blocked_user_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    user_name = task.getResult().getString("name");
-                    user_profile = task.getResult().getString("thumb_image");
-                    Log.e("Setting block", "user_name " + user_name);
-                    Log.e("Setting block", "user_id " + user_id);
-                    Log.e("Setting block", "blocked_user_id ");
-                    holder.setProfileImage(user_profile);
-                    holder.setTextView(user_name);
-                    notifyDataSetChanged();
-                } else {
-                    Log.e("Setting block", "else image url");
+                try {
+                    if (task.isSuccessful()) {
+                        user_name = task.getResult().getString("name");
+                        user_profile = task.getResult().getString("thumb_image");
+                        Log.e("Setting block", "user_name " + user_name);
+                        Log.e("Setting block", "user_id " + user_id);
+                        Log.e("Setting block", "blocked_user_id ");
+                        holder.setProfileImage(user_profile);
+                        holder.setTextView(user_name);
+                        notifyDataSetChanged();
+                    } else {
+                        Log.e("Setting block", "else image url");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         });
@@ -83,11 +87,15 @@ public class blockAdapter extends RecyclerView.Adapter<blockAdapter.ViewHolder> 
                         .delete().addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()){
-                            list.remove(position);
-                            Toast.makeText(context, "User Unblocked", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Log.e(TAG, "onComplete: unable to delete blocked user "+blocked_user_id);
+                        try {
+                            if (task.isSuccessful()){
+                                list.remove(position);
+                                Toast.makeText(context, "User Unblocked", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Log.e(TAG, "onComplete: unable to delete blocked user "+blocked_user_id);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
                     }
                 });

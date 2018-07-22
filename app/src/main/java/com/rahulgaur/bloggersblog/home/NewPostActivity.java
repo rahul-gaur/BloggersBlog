@@ -150,19 +150,23 @@ public class NewPostActivity extends AppCompatActivity {
                                                     .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                                                         @Override
                                                         public void onComplete(@NonNull Task<DocumentReference> task) {
-                                                            if (task.isSuccessful()) {
-                                                                progressBar.setVisibility(View.INVISIBLE);
-                                                                Toast.makeText(NewPostActivity.this,
-                                                                        "Post Added",
-                                                                        Toast.LENGTH_SHORT).show();
-                                                                sendToMain();
-                                                            } else {
-                                                                String msg = task.getException().getMessage();
-                                                                Toast.makeText(
-                                                                        NewPostActivity.this,
-                                                                        "Error: " + msg,
-                                                                        Toast.LENGTH_SHORT).show();
-                                                                progressBar.setVisibility(View.INVISIBLE);
+                                                            try {
+                                                                if (task.isSuccessful()) {
+                                                                    progressBar.setVisibility(View.INVISIBLE);
+                                                                    Toast.makeText(NewPostActivity.this,
+                                                                            "Post Added",
+                                                                            Toast.LENGTH_SHORT).show();
+                                                                    sendToMain();
+                                                                } else {
+                                                                    String msg = task.getException().getMessage();
+                                                                    Toast.makeText(
+                                                                            NewPostActivity.this,
+                                                                            "Error: " + msg,
+                                                                            Toast.LENGTH_SHORT).show();
+                                                                    progressBar.setVisibility(View.INVISIBLE);
+                                                                }
+                                                            } catch (Exception e) {
+                                                                e.printStackTrace();
                                                             }
                                                         }
                                                     });

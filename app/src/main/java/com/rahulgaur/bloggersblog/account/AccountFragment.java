@@ -82,11 +82,15 @@ public class AccountFragment extends Fragment {
                 .document(current_userID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.getResult().exists()) {
-                    imageURL = task.getResult().getString("thumb_image");
-                    username = task.getResult().getString("name");
-                    setProfile(imageURL);
-                    setToolbarName(username);
+                try {
+                    if (task.getResult().exists()) {
+                        imageURL = task.getResult().getString("thumb_image");
+                        username = task.getResult().getString("name");
+                        setProfile(imageURL);
+                        setToolbarName(username);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
 
@@ -132,26 +136,30 @@ public class AccountFragment extends Fragment {
         firebaseFirestore.collection("Posts/" + post_id).addSnapshotListener((Activity) Objects.requireNonNull(getContext()), new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
-                if (!documentSnapshots.isEmpty()) {
-                    for (DocumentChange doc : documentSnapshots.getDocumentChanges()) {
-                        if (doc.getType() == DocumentChange.Type.ADDED) {
-                            String post_user_id = doc.getDocument().getString("user_id");
-                            String post_thumb_url = doc.getDocument().getString("thumb_image_url");
+                try {
+                    if (!documentSnapshots.isEmpty()) {
+                        for (DocumentChange doc : documentSnapshots.getDocumentChanges()) {
+                            if (doc.getType() == DocumentChange.Type.ADDED) {
+                                String post_user_id = doc.getDocument().getString("user_id");
+                                String post_thumb_url = doc.getDocument().getString("thumb_image_url");
 
-                            String blog_post_id = doc.getDocument().getId();
+                                String blog_post_id = doc.getDocument().getId();
 
-                            if (post_user_id.equals(current_userID)) {
-                                postList.add(new GridViewList(post_thumb_url, blog_post_id));
-                                gridViewList.setBlogPostID(post_id);
-                                Log.e("accountFragnent", "post_id " + blog_post_id);
-                                gridViewAdapter.notifyDataSetChanged();
+                                if (post_user_id.equals(current_userID)) {
+                                    postList.add(new GridViewList(post_thumb_url, blog_post_id));
+                                    gridViewList.setBlogPostID(post_id);
+                                    Log.e("accountFragnent", "post_id " + blog_post_id);
+                                    gridViewAdapter.notifyDataSetChanged();
+                                }
+
                             }
-
                         }
+                    } else {
+                        //some error
+                        Log.e("Account Fragment", "error in user_id and image url");
                     }
-                } else {
-                    //some error
-                    Log.e("Account Fragment", "error in user_id and image url");
+                } catch (Exception e1) {
+                    e1.printStackTrace();
                 }
             }
         });
@@ -165,7 +173,11 @@ public class AccountFragment extends Fragment {
     public void setProfile(String profile) {
         RequestOptions placeholder = new RequestOptions();
         placeholder.placeholder(R.drawable.default_usr);
-        Glide.with(Objects.requireNonNull(getActivity())).applyDefaultRequestOptions(placeholder)
-                .load(profile).into(profileImageView);
+        try {
+            Glide.with(Objects.requireNonNull(getActivity())).applyDefaultRequestOptions(placeholder)
+                    .load(profile).into(profileImageView);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

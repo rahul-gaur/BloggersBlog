@@ -31,7 +31,7 @@ import java.util.Objects;
 
 public class RegisterPage extends AppCompatActivity {
 
-    private ImageView backImage;
+    private ImageView backImage, logoImage;
     private ObjectAnimator objectAnimator;
 
     private FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -53,7 +53,13 @@ public class RegisterPage extends AppCompatActivity {
         final TextInputLayout emailLayout = findViewById(R.id.reg_emailLayout);
         final TextInputLayout passLayout = findViewById(R.id.reg_passLayout);
         final TextInputLayout passConfirmLayout = findViewById(R.id.reg_passConfirmLayout);
-
+        logoImage = findViewById(R.id.register_logo);
+        try {
+            Glide.with(RegisterPage.this).load(R.drawable.app_logo_acc)
+                    .into(logoImage);
+        } catch (Exception e){
+            Log.e("Register Page ","Glide Exception "+e.getMessage());
+        }
         Window w = getWindow();
         w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 

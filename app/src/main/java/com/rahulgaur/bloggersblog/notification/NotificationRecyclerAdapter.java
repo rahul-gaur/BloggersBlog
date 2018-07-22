@@ -65,17 +65,21 @@ public class NotificationRecyclerAdapter extends RecyclerView.Adapter<Notificati
         firebaseFirestore.collection("Posts").document(noti_postID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    try {
-                        String postURL = task.getResult().getString("thumb_image_url");
-                        Log.e("Notification", "post_id " + noti_postID);
-                        Log.e("Notification", "image url " + postURL);
-                        holder.setPostImage(postURL);
-                    } catch (Exception e) {
-                        Log.e("Notification getting", "Exception " + e.getMessage());
+                try {
+                    if (task.isSuccessful()) {
+                        try {
+                            String postURL = task.getResult().getString("thumb_image_url");
+                            Log.e("Notification", "post_id " + noti_postID);
+                            Log.e("Notification", "image url " + postURL);
+                            holder.setPostImage(postURL);
+                        } catch (Exception e) {
+                            Log.e("Notification getting", "Exception " + e.getMessage());
+                        }
+                    } else {
+                        Log.e("Notification", "else image url");
                     }
-                } else {
-                    Log.e("Notification", "else image url");
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         });
@@ -86,17 +90,21 @@ public class NotificationRecyclerAdapter extends RecyclerView.Adapter<Notificati
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            try {
-                                noti_message = task.getResult().getString("message");
-                                holder.setTextView(noti_message);
-                                Log.e("Notification", "current user id " + current_user_id);
-                                Log.e("Notification", "message " + noti_message);
-                            } catch (Exception e) {
-                                Log.e("NotiRecycler", "Exception " + e.getMessage());
+                        try {
+                            if (task.isSuccessful()) {
+                                try {
+                                    noti_message = task.getResult().getString("message");
+                                    holder.setTextView(noti_message);
+                                    Log.e("Notification", "current user id " + current_user_id);
+                                    Log.e("Notification", "message " + noti_message);
+                                } catch (Exception e) {
+                                    Log.e("NotiRecycler", "Exception " + e.getMessage());
+                                }
+                            } else {
+                                Log.e("Notification", "else message ");
                             }
-                        } else {
-                            Log.e("Notification", "else message ");
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
                     }
                 });

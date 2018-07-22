@@ -9,6 +9,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,6 +24,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
@@ -36,6 +38,8 @@ import com.rahulgaur.bloggersblog.blogPost.User;
 import com.rahulgaur.bloggersblog.welcome.WelcomePage;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -113,31 +117,39 @@ public class HomeFragment extends Fragment {
 
                 @Override
                 public void onEvent(final QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
-                    if (!documentSnapshots.isEmpty()) {
-                        for (DocumentChange doc : documentSnapshots.getDocumentChanges()) {
-                            if (doc.getType() == DocumentChange.Type.ADDED) {
-                                String blogPosTID = doc.getDocument().getId();
-                                final Post post = doc.getDocument().toObject(Post.class).withID(blogPosTID);
+                    try {
+                        if (!documentSnapshots.isEmpty()) {
+                            for (DocumentChange doc : documentSnapshots.getDocumentChanges()) {
+                                if (doc.getType() == DocumentChange.Type.ADDED) {
+                                    String blogPosTID = doc.getDocument().getId();
+                                    final Post post = doc.getDocument().toObject(Post.class).withID(blogPosTID);
 
-                                String blogUserID = doc.getDocument().getString("user_id");
-                                firebaseFirestore.collection("Users").document(blogUserID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                        if (task.isSuccessful()) {
-                                            User user = task.getResult().toObject(User.class);
-                                            userList.add(user);
-                                            postList.add(post);
-                                            postRecyclerAdapter.notifyDataSetChanged();
-                                        } else {
-                                            //some error
+                                    String blogUserID = doc.getDocument().getString("user_id");
+                                    firebaseFirestore.collection("Users").document(blogUserID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                            try {
+                                                if (task.isSuccessful()) {
+                                                    User user = task.getResult().toObject(User.class);
+                                                    userList.add(user);
+                                                    postList.add(post);
+                                                    postRecyclerAdapter.notifyDataSetChanged();
+                                                } else {
+                                                    //some error
+                                                }
+                                            } catch (Exception e1) {
+                                                e1.printStackTrace();
+                                            }
                                         }
-                                    }
-                                });
+                                    });
 
+                                }
                             }
+                        } else {
+                            Toast.makeText(getContext(), "No posts..", Toast.LENGTH_LONG).show();
                         }
-                    } else {
-                        Toast.makeText(getContext(), "No posts..", Toast.LENGTH_LONG).show();
+                    } catch (Exception e1) {
+                        e1.printStackTrace();
                     }
                 }
             });
@@ -176,10 +188,36 @@ public class HomeFragment extends Fragment {
     }
 
     private void logout() {
-        auth.signOut();
-        Intent i = new Intent(getContext(), WelcomePage.class);
-        startActivity(i);
-        Objects.requireNonNull(getActivity()).finish();
+        auth = FirebaseAuth.getInstance();
+        String currentID = auth.getCurrentUser().getUid();
+        firebaseFirestore = FirebaseFirestore.getInstance();
+
+        Map<String,Object> deleteValue = new HashMap<>();
+        deleteValue.put("token", FieldValue.delete());
+
+        firebaseFirestore.collection("Users").document(currentID).update(deleteValue)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        try {
+                            if (task.isSuccessful()){
+                                Log.e("Token delete","Token is deleted");
+                                auth.signOut();
+                                Intent i = new Intent(getContext(), WelcomePage.class);
+                                startActivity(i);
+                                Objects.requireNonNull(getActivity()).finish();
+                            } else {
+                                Log.e("Token delete","Token not deleted");
+                                auth.signOut();
+                                Intent i = new Intent(getContext(), WelcomePage.class);
+                                startActivity(i);
+                                Objects.requireNonNull(getActivity()).finish();
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
     }
 
     private void sendToAccount() {

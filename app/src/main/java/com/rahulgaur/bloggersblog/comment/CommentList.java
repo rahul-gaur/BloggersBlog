@@ -3,15 +3,16 @@ package com.rahulgaur.bloggersblog.comment;
 import java.util.Date;
 
 public class CommentList extends CommentID {
-    private String message, user_id;
+    private String message, user_id, post_user_id;
     private Date timestamp;
 
     public CommentList() {
     }
 
-    public CommentList(String message, String user_id, Date timestamp) {
+    public CommentList(String message, String user_id, String post_user_id, Date timestamp) {
         this.message = message;
         this.user_id = user_id;
+        this.post_user_id = post_user_id;
         this.timestamp = timestamp;
     }
 
@@ -29,6 +30,14 @@ public class CommentList extends CommentID {
 
     public void setUser_id(String user_id) {
         this.user_id = user_id;
+    }
+
+    public String getPost_user_id() {
+        return post_user_id;
+    }
+
+    public void setPost_user_id(String post_user_id) {
+        this.post_user_id = post_user_id;
     }
 
     public Date getTimestamp() {

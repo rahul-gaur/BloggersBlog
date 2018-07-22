@@ -120,9 +120,13 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                 .document(blogPostID).addSnapshotListener((Activity) context, new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
-                if (documentSnapshot.exists()) {
-                    post_user_id = documentSnapshot.getString("user_id");
-                    holder.checkPostOwership(currentUserId, post_user_id);
+                try {
+                    if (documentSnapshot.exists()) {
+                        post_user_id = documentSnapshot.getString("user_id");
+                        holder.checkPostOwership(currentUserId, post_user_id);
+                    }
+                } catch (Exception e1) {
+                    Log.e("ownership", "Exception " + e1);
                 }
             }
         });
@@ -142,22 +146,26 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
         firebaseFirestore.collection("Posts").document(blogPostID).collection("Report").document(current_user_id).addSnapshotListener((Activity) context, new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
-                if (documentSnapshot.exists()) {
-                    Log.e("reported posts ", "reported post " + blogPostID + " by " + current_user_id);
-                    try {
-                        holder.mView.setVisibility(View.GONE);
-                        postList.remove(position);
-                        user_list.remove(position);
-                    } catch (IndexOutOfBoundsException exception) {
-                        Log.e("report hide", " post remove exception " + exception.getMessage());
-                    }
-                } else {
-                    holder.setTime(nowMMDDYYYY);
-                    holder.setPostImage(thumb_image_url);
-                    holder.setDescText(desc_data);
+                try {
+                    if (documentSnapshot.exists()) {
+                        Log.e("reported posts ", "reported post " + blogPostID + " by " + current_user_id);
+                        try {
+                            holder.mView.setVisibility(View.GONE);
+                            postList.remove(position);
+                            user_list.remove(position);
+                        } catch (IndexOutOfBoundsException exception) {
+                            Log.e("report hide", " post remove exception " + exception.getMessage());
+                        }
+                    } else {
+                        holder.setTime(nowMMDDYYYY);
+                        holder.setPostImage(thumb_image_url);
+                        holder.setDescText(desc_data);
 
-                    holder.mView.setVisibility(View.VISIBLE);
-                    Log.e("reported posts ", "no post exists");
+                        holder.mView.setVisibility(View.VISIBLE);
+                        Log.e("reported posts ", "no post exists");
+                    }
+                } catch (Exception e1) {
+                    e1.printStackTrace();
                 }
             }
         });
@@ -165,30 +173,34 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
         firebaseFirestore.collection("Users/" + current_user_id + "/Block").document(user_id).addSnapshotListener((Activity) context, new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
-                if (documentSnapshot.exists()) {
-                    String blocked_user = documentSnapshot.getId();
-                    Log.e("blocked posts", "blocked posts " + blocked_user + " by " + current_user_id);
-                    try {
-                        if (blocked_user.equals(post_user_id)) {
-                            try {
-                                postList.remove(position);
-                                user_list.remove(position);
-                            } catch (IndexOutOfBoundsException e1) {
-                                Log.e("Blocked", "Exception while removing blocked posts " + e1.getMessage());
+                try {
+                    if (documentSnapshot.exists()) {
+                        String blocked_user = documentSnapshot.getId();
+                        Log.e("blocked posts", "blocked posts " + blocked_user + " by " + current_user_id);
+                        try {
+                            if (blocked_user.equals(post_user_id)) {
+                                try {
+                                    postList.remove(position);
+                                    user_list.remove(position);
+                                } catch (IndexOutOfBoundsException e1) {
+                                    Log.e("Blocked", "Exception while removing blocked posts " + e1.getMessage());
+                                }
+                                Log.e("blocked hide", " post removed");
+                            } else {
+                                Log.e("blocked hide", " post remove else");
                             }
-                            Log.e("blocked hide", " post removed");
-                        } else {
-                            Log.e("blocked hide", " post remove else");
+                        } catch (IndexOutOfBoundsException exce) {
+                            Log.e("block hide", " post remove exception " + exce.getMessage());
                         }
-                    } catch (IndexOutOfBoundsException exce) {
-                        Log.e("block hide", " post remove exception " + exce.getMessage());
-                    }
-                } else {
-                    holder.setTime(nowMMDDYYYY);
-                    holder.setPostImage(thumb_image_url);
-                    holder.setDescText(desc_data);
+                    } else {
+                        holder.setTime(nowMMDDYYYY);
+                        holder.setPostImage(thumb_image_url);
+                        holder.setDescText(desc_data);
 
-                    Log.e("Blocked posts ", "no blocked posts");
+                        Log.e("Blocked posts ", "no blocked posts");
+                    }
+                } catch (Exception e1) {
+                    e1.printStackTrace();
                 }
             }
         });
@@ -199,13 +211,17 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                     @Override
                     public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
 
-                        if (!documentSnapshots.isEmpty()) {
-                            //some likes
-                            int count = documentSnapshots.size();
-                            holder.setLikeView(count);
-                        } else {
-                            //no likes
-                            holder.setLikeView(0);
+                        try {
+                            if (!documentSnapshots.isEmpty()) {
+                                //some likes
+                                int count = documentSnapshots.size();
+                                holder.setLikeView(count);
+                            } else {
+                                //no likes
+                                holder.setLikeView(0);
+                            }
+                        } catch (Exception e1) {
+                            e1.printStackTrace();
                         }
 
                     }
@@ -216,13 +232,17 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                 .addSnapshotListener((Activity) context, new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
-                        if (!documentSnapshots.isEmpty()) {
-                            //some comments
-                            int count = documentSnapshots.size();
-                            holder.setCmntView(count);
-                        } else {
-                            //no comments
-                            holder.setCmntView(0);
+                        try {
+                            if (!documentSnapshots.isEmpty()) {
+                                //some comments
+                                int count = documentSnapshots.size();
+                                holder.setCmntView(count);
+                            } else {
+                                //no comments
+                                holder.setCmntView(0);
+                            }
+                        } catch (Exception e1) {
+                            e1.printStackTrace();
                         }
                     }
                 });
@@ -233,10 +253,14 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
             @Override
             public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
 
-                if (documentSnapshot.exists()) {
-                    holder.likeImage.setImageResource(R.mipmap.like_pink);
-                } else {
-                    holder.likeImage.setImageResource(R.mipmap.like_grey);
+                try {
+                    if (documentSnapshot.exists()) {
+                        holder.likeImage.setImageResource(R.mipmap.like_pink);
+                    } else {
+                        holder.likeImage.setImageResource(R.mipmap.like_grey);
+                    }
+                } catch (Exception e1) {
+                    e1.printStackTrace();
                 }
             }
         });
@@ -289,93 +313,97 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                         .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                if (!task.getResult().exists()) {
-                                    //if the like does not exists then add like
-                                    Map<String, Object> likesMap = new HashMap<>();
-                                    likesMap.put("timestamp", FieldValue.serverTimestamp());
-                                    firebaseFirestore.collection("Posts/" + blogPostID + "/Likes")
-                                            .document(currentUserId).set(likesMap)
-                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Void> task) {
-                                                    if (task.isSuccessful()) {
-                                                        holder.likeImage.setImageResource(R.mipmap.like_pink);
-                                                        firebaseFirestore.collection("Users").document(current_user_id).addSnapshotListener((Activity) context, new EventListener<DocumentSnapshot>() {
-                                                            @Override
-                                                            public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
-                                                                if (documentSnapshot.exists()) {
-                                                                    Log.e("Like notificaiton", "Like Notification current user entered");
+                                try {
+                                    if (!task.getResult().exists()) {
+                                        //if the like does not exists then add like
+                                        Map<String, Object> likesMap = new HashMap<>();
+                                        likesMap.put("timestamp", FieldValue.serverTimestamp());
+                                        firebaseFirestore.collection("Posts/" + blogPostID + "/Likes")
+                                                .document(currentUserId).set(likesMap)
+                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        if (task.isSuccessful()) {
+                                                            holder.likeImage.setImageResource(R.mipmap.like_pink);
+                                                            firebaseFirestore.collection("Users").document(current_user_id).addSnapshotListener((Activity) context, new EventListener<DocumentSnapshot>() {
+                                                                @Override
+                                                                public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
+                                                                    if (documentSnapshot.exists()) {
+                                                                        Log.e("Like notificaiton", "Like Notification current user entered");
 
-                                                                    final String current_user_name = documentSnapshot.getString("name");
-                                                                    Log.e("Like notificaiton", "Like Notification current user name " + current_user_name);
+                                                                        final String current_user_name = documentSnapshot.getString("name");
+                                                                        Log.e("Like notificaiton", "Like Notification current user name " + current_user_name);
 
-                                                                    final Map<String, Object> notificaitonMap = new HashMap<>();
-                                                                    notificaitonMap.put("post_id", blogPostID);
-                                                                    notificaitonMap.put("timestamp", FieldValue.serverTimestamp());
-                                                                    notificaitonMap.put("message", "<b>" + current_user_name + "</b> <br>Liked your photo");
-                                                                    firebaseFirestore.collection("Users/" + post_user_id + "/Notification").add(notificaitonMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                                                                        @Override
-                                                                        public void onComplete(@NonNull Task<DocumentReference> task) {
-                                                                            if (task.isSuccessful()) {
-                                                                                firebaseFirestore.collection("Users/").document(post_user_id).addSnapshotListener((Activity) context, new EventListener<DocumentSnapshot>() {
-                                                                                    @Override
-                                                                                    public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
-                                                                                        if (documentSnapshot.exists()) {
-                                                                                            String token = documentSnapshot.getString("token");
+                                                                        final Map<String, Object> notificaitonMap = new HashMap<>();
+                                                                        notificaitonMap.put("post_id", blogPostID);
+                                                                        notificaitonMap.put("timestamp", FieldValue.serverTimestamp());
+                                                                        notificaitonMap.put("message", "<b>" + current_user_name + "</b> <br>Liked your photo");
+                                                                        firebaseFirestore.collection("Users/" + post_user_id + "/Notification").add(notificaitonMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                                                            @Override
+                                                                            public void onComplete(@NonNull Task<DocumentReference> task) {
+                                                                                if (task.isSuccessful()) {
+                                                                                    firebaseFirestore.collection("Users/").document(post_user_id).addSnapshotListener((Activity) context, new EventListener<DocumentSnapshot>() {
+                                                                                        @Override
+                                                                                        public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
+                                                                                            if (documentSnapshot.exists()) {
+                                                                                                String token = documentSnapshot.getString("token");
 
-                                                                                            com.rahulgaur.bloggersblog.notification.notificationServices.Notification notification = new com.rahulgaur.bloggersblog.notification.notificationServices.Notification("Likes", current_user_name + " Liked your Photo");
-                                                                                            Sender sender = new Sender(notification, token); //send notification to itself
-                                                                                            Log.e("Sender Token", " " + token);
-                                                                                            apiService.sendNotification(sender)
-                                                                                                    .enqueue(new Callback<MyResponse>() {
-                                                                                                        @Override
-                                                                                                        public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
-                                                                                                            try {
-                                                                                                                if (response.body().success == 1) {
-                                                                                                                    Log.e("Notification service ", "Success");
-                                                                                                                } else {
-                                                                                                                    Log.e("Notification service ", "Failed");
+                                                                                                com.rahulgaur.bloggersblog.notification.notificationServices.Notification notification = new com.rahulgaur.bloggersblog.notification.notificationServices.Notification("Likes", current_user_name + " Liked your Photo");
+                                                                                                Sender sender = new Sender(notification, token); //send notification to itself
+                                                                                                Log.e("Sender Token", " " + token);
+                                                                                                apiService.sendNotification(sender)
+                                                                                                        .enqueue(new Callback<MyResponse>() {
+                                                                                                            @Override
+                                                                                                            public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
+                                                                                                                try {
+                                                                                                                    if (response.body().success == 1) {
+                                                                                                                        Log.e("Notification service ", "Success");
+                                                                                                                    } else {
+                                                                                                                        Log.e("Notification service ", "Failed");
+                                                                                                                    }
+                                                                                                                } catch (NullPointerException ne) {
+                                                                                                                    Log.e("Notificaiton", "Exception " + ne.getMessage());
                                                                                                                 }
-                                                                                                            } catch (NullPointerException ne) {
-                                                                                                                Log.e("Notificaiton", "Exception " + ne.getMessage());
                                                                                                             }
-                                                                                                        }
 
-                                                                                                        @Override
-                                                                                                        public void onFailure(Call<MyResponse> call, Throwable t) {
-                                                                                                            Log.e("Notification service ", "Failed");
-                                                                                                        }
-                                                                                                    });
-                                                                                            Log.e("Like notificaiton", "Like Notification Added");
+                                                                                                            @Override
+                                                                                                            public void onFailure(Call<MyResponse> call, Throwable t) {
+                                                                                                                Log.e("Notification service ", "Failed");
+                                                                                                            }
+                                                                                                        });
+                                                                                                Log.e("Like notificaiton", "Like Notification Added");
 
+                                                                                            }
                                                                                         }
-                                                                                    }
-                                                                                });
-                                                                            } else {
-                                                                                Log.e("Like notificaiton", "Like Notification failed");
+                                                                                    });
+                                                                                } else {
+                                                                                    Log.e("Like notificaiton", "Like Notification failed");
+                                                                                }
                                                                             }
-                                                                        }
-                                                                    });
-                                                                } else {
-                                                                    Log.e("Like notificaiton", "Like Notification document not found");
+                                                                        });
+                                                                    } else {
+                                                                        Log.e("Like notificaiton", "Like Notification document not found");
+                                                                    }
                                                                 }
-                                                            }
-                                                        });
+                                                            });
+                                                        }
                                                     }
-                                                }
-                                            });
-                                } else {
-                                    //if like exists delete the like
-                                    firebaseFirestore.collection("Posts/" + blogPostID + "/Likes")
-                                            .document(currentUserId).delete()
-                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Void> task) {
-                                                    if (task.isSuccessful()) {
-                                                        holder.likeImage.setImageResource(R.mipmap.like_grey);
+                                                });
+                                    } else {
+                                        //if like exists delete the like
+                                        firebaseFirestore.collection("Posts/" + blogPostID + "/Likes")
+                                                .document(currentUserId).delete()
+                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        if (task.isSuccessful()) {
+                                                            holder.likeImage.setImageResource(R.mipmap.like_grey);
+                                                        }
                                                     }
-                                                }
-                                            });
+                                                });
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
                                 }
                             }
                         });
@@ -394,32 +422,36 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                         .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                if (!task.getResult().exists()) {
-                                    //if the like does not exists then add like
-                                    Map<String, Object> likesMap = new HashMap<>();
-                                    likesMap.put("timestamp", FieldValue.serverTimestamp());
-                                    firebaseFirestore.collection("Posts/" + blogPostID + "/Likes")
-                                            .document(currentUserId).set(likesMap)
-                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Void> task) {
-                                                    if (task.isSuccessful()) {
-                                                        holder.likeImage.setImageResource(R.mipmap.like_pink);
+                                try {
+                                    if (!task.getResult().exists()) {
+                                        //if the like does not exists then add like
+                                        Map<String, Object> likesMap = new HashMap<>();
+                                        likesMap.put("timestamp", FieldValue.serverTimestamp());
+                                        firebaseFirestore.collection("Posts/" + blogPostID + "/Likes")
+                                                .document(currentUserId).set(likesMap)
+                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        if (task.isSuccessful()) {
+                                                            holder.likeImage.setImageResource(R.mipmap.like_pink);
+                                                        }
                                                     }
-                                                }
-                                            });
-                                } else {
-                                    //if like exists delete the like
-                                    firebaseFirestore.collection("Posts/" + blogPostID + "/Likes")
-                                            .document(currentUserId).delete()
-                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Void> task) {
-                                                    if (task.isSuccessful()) {
-                                                        holder.likeImage.setImageResource(R.mipmap.like_grey);
+                                                });
+                                    } else {
+                                        //if like exists delete the like
+                                        firebaseFirestore.collection("Posts/" + blogPostID + "/Likes")
+                                                .document(currentUserId).delete()
+                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        if (task.isSuccessful()) {
+                                                            holder.likeImage.setImageResource(R.mipmap.like_grey);
+                                                        }
                                                     }
-                                                }
-                                            });
+                                                });
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
                                 }
                             }
                         });
@@ -444,40 +476,52 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                 firebaseFirestore.collection("Posts").document(blogPostID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull final Task<DocumentSnapshot> task) {
-                        if (task.getResult().exists()) {
-                            final FirebaseStorage storageReference = FirebaseStorage.getInstance();
-                            StorageReference delfile = storageReference.getReferenceFromUrl(thumb_image_url);
-                            delfile.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    ///the post deleted from the storage
-                                    if (task.isSuccessful()) {
+                        try {
+                            if (task.getResult().exists()) {
+                                final FirebaseStorage storageReference = FirebaseStorage.getInstance();
+                                StorageReference delfile = storageReference.getReferenceFromUrl(thumb_image_url);
+                                delfile.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        ///the post deleted from the storage
+                                        try {
+                                            if (task.isSuccessful()) {
 
-                                        firebaseFirestore.collection("Posts").document(blogPostID).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                if (task.isSuccessful()) {
-                                                    postList.remove(position);
-                                                    user_list.remove(position);
-                                                    Toast.makeText(context, "Post deleted", Toast.LENGTH_SHORT).show();
-                                                    progressDialog.dismiss();
-                                                    notifyDataSetChanged();
-                                                } else {
-                                                    Toast.makeText(context, "Error while deleting post.", Toast.LENGTH_SHORT).show();
-                                                    Log.e("deleting post", "error in deleting entries from database " + task.getException().getMessage());
-                                                    progressDialog.dismiss();
-                                                    //error in deleting entries from database
-                                                }
+                                                firebaseFirestore.collection("Posts").document(blogPostID).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        try {
+                                                            if (task.isSuccessful()) {
+                                                                postList.remove(position);
+                                                                user_list.remove(position);
+                                                                Toast.makeText(context, "Post deleted", Toast.LENGTH_SHORT).show();
+                                                                progressDialog.dismiss();
+                                                                notifyDataSetChanged();
+                                                            } else {
+                                                                Toast.makeText(context, "Error while deleting post.", Toast.LENGTH_SHORT).show();
+                                                                Log.e("deleting post", "error in deleting entries from database " + task.getException().getMessage());
+                                                                progressDialog.dismiss();
+                                                                //error in deleting entries from database
+                                                            }
+                                                        } catch (Exception e) {
+                                                            e.printStackTrace();
+                                                        }
+                                                    }
+                                                });
+                                            } else {
+                                                Toast.makeText(context, "Error while deleting post.", Toast.LENGTH_SHORT).show();
+                                                progressDialog.dismiss();
+                                                Log.e("deleting post", "error deleting thumbnail from storage " + task.getException().getMessage());
+                                                //error in thumbnail deletion
                                             }
-                                        });
-                                    } else {
-                                        Toast.makeText(context, "Error while deleting post.", Toast.LENGTH_SHORT).show();
-                                        progressDialog.dismiss();
-                                        Log.e("deleting post", "error deleting thumbnail from storage " + task.getException().getMessage());
-                                        //error in thumbnail deletion
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
                                     }
-                                }
-                            });
+                                });
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
                     }
                 });
@@ -519,16 +563,20 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                         .document(blogPostID).addSnapshotListener((Activity) context, new EventListener<DocumentSnapshot>() {
                     @Override
                     public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
-                        if (documentSnapshot.exists()) {
-                            post_user_id = documentSnapshot.getString("user_id");
-                            if (post_user_id.equals(current_user_id)) {
-                                Toast.makeText(context, "Please select profile option from bottom..", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Intent i = new Intent(context, UserAccount.class);
-                                i.putExtra("post_user_id", post_user_id);
-                                context.startActivity(i);
-                                Log.e("Post", "Post user id " + post_user_id);
+                        try {
+                            if (documentSnapshot.exists()) {
+                                post_user_id = documentSnapshot.getString("user_id");
+                                if (post_user_id.equals(current_user_id)) {
+                                    Toast.makeText(context, "Please select profile option from bottom..", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Intent i = new Intent(context, UserAccount.class);
+                                    i.putExtra("post_user_id", post_user_id);
+                                    context.startActivity(i);
+                                    Log.e("Post", "Post user id " + post_user_id);
+                                }
                             }
+                        } catch (Exception e1) {
+                            e1.printStackTrace();
                         }
                     }
                 });
@@ -541,16 +589,20 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                         .document(blogPostID).addSnapshotListener((Activity) context, new EventListener<DocumentSnapshot>() {
                     @Override
                     public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
-                        if (documentSnapshot.exists()) {
-                            post_user_id = documentSnapshot.getString("user_id");
-                            if (post_user_id.equals(current_user_id)) {
-                                Toast.makeText(context, "Please select profile option from bottom..", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Intent i = new Intent(context, UserAccount.class);
-                                i.putExtra("post_user_id", post_user_id);
-                                context.startActivity(i);
-                                Log.e("Post", "Post user id " + post_user_id);
+                        try {
+                            if (documentSnapshot.exists()) {
+                                post_user_id = documentSnapshot.getString("user_id");
+                                if (post_user_id.equals(current_user_id)) {
+                                    Toast.makeText(context, "Please select profile option from bottom..", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Intent i = new Intent(context, UserAccount.class);
+                                    i.putExtra("post_user_id", post_user_id);
+                                    context.startActivity(i);
+                                    Log.e("Post", "Post user id " + post_user_id);
+                                }
                             }
+                        } catch (Exception e1) {
+                            e1.printStackTrace();
                         }
                     }
                 });
@@ -563,16 +615,20 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                         .document(blogPostID).addSnapshotListener((Activity) context, new EventListener<DocumentSnapshot>() {
                     @Override
                     public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
-                        if (documentSnapshot.exists()) {
-                            post_user_id = documentSnapshot.getString("user_id");
-                            if (post_user_id.equals(current_user_id)) {
-                                Toast.makeText(context, "Please select profile option from bottom..", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Intent i = new Intent(context, UserAccount.class);
-                                i.putExtra("post_user_id", post_user_id);
-                                context.startActivity(i);
-                                Log.e("Post", "Post user id " + post_user_id);
+                        try {
+                            if (documentSnapshot.exists()) {
+                                post_user_id = documentSnapshot.getString("user_id");
+                                if (post_user_id.equals(current_user_id)) {
+                                    Toast.makeText(context, "Please select profile option from bottom..", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Intent i = new Intent(context, UserAccount.class);
+                                    i.putExtra("post_user_id", post_user_id);
+                                    context.startActivity(i);
+                                    Log.e("Post", "Post user id " + post_user_id);
+                                }
                             }
+                        } catch (Exception e1) {
+                            e1.printStackTrace();
                         }
                     }
                 });
@@ -609,19 +665,23 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
-                                        if (task.isSuccessful()) {
-                                            try {
-                                                postList.remove(position);
-                                                user_list.remove(position);
-                                                notifyDataSetChanged();
-                                            } catch (IndexOutOfBoundsException e) {
-                                                Log.e("Reported", "Exception while removing list " + e.getMessage());
+                                        try {
+                                            if (task.isSuccessful()) {
+                                                try {
+                                                    postList.remove(position);
+                                                    user_list.remove(position);
+                                                    notifyDataSetChanged();
+                                                } catch (IndexOutOfBoundsException e) {
+                                                    Log.e("Reported", "Exception while removing list " + e.getMessage());
+                                                }
+                                                Log.e("Reported", "Post " + post_id + " reported by " + current_user_id);
+                                                Log.e("report", "Report clicked");
+                                                Toast.makeText(context, "Reported..", Toast.LENGTH_SHORT).show();
+                                            } else {
+                                                Log.e("report", "error: " + task.getException().getMessage());
                                             }
-                                            Log.e("Reported", "Post " + post_id + " reported by " + current_user_id);
-                                            Log.e("report", "Report clicked");
-                                            Toast.makeText(context, "Reported..", Toast.LENGTH_SHORT).show();
-                                        } else {
-                                            Log.e("report", "error: " + task.getException().getMessage());
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
                                         }
                                     }
                                 });
@@ -653,12 +713,16 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                         firebaseFirestore.collection("Users/" + current_user_id + "/Block").document(post_user).set(map).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()) {
-                                    notifyDataSetChanged();
-                                    Toast.makeText(context, "Blocked..", Toast.LENGTH_SHORT).show();
-                                    Log.e("block ", "user " + current_user_id + " blocked " + post_user);
-                                } else {
-                                    Log.e("block ", "block error");
+                                try {
+                                    if (task.isSuccessful()) {
+                                        notifyDataSetChanged();
+                                        Toast.makeText(context, "Blocked..", Toast.LENGTH_SHORT).show();
+                                        Log.e("block ", "user " + current_user_id + " blocked " + post_user);
+                                    } else {
+                                        Log.e("block ", "block error");
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
                                 }
                             }
                         });
@@ -734,14 +798,22 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
         void setPostImage(String downloadUri) {
             RequestOptions placeholder = new RequestOptions();
             placeholder.placeholder(R.drawable.ic_launcher_background);
-            Glide.with(context).applyDefaultRequestOptions(placeholder).load(downloadUri).into(imageView);
+            try {
+                Glide.with(context).applyDefaultRequestOptions(placeholder).load(downloadUri).into(imageView);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         @SuppressLint("CheckResult")
         void setProfileImage(String downloadUri) {
             RequestOptions placeholder = new RequestOptions();
             placeholder.placeholder(R.drawable.default_usr);
-            Glide.with(context).applyDefaultRequestOptions(placeholder).load(downloadUri).into(profile);
+            try {
+                Glide.with(context).applyDefaultRequestOptions(placeholder).load(downloadUri).into(profile);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         void setUserText(String text) {

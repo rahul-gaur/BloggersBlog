@@ -93,21 +93,25 @@ public class SearchFragment extends Fragment {
                     query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful()) {
-                                //to remove items from the list every time before loop
-                                userList.removeAll(userList);
+                            try {
+                                if (task.isSuccessful()) {
+                                    //to remove items from the list every time before loop
+                                    userList.removeAll(userList);
 
-                                for (DocumentSnapshot documentSnapshot : task.getResult()) {
-                                    String user_id = documentSnapshot.getId();
-                                    SearchList user = documentSnapshot.toObject(SearchList.class).withID(user_id);
-                                    userList.add(user);
-                                    String user_name = documentSnapshot.getString("name");
-                                    Log.e("Search", "Name " + user_name + " user id " + user_id);
-                                    searchRecyclerAdapter.notifyDataSetChanged();
+                                    for (DocumentSnapshot documentSnapshot : task.getResult()) {
+                                        String user_id = documentSnapshot.getId();
+                                        SearchList user = documentSnapshot.toObject(SearchList.class).withID(user_id);
+                                        userList.add(user);
+                                        String user_name = documentSnapshot.getString("name");
+                                        Log.e("Search", "Name " + user_name + " user id " + user_id);
+                                        searchRecyclerAdapter.notifyDataSetChanged();
+                                    }
+                                } else {
+                                    Log.e("Search", "No data");
+                                    userList.removeAll(userList);
                                 }
-                            } else {
-                                Log.e("Search", "No data");
-                                userList.removeAll(userList);
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
                         }
                     });

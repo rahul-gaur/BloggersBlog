@@ -65,8 +65,12 @@ public class GridViewAdapter extends ArrayAdapter {
         final GridViewList gridViewList = new GridViewList();
         final String post_id = objects.get(position).getBlogPostID();
 
-        Glide.with(context).load(objects.get(position).getImageURL())
-                .into(holder.post_image);
+        try {
+            Glide.with(context).load(objects.get(position).getImageURL())
+                    .into(holder.post_image);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         holder.progressBar.setVisibility(View.INVISIBLE);
         holder.post_image.setOnClickListener(new View.OnClickListener() {
             @Override
