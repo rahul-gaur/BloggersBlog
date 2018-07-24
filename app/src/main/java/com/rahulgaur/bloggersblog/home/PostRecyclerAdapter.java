@@ -153,6 +153,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                             holder.mView.setVisibility(View.GONE);
                             postList.remove(position);
                             user_list.remove(position);
+                            notifyDataSetChanged();
                         } catch (IndexOutOfBoundsException exception) {
                             Log.e("report hide", " post remove exception " + exception.getMessage());
                         }
@@ -182,6 +183,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                                 try {
                                     postList.remove(position);
                                     user_list.remove(position);
+                                    notifyDataSetChanged();
                                 } catch (IndexOutOfBoundsException e1) {
                                     Log.e("Blocked", "Exception while removing blocked posts " + e1.getMessage());
                                 }

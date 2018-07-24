@@ -4,14 +4,12 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -32,7 +30,7 @@ import com.rahulgaur.bloggersblog.welcome.WelcomePage;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
     private FirebaseAuth auth = FirebaseAuth.getInstance();
 
@@ -43,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
     private NotificationFragment notiFrag;
     private AccountFragment accountFrag;
     private SearchFragment searchFrag;
+
+    private ImageView homeBtn, notiBtn, searchBtn, addBtn, profileBtn;
 
     private SharedPref sharedPref;
 
@@ -67,51 +67,29 @@ public class MainActivity extends AppCompatActivity {
         assert current_user != null;
         current_user_id = current_user.getUid();
 
-        FloatingActionButton addPost = findViewById(R.id.main_add_post);
+        homeBtn = findViewById(R.id.home_btn);
+        notiBtn = findViewById(R.id.noti_Btn);
+        searchBtn = findViewById(R.id.search_Btn);
+        addBtn = findViewById(R.id.add_Btn);
+        profileBtn = findViewById(R.id.profile_Btn);
+
+        homeBtn.setOnClickListener(this);
+        notiBtn.setOnClickListener(this);
+        searchBtn.setOnClickListener(this);
+        addBtn.setOnClickListener(this);
+        profileBtn.setOnClickListener(this);
 
         if (auth.getCurrentUser() != null) {
 
             //initializing fragments
+            Log.d("Main Activity", "initializing fragments ");
             homeFrag = new HomeFragment();
             notiFrag = new NotificationFragment();
             accountFrag = new AccountFragment();
             searchFrag = new SearchFragment();
             initializeFragment();
 
-            //bottom navigation
-            BottomNavigationView bottomNavigationView = findViewById(R.id.main_bottomNev);
-            bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-                @Override
-                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
-                    switch (item.getItemId()) {
-                        case R.id.bottom_home:
-                            fragmentReplace(homeFrag);
-                            return true;
-                        case R.id.bottom_notification:
-                            fragmentReplace(notiFrag);
-                            return true;
-                        case R.id.bottom_profile:
-                            fragmentReplace(accountFrag);
-                            return true;
-                        case R.id.bottom_search:
-                            fragmentReplace(searchFrag);
-                            return true;
-                        default:
-                            return false;
-                    }
-                }
-            });
-
             firebaseFirestore = FirebaseFirestore.getInstance();
-
-            addPost.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    sendToNewPost();
-                }
-            });
-
         }
 
         assert current_user != null;
@@ -127,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
 
         FirebaseUser current_user = auth.getCurrentUser();
+        Log.d("Main Activity", "onStart() main");
 
         if (current_user == null) {
             sendUserToWelcome();
@@ -173,6 +152,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        Log.d("Main Activity", "onResume() ");
 
         if (current_user_id == null) {
             sendUserToWelcome();
@@ -186,6 +166,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initializeFragment() {
+
+        Log.d("Main Activity", "initializeFragment() called ");
 
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 
@@ -208,6 +190,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void fragmentReplace(Fragment fragment) {
+        Log.d("Main Activity", "Fragment Replacer called");
 
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         if (fragment == homeFrag) {
@@ -232,5 +215,31 @@ public class MainActivity extends AppCompatActivity {
         }
         fragmentTransaction.show(fragment);
         fragmentTransaction.commit();
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.home_btn:
+                fragmentReplace(homeFrag);
+                Log.d("Main Activity", "home btn clicked");
+                break;
+            case R.id.search_Btn:
+                fragmentReplace(searchFrag);
+                Log.d("Main Activity", "search btn clicked");
+                break;
+            case R.id.add_Btn:
+                sendToNewPost();
+                Log.d("Main Activity", "add btn clicked");
+                break;
+            case R.id.noti_Btn:
+                fragmentReplace(notiFrag);
+                Log.d("Main Activity", "noti btn clicked");
+                break;
+            case R.id.profile_Btn:
+                fragmentReplace(accountFrag);
+                Log.d("Main Activity", "account btn clicked");
+                break;
+        }
     }
 }

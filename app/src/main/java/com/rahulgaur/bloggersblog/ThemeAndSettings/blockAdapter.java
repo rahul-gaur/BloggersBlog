@@ -2,6 +2,7 @@ package com.rahulgaur.bloggersblog.ThemeAndSettings;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -23,6 +24,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.rahulgaur.bloggersblog.R;
 
 import java.util.List;
+import java.util.Objects;
 
 import static android.support.constraint.Constraints.TAG;
 
@@ -56,7 +58,7 @@ public class blockAdapter extends RecyclerView.Adapter<blockAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         final String blocked_user_id = list.get(position).BlockID;
-        current_user_id = auth.getCurrentUser().getUid();
+        current_user_id = Objects.requireNonNull(auth.getCurrentUser()).getUid();
         Log.e("Setting block", "user_id " + blocked_user_id);
         firebaseFirestore.collection("Users").document(blocked_user_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -80,26 +82,27 @@ public class blockAdapter extends RecyclerView.Adapter<blockAdapter.ViewHolder> 
             }
         });
 
+        Log.e("blockAdapter","blocked user id "+blocked_user_id);
         holder.button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                firebaseFirestore.collection("Users").document(blocked_user_id)
-                        .delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                firebaseFirestore.collection("Users").document(current_user_id).collection("Block").document(blocked_user_id).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         try {
                             if (task.isSuccessful()){
                                 list.remove(position);
+                                Intent i = context.getPackageManager()
+                                        .getLaunchIntentForPackage(context.getPackageName());
+                                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                context.startActivity(i);
                                 Toast.makeText(context, "User Unblocked", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Log.e(TAG, "onComplete: unable to delete blocked user "+blocked_user_id);
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
                 });
-
             }
         });
     }
@@ -132,8 +135,8 @@ public class blockAdapter extends RecyclerView.Adapter<blockAdapter.ViewHolder> 
                 Glide.with(context)
                         .applyDefaultRequestOptions(requestOptions)
                         .load(url).into(imageView);
-            } catch (Exception e){
-                Log.e("blockAdapter","Exception glide "+e.getMessage());
+            } catch (Exception e) {
+                Log.e("blockAdapter", "Exception glide " + e.getMessage());
             }
         }
 

@@ -148,7 +148,7 @@ public class Account extends AppCompatActivity {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     //if the version is >= M then check storage permission, if granted or not.
                     if (ContextCompat.checkSelfPermission(Account.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                        Toast.makeText(Account.this, "Permission Denied", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Account.this, "Permission Denied please click again", Toast.LENGTH_SHORT).show();
                         ActivityCompat.requestPermissions(Account.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
                     } else {
                         ImagePicker();
