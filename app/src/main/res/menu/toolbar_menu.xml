@@ -3,11 +3,11 @@
 
     <item
         android:id="@+id/profile_menu"
-        android:title="Profile Update" />
+        android:title="@string/profile_updateMenu" />
     <item
         android:id="@+id/setting_AppBar"
-        android:title="Setting" />
+        android:title="@string/settingMenu" />
     <item
         android:id="@+id/LogOut_app_bar"
-        android:title="Log Out" />
+        android:title="@string/log_outMenu" />
 </menu>

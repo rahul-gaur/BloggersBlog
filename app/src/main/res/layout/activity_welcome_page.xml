@@ -12,6 +12,7 @@
         android:layout_width="1000dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
+        android:contentDescription="@string/username"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,6 +23,7 @@
     <ImageView
         android:id="@+id/logoImageView"
         android:layout_width="0dp"
+        android:contentDescription="@string/username"
         android:layout_height="180dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
@@ -33,7 +35,8 @@
     <ImageView
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="#4d000000"
+        android:contentDescription="@string/username"
+        android:background="@color/blackBackground"
         app:layout_constraintBottom_toBottomOf="@+id/login_passLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

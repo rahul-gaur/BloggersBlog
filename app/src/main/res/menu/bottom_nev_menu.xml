@@ -8,7 +8,7 @@
     <item
         android:id="@+id/bottom_search"
         android:icon="@mipmap/search_ico"
-        android:title="@string/searchUser"/>
+        android:title="@string/searchUser" />
     <item
         android:id="@+id/bottom_notification"
         android:icon="@drawable/baseline_notification_important_24"

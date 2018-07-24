@@ -17,7 +17,8 @@
         android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:ignore="AllowBackup">
+        tools:ignore="AllowBackup,GoogleAppIndexingWarning"
+        android:fullBackupContent="true">
         <activity
             android:name=".home.MainActivity"
             android:screenOrientation="portrait" />
@@ -31,7 +32,6 @@
                 <action
                     android:name="android.intent.action.MAIN"
                     android:screenOrientation="portrait" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -55,12 +55,14 @@
             android:name=".account.UserAccount"
             android:screenOrientation="portrait" />
 
-        <service android:name=".notification.notificationServices.MyFirebaseIdService">
+        <service android:name=".notification.notificationServices.MyFirebaseIdService"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-        <service android:name=".notification.notificationServices.MyFirebaseMessaging">
+        <service android:name=".notification.notificationServices.MyFirebaseMessaging"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>

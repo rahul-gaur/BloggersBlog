@@ -137,7 +137,7 @@ public class Comments extends AppCompatActivity {
 
                         setPostUserToken(token);
                         post_user = post_user_id;
-                        Log.e("Comment post","post user id "+post_user_id);
+                        Log.e("Comment post", "post user id " + post_user_id);
 
                         firebaseFirestore.collection("Users").document(post_user_id).addSnapshotListener(Comments.this, new EventListener<DocumentSnapshot>() {
                             @Override
@@ -178,7 +178,7 @@ public class Comments extends AppCompatActivity {
                                         .withID(commentid);
                                 cmntList.add(commentList);
                                 commentList.setPost_user_id(post_user);
-                                Log.e("Comment post","post user id in cmntRet "+post_user);
+                                Log.e("Comment post", "post user id in cmntRet " + post_user);
                                 commentsRecyclerAdapter.notifyDataSetChanged();
 
                             }
@@ -216,73 +216,106 @@ public class Comments extends AppCompatActivity {
                                         if (task.isSuccessful()) {
                                             Log.e("Comment notificaiton", "Comment Notification Entered");
                                             Log.e("Comment notificaiton", "Comment Notification current user id " + current_user_id);
-                                            firebaseFirestore.collection("Users").document(current_user_id).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+
+                                            firebaseFirestore.collection("Posts").document(blog_post_id).addSnapshotListener(new EventListener<DocumentSnapshot>() {
                                                 @Override
                                                 public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
-                                                    if (documentSnapshot.exists()) {
-                                                        Log.e("Comment notificaiton", "Comment Notification current user entered");
+                                                    try {
+                                                        if (documentSnapshot.exists()) {
+                                                            post_user_id = documentSnapshot.getString("user_id");
 
-                                                        final String current_user_name = documentSnapshot.getString("name");
-                                                        Log.e("Comment notificaiton", "Comment Notification current user name " + current_user_name);
+                                                            Log.e("comment","post user id "+post_user_id);
 
-                                                        Map<String, Object> notificaitonMap = new HashMap<>();
-                                                        notificaitonMap.put("post_id", blog_post_id);
-                                                        notificaitonMap.put("timestamp", FieldValue.serverTimestamp());
-                                                        notificaitonMap.put("message", "<b>" + current_user_name + "</b> Commented: <br>" + comment_message);
-                                                        firebaseFirestore.collection("Users/" + post_user_id + "/Notification").add(notificaitonMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                                                            @Override
-                                                            public void onComplete(@NonNull Task<DocumentReference> task) {
-                                                                if (task.isSuccessful()) {
-                                                                    firebaseFirestore.collection("Users/").document(post_user_id).addSnapshotListener(Comments.this, new EventListener<DocumentSnapshot>() {
-                                                                        @Override
-                                                                        public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
-                                                                            if (documentSnapshot.exists()) {
-                                                                                String token = documentSnapshot.getString("token");
-                                                                                com.rahulgaur.bloggersblog.notification.notificationServices.Notification notification = new com.rahulgaur.bloggersblog.notification.notificationServices.Notification("Likes", current_user_name + " Commented " + comment_message);
-                                                                                Sender sender = new Sender(notification, token); //send notification to itself
-                                                                                Log.e("Sender Token", "" + token);
-                                                                                apiService.sendNotification(sender)
-                                                                                        .enqueue(new Callback<MyResponse>() {
-                                                                                            @Override
-                                                                                            public void onResponse
-                                                                                                    (Call<MyResponse> call, Response<MyResponse> response) {
-                                                                                                try {
-                                                                                                    if (response.body().success == 1) {
-                                                                                                        Log.e("Notification service ", "Success");
-                                                                                                    } else {
-                                                                                                        Log.e("Notification service ", "Failed");
+                                                            firebaseFirestore.collection("Users").document(current_user_id).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                                                                @Override
+                                                                public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
+                                                                    try {
+                                                                        if (documentSnapshot.exists()) {
+                                                                            Log.e("Comment notificaiton", "Comment Notification current user entered");
+
+                                                                            final String current_user_name = documentSnapshot.getString("name");
+                                                                            Log.e("Comment notificaiton", "Comment Notification current user name " + current_user_name);
+
+                                                                            Map<String, Object> notificaitonMap = new HashMap<>();
+                                                                            notificaitonMap.put("post_id", blog_post_id);
+                                                                            notificaitonMap.put("timestamp", FieldValue.serverTimestamp());
+                                                                            notificaitonMap.put("message", "<b>" + current_user_name + "</b> Commented: <br>" + comment_message);
+                                                                            Log.e("Notification user", "post user id " + post_user_id);
+                                                                            firebaseFirestore.collection("Users/" + post_user_id + "/Notification").add(notificaitonMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                                                                @Override
+                                                                                public void onComplete(@NonNull Task<DocumentReference> task) {
+                                                                                    try {
+                                                                                        if (task.isSuccessful()) {
+                                                                                            firebaseFirestore.collection("Users/").document(post_user_id).addSnapshotListener(Comments.this, new EventListener<DocumentSnapshot>() {
+                                                                                                @Override
+                                                                                                public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
+                                                                                                    try {
+                                                                                                        if (documentSnapshot.exists()) {
+                                                                                                            String token = documentSnapshot.getString("token");
+                                                                                                            com.rahulgaur.bloggersblog.notification.notificationServices.Notification notification = new com.rahulgaur.bloggersblog.notification.notificationServices.Notification("Comments", current_user_name + " Commented " + comment_message);
+                                                                                                            Sender sender = new Sender(notification, token); //send notification to itself
+                                                                                                            Log.e("Sender Token", "" + token);
+                                                                                                            apiService.sendNotification(sender)
+                                                                                                                    .enqueue(new Callback<MyResponse>() {
+                                                                                                                        @Override
+                                                                                                                        public void onResponse
+                                                                                                                                (Call<MyResponse> call, Response<MyResponse> response) {
+                                                                                                                            try {
+                                                                                                                                if (response.body().success == 1) {
+                                                                                                                                    Log.e("Notification service ", "Success");
+                                                                                                                                } else {
+                                                                                                                                    Log.e("Notification service ", "Failed");
+                                                                                                                                }
+                                                                                                                            } catch (NullPointerException ne) {
+                                                                                                                                Log.e("Notification", "Exception " + ne.getMessage());
+                                                                                                                            }
+                                                                                                                        }
+
+                                                                                                                        @Override
+                                                                                                                        public void onFailure
+                                                                                                                                (Call<MyResponse> call, Throwable
+                                                                                                                                        t) {
+                                                                                                                            Log.e("Notification service ", "Failed");
+                                                                                                                        }
+                                                                                                                    });
+                                                                                                            Log.e("Comment notificaiton", "Comment Notification Added");
+                                                                                                            progressBar.setVisibility(View.INVISIBLE);
+                                                                                                        }
+                                                                                                    } catch (Exception e1) {
+                                                                                                        e1.printStackTrace();
                                                                                                     }
-                                                                                                } catch (NullPointerException ne) {
-                                                                                                    Log.e("Notification", "Exception " + ne.getMessage());
                                                                                                 }
-                                                                                            }
+                                                                                            });
+                                                                                        } else
 
-                                                                                            @Override
-                                                                                            public void onFailure
-                                                                                                    (Call<MyResponse> call, Throwable
-                                                                                                            t) {
-                                                                                                Log.e("Notification service ", "Failed");
-                                                                                            }
-                                                                                        });
-                                                                                Log.e("Comment notificaiton", "Comment Notification Added");
-                                                                                progressBar.setVisibility(View.INVISIBLE);
-                                                                            }
+                                                                                        {
+                                                                                            Log.e("Comment notificaiton", "Comment Notification failed");
+                                                                                        }
+                                                                                    } catch (Exception e1) {
+                                                                                        e1.printStackTrace();
+                                                                                    }
+                                                                                }
+                                                                            });
+                                                                        } else
+
+                                                                        {
+                                                                            Log.e("Comment notificaiton", "Comment Notification document not found");
                                                                         }
-                                                                    });
-                                                                } else
-
-                                                                {
-                                                                    Log.e("Comment notificaiton", "Comment Notification failed");
+                                                                    } catch (Exception e1) {
+                                                                        e1.printStackTrace();
+                                                                    }
                                                                 }
-                                                            }
-                                                        });
-                                                    } else
+                                                            });
 
-                                                    {
-                                                        Log.e("Comment notificaiton", "Comment Notification document not found");
+                                                        } else {
+                                                            Log.e("comment", "post user id not found ");
+                                                        }
+                                                    } catch (Exception e1) {
+                                                        e1.printStackTrace();
                                                     }
                                                 }
                                             });
+
                                         } else
 
                                         {

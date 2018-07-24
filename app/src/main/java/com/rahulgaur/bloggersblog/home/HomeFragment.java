@@ -188,36 +188,10 @@ public class HomeFragment extends Fragment {
     }
 
     private void logout() {
-        auth = FirebaseAuth.getInstance();
-        String currentID = auth.getCurrentUser().getUid();
-        firebaseFirestore = FirebaseFirestore.getInstance();
-
-        Map<String,Object> deleteValue = new HashMap<>();
-        deleteValue.put("token", FieldValue.delete());
-
-        firebaseFirestore.collection("Users").document(currentID).update(deleteValue)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        try {
-                            if (task.isSuccessful()){
-                                Log.e("Token delete","Token is deleted");
-                                auth.signOut();
-                                Intent i = new Intent(getContext(), WelcomePage.class);
-                                startActivity(i);
-                                Objects.requireNonNull(getActivity()).finish();
-                            } else {
-                                Log.e("Token delete","Token not deleted");
-                                auth.signOut();
-                                Intent i = new Intent(getContext(), WelcomePage.class);
-                                startActivity(i);
-                                Objects.requireNonNull(getActivity()).finish();
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
+        auth.signOut();
+        Intent i = new Intent(getContext(), WelcomePage.class);
+        startActivity(i);
+        Objects.requireNonNull(getActivity()).finish();
     }
 
     private void sendToAccount() {

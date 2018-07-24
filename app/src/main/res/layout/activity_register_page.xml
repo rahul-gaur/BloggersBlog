@@ -38,15 +38,17 @@
         android:layout_marginTop="40dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/username" />
 
     <ImageView
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="#4d000000"
+        android:background="@color/blackBackground"
         app:layout_constraintBottom_toBottomOf="@+id/reg_passConfirmLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        android:contentDescription="@string/username"
         app:layout_constraintTop_toTopOf="@+id/reg_emailLayout" />
 
 

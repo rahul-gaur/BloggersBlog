@@ -37,4 +37,9 @@
     <string name="search_name">Search Name</string>
     <string name="search_btn">Search</string>
     <string name="forgot_password">Forgot Password</string>
+    <string name="blockMenu">Block</string>
+    <string name="reportMenu">Report</string>
+    <string name="profile_updateMenu">Profile Update</string>
+    <string name="settingMenu">Setting</string>
+    <string name="log_outMenu">Log Out</string>
 </resources>

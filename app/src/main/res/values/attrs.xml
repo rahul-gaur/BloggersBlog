@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="ds">
-        <attr name="colorBackground" format="color"/>
-        <attr name="colorPrimary" format="color"/>
-        <attr name="colorPrimaryDark" format="color"/>
-        <attr name="colorAccent" format="color"/>
-        <attr name="primaryLightColor" format="color"/>
-        <attr name="secondaryLightColor" format="color"/>
-        <attr name="secondaryDarkColor" format="color"/>
-        <attr name="primaryTextColor" format="color"/>
-        <attr name="secondaryTextColor" format="color"/>
-        <attr name="white" format="color"/>
-        <attr name="black" format="color"/>
-        <attr name="hintColor" format="color"/>
-        <attr name="cardBackgroundColorDefault" format="color"/>
-        <attr name="bottomNevBarColor" format="color"/>
+        <attr name="colorBackground" format="color" />
+        <attr name="colorPrimary" format="color" />
+        <attr name="colorPrimaryDark" format="color" />
+        <attr name="colorAccent" format="color" />
+        <attr name="primaryLightColor" format="color" />
+        <attr name="secondaryLightColor" format="color" />
+        <attr name="secondaryDarkColor" format="color" />
+        <attr name="primaryTextColor" format="color" />
+        <attr name="secondaryTextColor" format="color" />
+        <attr name="white" format="color" />
+        <attr name="black" format="color" />
+        <attr name="hintColor" format="color" />
+        <attr name="cardBackgroundColorDefault" format="color" />
+        <attr name="bottomNevBarColor" format="color" />
     </declare-styleable>
-    
+
 </resources>

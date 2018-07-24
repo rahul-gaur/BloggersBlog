@@ -338,6 +338,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                                                                         notificaitonMap.put("post_id", blogPostID);
                                                                         notificaitonMap.put("timestamp", FieldValue.serverTimestamp());
                                                                         notificaitonMap.put("message", "<b>" + current_user_name + "</b> <br>Liked your photo");
+                                                                        Log.e("Notification user","like notification post user id "+post_user_id);
                                                                         firebaseFirestore.collection("Users/" + post_user_id + "/Notification").add(notificaitonMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                                                                             @Override
                                                                             public void onComplete(@NonNull Task<DocumentReference> task) {

@@ -47,34 +47,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <!--
-    <devlight.io.library.ntb.NavigationTabBar
-        android:id="@+id/main_bottomNev1"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/main_bottomNev"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/bottom_nev_menu"
-        app:ntb_active_color="?attr/colorAccent"
-        app:ntb_badge_bg_color="?attr/secondaryDarkColor"
-        app:ntb_badge_gravity="top"
-        app:ntb_badge_position="right"
-        app:ntb_badge_size="10sp"
-        app:ntb_badge_title_color="?attr/colorAccent"
-        app:ntb_badged="true"
-        app:ntb_bg_color="?attr/black"
-        app:ntb_corners_radius="5dp"
-        app:ntb_icon_size_fraction="0.5"
-        app:ntb_inactive_color="?attr/colorPrimary"
-        app:ntb_preview_colors="?attr/colorAccent"
-        app:ntb_scaled="true"
-        app:ntb_swiped="true"
-        app:ntb_tinted="true"
-        app:ntb_title_mode="all"
-        app:ntb_title_size="10sp"
-        app:ntb_titled="true" />-->
-
 </android.support.constraint.ConstraintLayout>

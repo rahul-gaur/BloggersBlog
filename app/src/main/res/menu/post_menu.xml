@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
         android:id="@+id/post_menu_block_btn"
-        android:title="Block" />
+        android:title="@string/blockMenu" />
     <item
         android:id="@+id/post_menu_report_btn"
-        android:title="Report" />
+        android:title="@string/reportMenu" />
 </menu>
