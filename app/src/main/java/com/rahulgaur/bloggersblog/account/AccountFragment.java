@@ -11,6 +11,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -30,9 +33,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.rahulgaur.bloggersblog.R;
+import com.rahulgaur.bloggersblog.ThemeAndSettings.Settings;
 import com.rahulgaur.bloggersblog.ThemeAndSettings.SharedPref;
 import com.rahulgaur.bloggersblog.blogPost.postid;
 import com.rahulgaur.bloggersblog.comment.Comments;
+import com.rahulgaur.bloggersblog.welcome.WelcomePage;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -50,6 +55,8 @@ public class AccountFragment extends Fragment {
     private String username = "";
     private SharedPref sharedPref;
     private GridViewList gridViewList;
+    private FirebaseAuth auth;
+    private Toolbar account_toolbar;
 
     ArrayList<GridViewList> postList = new ArrayList<>();
 
@@ -73,9 +80,12 @@ public class AccountFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_account, container, false);
 
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        final Toolbar account_toolbar = view.findViewById(R.id.account_frag_toolbar);
+        auth = FirebaseAuth.getInstance();
+
+        account_toolbar = view.findViewById(R.id.account_frag_toolbar);
         ((AppCompatActivity) Objects.requireNonNull(getActivity())).setSupportActionBar(account_toolbar);
+        setHasOptionsMenu(true);
+
         current_userID = Objects.requireNonNull(auth.getCurrentUser()).getUid();
         FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
         firebaseFirestore.collection("Users")
@@ -131,7 +141,6 @@ public class AccountFragment extends Fragment {
 
         firebaseFirestore = FirebaseFirestore.getInstance();
 
-
         //getting posts from the database
         firebaseFirestore.collection("Posts/" + post_id).addSnapshotListener((Activity) Objects.requireNonNull(getContext()), new EventListener<QuerySnapshot>() {
             @Override
@@ -179,5 +188,47 @@ public class AccountFragment extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.toolbar_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.profile_menu:
+                sendToAccount();
+                break;
+            case R.id.setting_AppBar:
+                settings();
+                break;
+            case R.id.LogOut_app_bar:
+                logout();
+                return true;
+            default:
+                return false;
+        }
+        return false;
+    }
+
+    private void settings() {
+        Intent i = new Intent(getContext(), Settings.class);
+        startActivity(i);
+    }
+
+    private void logout() {
+        auth.signOut();
+        Intent i = new Intent(getContext(), WelcomePage.class);
+        startActivity(i);
+        Objects.requireNonNull(getActivity()).finish();
+    }
+
+    private void sendToAccount() {
+        Intent i = new Intent(getContext(), Account.class);
+        startActivity(i);
     }
 }

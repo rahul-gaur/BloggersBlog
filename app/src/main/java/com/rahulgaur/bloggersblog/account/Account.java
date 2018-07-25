@@ -190,7 +190,7 @@ public class Account extends AppCompatActivity {
 
                     } else {
                         btn.setProgress(-1);
-                        Toast.makeText(Account.this, "Please write your full name..", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Account.this, "Please write your name and upload photo..", Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     firebaseStore(null, name);

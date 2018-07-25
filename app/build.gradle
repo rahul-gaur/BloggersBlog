@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+//for firebase performance
+apply plugin: 'com.google.firebase.firebase-perf'
 
 android {
     compileSdkVersion 27
@@ -7,8 +9,8 @@ android {
         applicationId "com.rahulgaur.bloggersblog"
         minSdkVersion 21
         targetSdkVersion 27
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "2.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     lintOptions{
@@ -76,6 +78,9 @@ dependencies {
 
     //apache lib for capitalizing 1st letter
     implementation 'org.apache.commons:commons-lang3:3.6'
+
+    //for firebase performance
+    implementation 'com.google.firebase:firebase-perf:11.8.0'
 }
 
 apply plugin: 'com.google.gms.google-services'
