@@ -5,7 +5,6 @@ Blogger's Blogs is now released and live on Google Play Store
 [Download Now!!](https://play.google.com/store/apps/details?id=com.rahulgaur.bloggersblog)
 
 <img src="screenshots/Logo.jpg" alt="Logo" title = "Logo"/>
-<img src="screenshots/feature.png" alt="Feature" title = "Feature"/>
 
 ## what you can do in Blogger's Blogs
 - You can Post photos you like and want to share.
