@@ -42,4 +42,7 @@
     <string name="profile_updateMenu">Profile Update</string>
     <string name="settingMenu">Setting</string>
     <string name="log_outMenu">Log Out</string>
+    <string name="liked_by">Liked By:</string>
+    <string name="timestamp">timestamp</string>
+    <string name="title_activity_like">LikeActivity</string>
 </resources>

@@ -1,8 +1,11 @@
 package com.rahulgaur.bloggersblog.comment;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -32,12 +35,15 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.rahulgaur.bloggersblog.R;
 import com.rahulgaur.bloggersblog.ThemeAndSettings.SharedPref;
+import com.rahulgaur.bloggersblog.comment.like_sheet.LikeList;
+import com.rahulgaur.bloggersblog.comment.like_sheet.LikeRecyclerAdapter;
 import com.rahulgaur.bloggersblog.notification.Remote.APIService;
 import com.rahulgaur.bloggersblog.notification.notificationServices.Common;
 import com.rahulgaur.bloggersblog.notification.notificationServices.MyResponse;
 import com.rahulgaur.bloggersblog.notification.notificationServices.Sender;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,8 +52,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.rahulgaur.bloggersblog.home.PostRecyclerAdapter.context;
+
 public class Comments extends AppCompatActivity {
 
+    private static final String TAG = "Comments.java";
     private EditText comment_field;
     private ImageView comment_postView, postUserImageView;
     private TextView comment_Username;
@@ -55,12 +64,21 @@ public class Comments extends AppCompatActivity {
     private String post_user_id;
     private String post_user_token;
 
+    private LikeRecyclerAdapter likeRecyclerAdapter;
+
     private List<CommentList> cmntList;
+    private ArrayList<LikeList> likeLists;
     private APIService apiService;
+    private TextView descTV;
 
     private String blog_post_id;
     private String current_user_id;
     private String post_user;
+
+    private NestedScrollView likeSheetLayout;
+    private BottomSheetBehavior bottomSheetBehavior;
+    private ImageView likeView;
+    private TextView likeText;
 
     private CommentsRecyclerAdapter commentsRecyclerAdapter;
 
@@ -87,6 +105,30 @@ public class Comments extends AppCompatActivity {
         setSupportActionBar(commentToolbar);
         getSupportActionBar().setTitle("Comments");
 
+        likeText = findViewById(R.id.comment_likeTV);
+        likeView = findViewById(R.id.comment_likeView);
+        likeSheetLayout = findViewById(R.id.like_sheet_layout);
+        bottomSheetBehavior = BottomSheetBehavior.from(likeSheetLayout);
+        descTV = findViewById(R.id.cmnt_DescTV);
+        RecyclerView likeRecyclerView = findViewById(R.id.like_sheet_recyclerView);
+
+        likeRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        likeLists = new ArrayList<>();
+
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+
+        likeRecyclerAdapter = new LikeRecyclerAdapter(likeLists);
+
+        likeRecyclerView.setAdapter(likeRecyclerAdapter);
+
+        likeText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            }
+        });
+
         firebaseFirestore = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
 
@@ -98,7 +140,7 @@ public class Comments extends AppCompatActivity {
 
         comment_field = findViewById(R.id.cmntEditText);
         ImageView comment_post_btn = findViewById(R.id.cmntPostImageView);
-        RecyclerView comment_list = findViewById(R.id.cmntRecyclerView);
+        final RecyclerView comment_list = findViewById(R.id.cmntRecyclerView);
         comment_postView = findViewById(R.id.cmntImageView);
         comment_Username = findViewById(R.id.cmnt_usernameTV);
         postUserImageView = findViewById(R.id.cmntProfileImageView);
@@ -122,6 +164,141 @@ public class Comments extends AppCompatActivity {
 
         current_user_id = auth.getCurrentUser().getUid();
 
+        //Likes count
+        firebaseFirestore.collection("Posts/" + blog_post_id+ "/Likes")
+                .addSnapshotListener(Comments.this, new EventListener<QuerySnapshot>() {
+                    @SuppressLint("SetTextI18n")
+                    @Override
+                    public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+                        try {
+                            if (!documentSnapshots.isEmpty()) {
+                                //some likes
+                                int count = documentSnapshots.size();
+                                if (count == 1){
+                                    likeText.setText("1 person liked this pic");
+                                } else {
+                                    likeText.setText(count+" people liked this pic");
+                                }
+                            } else {
+                                likeText.setText("Be first to like this pic");
+                                //no likes
+                            }
+                        } catch (Exception e1) {
+                            e1.printStackTrace();
+                        }
+                    }
+                });
+
+        likeView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                likeFeature();
+            }
+            private void likeFeature() {
+                firebaseFirestore.collection("Posts/" + blog_post_id + "/Likes")
+                        .document(current_user_id).get()
+                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                try {
+                                    if (!task.getResult().exists()) {
+                                        //if the like does not exists then add like
+                                        Map<String, Object> likesMap = new HashMap<>();
+                                        likesMap.put("timestamp", FieldValue.serverTimestamp());
+                                        firebaseFirestore.collection("Posts/" + blog_post_id+ "/Likes")
+                                                .document(current_user_id).set(likesMap)
+                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        if (task.isSuccessful()) {
+                                                            likeView.setImageResource(R.mipmap.like_pink);
+                                                            firebaseFirestore.collection("Users").document(current_user_id).addSnapshotListener((Activity) context, new EventListener<DocumentSnapshot>() {
+                                                                @Override
+                                                                public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
+                                                                    if (documentSnapshot.exists()) {
+                                                                        Log.e("Like notificaiton", "Like Notification current user entered");
+
+                                                                        final String current_user_name = documentSnapshot.getString("name");
+                                                                        Log.e("Like notificaiton", "Like Notification current user name " + current_user_name);
+
+                                                                        final Map<String, Object> notificaitonMap = new HashMap<>();
+                                                                        notificaitonMap.put("post_id", blog_post_id);
+                                                                        notificaitonMap.put("timestamp", FieldValue.serverTimestamp());
+                                                                        notificaitonMap.put("message", "<b>" + current_user_name + "</b> <br>Liked your photo");
+                                                                        Log.e("Notification user","like notification post user id "+post_user_id);
+                                                                        firebaseFirestore.collection("Users/" + post_user_id + "/Notification").add(notificaitonMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                                                            @Override
+                                                                            public void onComplete(@NonNull Task<DocumentReference> task) {
+                                                                                if (task.isSuccessful()) {
+                                                                                    firebaseFirestore.collection("Users/").document(post_user_id).addSnapshotListener((Activity) context, new EventListener<DocumentSnapshot>() {
+                                                                                        @Override
+                                                                                        public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
+                                                                                            if (documentSnapshot.exists()) {
+                                                                                                String token = documentSnapshot.getString("token");
+
+                                                                                                com.rahulgaur.bloggersblog.notification.notificationServices.Notification notification = new com.rahulgaur.bloggersblog.notification.notificationServices.Notification("Likes", current_user_name + " Liked your Photo");
+                                                                                                Sender sender = new Sender(notification, token); //send notification to itself
+                                                                                                Log.e("Sender Token", " " + token);
+                                                                                                apiService.sendNotification(sender)
+                                                                                                        .enqueue(new Callback<MyResponse>() {
+                                                                                                            @Override
+                                                                                                            public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
+                                                                                                                try {
+                                                                                                                    if (response.body().success == 1) {
+                                                                                                                        Log.e("Notification service ", "Success");
+                                                                                                                    } else {
+                                                                                                                        Log.e("Notification service ", "Failed");
+                                                                                                                    }
+                                                                                                                } catch (NullPointerException ne) {
+                                                                                                                    Log.e("Notificaiton", "Exception " + ne.getMessage());
+                                                                                                                }
+                                                                                                            }
+
+                                                                                                            @Override
+                                                                                                            public void onFailure(Call<MyResponse> call, Throwable t) {
+                                                                                                                Log.e("Notification service ", "Failed");
+                                                                                                            }
+                                                                                                        });
+                                                                                                Log.e("Like notificaiton", "Like Notification Added");
+
+                                                                                            }
+                                                                                        }
+                                                                                    });
+                                                                                } else {
+                                                                                    Log.e("Like notificaiton", "Like Notification failed");
+                                                                                }
+                                                                            }
+                                                                        });
+                                                                    } else {
+                                                                        Log.e("Like notificaiton", "Like Notification document not found");
+                                                                    }
+                                                                }
+                                                            });
+                                                        }
+                                                    }
+                                                });
+                                    } else {
+                                        //if like exists delete the like
+                                        firebaseFirestore.collection("Posts/" + blog_post_id + "/Likes")
+                                                .document(current_user_id).delete()
+                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        if (task.isSuccessful()) {
+                                                            likeView.setImageResource(R.mipmap.like_grey);
+                                                        }
+                                                    }
+                                                });
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+
+            }
+        });
+
         //post image and username retrieving
         firebaseFirestore.collection("Posts/").document(blog_post_id).addSnapshotListener(Comments.this, new EventListener<DocumentSnapshot>() {
             @Override
@@ -132,10 +309,8 @@ public class Comments extends AppCompatActivity {
                         final String post_user_id = documentSnapshot.getString("user_id");
                         final String post_picture = documentSnapshot.getString("thumb_image_url");
                         final String token = documentSnapshot.getString("token");
-
+                        final String desc = documentSnapshot.getString("desc");
                         post_user_token = token;
-
-                        setPostUserToken(token);
                         post_user = post_user_id;
                         Log.e("Comment post", "post user id " + post_user_id);
 
@@ -146,6 +321,7 @@ public class Comments extends AppCompatActivity {
                                     final String post_username = documentSnapshot.getString("name");
                                     final String post_userProfile = documentSnapshot.getString("thumb_image");
                                     setPostImage(post_picture);
+                                    setPostDesc(desc);
                                     Log.e("Comments.java", "post image is loaded ");
                                     setUsernameAndProfile(post_username, post_userProfile);
                                     progressBar.setVisibility(View.INVISIBLE);
@@ -178,6 +354,7 @@ public class Comments extends AppCompatActivity {
                                         .withID(commentid);
                                 cmntList.add(commentList);
                                 commentList.setPost_user_id(post_user);
+                                commentList.setPostID(blog_post_id);
                                 Log.e("Comment post", "post user id in cmntRet " + post_user);
                                 commentsRecyclerAdapter.notifyDataSetChanged();
 
@@ -186,6 +363,48 @@ public class Comments extends AppCompatActivity {
                     }
                 } catch (Exception e1) {
                     e1.printStackTrace();
+                }
+
+            }
+        });
+
+        //likes retrieving
+        firebaseFirestore.collection("Posts/" + blog_post_id+ "/Likes").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    try {
+                        for (DocumentSnapshot documentSnapshot : task.getResult()){
+                            String user_id = documentSnapshot.getId();
+                            final LikeList likes = documentSnapshot.toObject(LikeList.class)
+                                    .withID(user_id);
+                            firebaseFirestore.collection("Users").document(user_id).addSnapshotListener(Comments.this, new EventListener<DocumentSnapshot>() {
+                                @Override
+                                public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
+                                    try {
+                                        if (documentSnapshot.exists()){
+                                            String name = documentSnapshot.getString("name");
+                                            String thumb_image = documentSnapshot.getString("thumb_image");
+
+                                            Log.e(TAG, "onEvent: name "+name);
+
+                                            likes.setName(name);
+                                            likes.setThumb_image(thumb_image);
+
+                                            likeLists.add(likes);
+                                            likeRecyclerAdapter.notifyDataSetChanged();
+                                        }
+                                    } catch (Exception e1) {
+                                        e1.printStackTrace();
+                                    }
+                                }
+                            });
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    Log.e(TAG, "onComplete: some error "+task.getException().getMessage() );
                 }
 
             }
@@ -224,7 +443,7 @@ public class Comments extends AppCompatActivity {
                                                         if (documentSnapshot.exists()) {
                                                             post_user_id = documentSnapshot.getString("user_id");
 
-                                                            Log.e("comment","post user id "+post_user_id);
+                                                            Log.e("comment", "post user id " + post_user_id);
 
                                                             firebaseFirestore.collection("Users").document(current_user_id).addSnapshotListener(new EventListener<DocumentSnapshot>() {
                                                                 @Override
@@ -253,7 +472,7 @@ public class Comments extends AppCompatActivity {
                                                                                                         if (documentSnapshot.exists()) {
                                                                                                             String token = documentSnapshot.getString("token");
                                                                                                             com.rahulgaur.bloggersblog.notification.notificationServices.Notification notification = new com.rahulgaur.bloggersblog.notification.notificationServices.Notification("Comments", current_user_name + " Commented " + comment_message);
-                                                                                                            Sender sender = new Sender(notification, token); //send notification to itself
+                                                                                                            Sender sender = new Sender(notification, token); //send notification to token
                                                                                                             Log.e("Sender Token", "" + token);
                                                                                                             apiService.sendNotification(sender)
                                                                                                                     .enqueue(new Callback<MyResponse>() {
@@ -337,22 +556,15 @@ public class Comments extends AppCompatActivity {
         });
     }
 
-    private void setPostUserToken(String token) {
-        post_user_token = token;
-    }
-
-    public String getPostUserToken() {
-        return post_user_token;
+    private void setPostDesc(String desc) {
+        descTV.setText(desc);
     }
 
     @SuppressLint("CheckResult")
     private void setPostImage(String post_picture) {
-
         Log.e("Comments.java", "post image url " + post_picture);
-
         RequestOptions placeholder = new RequestOptions();
         placeholder.placeholder(R.drawable.ic_launcher_background);
-
         try {
             Glide.with(Comments.this)
                     .applyDefaultRequestOptions(placeholder)
@@ -365,14 +577,10 @@ public class Comments extends AppCompatActivity {
 
     @SuppressLint("CheckResult")
     private void setUsernameAndProfile(String name, String image) {
-
         Log.e("Comments.java", "image url " + image + " name " + name);
-
         comment_Username.setText(name);
-
         RequestOptions placeholder = new RequestOptions();
         placeholder.placeholder(R.drawable.default_usr);
-
         try {
             Glide.with(Comments.this)
                     .applyDefaultRequestOptions(placeholder)
@@ -381,13 +589,5 @@ public class Comments extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public void setPostUserID(String user_id) {
-        post_user_id = user_id;
-    }
-
-    public String getPostUserID() {
-        return post_user_id;
     }
 }

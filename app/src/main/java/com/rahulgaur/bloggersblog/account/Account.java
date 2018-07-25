@@ -222,7 +222,7 @@ public class Account extends AppCompatActivity {
 
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            compressedImageFile.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+            compressedImageFile.compress(Bitmap.CompressFormat.JPEG, 80, baos);
             byte[] profileThumb = baos.toByteArray();
 
             UploadTask uploadTask = storageReference.child("profile_images/thumbs")

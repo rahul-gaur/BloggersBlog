@@ -307,6 +307,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
             @Override
             public void onClick(View v) {
                 likeFeature();
+                notifyDataSetChanged();
             }
 
             private void likeFeature() {
@@ -417,6 +418,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
             @Override
             public void onClick(View view) {
                 likeFeature();
+                notifyDataSetChanged();
             }
 
             private void likeFeature() {
@@ -468,6 +470,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
             @Override
             public void onClick(View v) {
                 deleteFeature();
+                notifyDataSetChanged();
             }
 
             private void deleteFeature() {
@@ -535,25 +538,19 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
         holder.cmntImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(context, Comments.class);
-                i.putExtra("blog_post_id", blogPostID);
-                context.startActivity(i);
+                sendToUser(blogPostID);
             }
         });
         holder.cmntView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(context, Comments.class);
-                i.putExtra("blog_post_id", blogPostID);
-                context.startActivity(i);
+                sendToUser(blogPostID);
             }
         });
         holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(context, Comments.class);
-                i.putExtra("blog_post_id", blogPostID);
-                context.startActivity(i);
+                sendToUser(blogPostID);
             }
         });
 
@@ -637,6 +634,12 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                 });
             }
         });
+    }
+
+    private void sendToUser(String blogPostID) {
+        Intent i = new Intent(context, Comments.class);
+        i.putExtra("blog_post_id", blogPostID);
+        context.startActivity(i);
     }
 
     //report feature
@@ -757,8 +760,8 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
             super(itemView);
             mView = itemView;
             menuBtn = mView.findViewById(R.id.card_menu);
-            deleteImage = mView.findViewById(R.id.delete_imageView);
-            likeImage = mView.findViewById(R.id.like_imageView);
+            deleteImage = mView.findViewById(R.id.comment_delete_imageView);
+            likeImage = mView.findViewById(R.id.comment_likeView);
             likeView = mView.findViewById(R.id.like_tv);
             cmntImage = mView.findViewById(R.id.cmnt_imageView);
             cmntView = mView.findViewById(R.id.cmnt_tv);
@@ -793,7 +796,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
         }
 
         void setDescText(String text) {
-            descView = mView.findViewById(R.id.desc_tv);
+            descView = mView.findViewById(R.id.comment_DescTV);
             descView.setText(text);
         }
 

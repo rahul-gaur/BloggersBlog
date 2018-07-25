@@ -64,6 +64,7 @@ public class UserAccount extends AppCompatActivity {
         postid pd = new postid();
         final String post_id = pd.getPostid();
         post_user_id = getIntent().getStringExtra("post_user_id");
+        Log.e("post_user_id","user id from intent "+post_user_id);
 
         toolbar = findViewById(R.id.user_account_frag_toolbar);
         setSupportActionBar(toolbar);

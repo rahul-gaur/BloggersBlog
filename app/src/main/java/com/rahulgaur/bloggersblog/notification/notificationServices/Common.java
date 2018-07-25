@@ -4,6 +4,7 @@ import com.rahulgaur.bloggersblog.notification.Remote.APIService;
 import com.rahulgaur.bloggersblog.notification.Remote.RetrofitClient;
 
 public class Common {
+    //this is for HTTP notification sevice
     public static String currentToken = "";
 
     private static String baseURL = "https://fcm.googleapis.com/";

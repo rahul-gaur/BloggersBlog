@@ -41,7 +41,6 @@ public class NotificationFragment extends Fragment {
     private FirebaseFirestore firebaseFirestore;
     private FirebaseAuth auth;
     private String current_user_id;
-    private ProgressDialog progressDialog;
 
     public NotificationFragment() {
         // Required empty public constructor
