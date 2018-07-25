@@ -1,7 +1,11 @@
 # Blogger's Blogs
 Blogger's Blogs is a Android based application which is a simple Photo Blogging app.
 
-<img src="screenshots/welcomepage.png" alt="Welcome page" title = "Welcome Page"/>
+Blogger's Blogs is now released and live on Google Play Store
+[Download Now!!](https://play.google.com/store/apps/details?id=com.rahulgaur.bloggersblog)
+
+<img src="screenshots/Logo.jpg" alt="Logo" title = "Logo"/>
+<img src="screenshots/feature.png" alt="Feature" title = "Feature"/>
 
 ## what you can do in Blogger's Blogs
 - You can Post photos you like and want to share.
