@@ -24,6 +24,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.rahulgaur.bloggersblog.R;
 import com.rahulgaur.bloggersblog.comment.Comments;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class NotificationRecyclerAdapter extends RecyclerView.Adapter<NotificationRecyclerAdapter.ViewHolder> {
@@ -34,6 +36,7 @@ public class NotificationRecyclerAdapter extends RecyclerView.Adapter<Notificati
     private FirebaseAuth auth;
     private String noti_message;
     private String noti_postID;
+    private Date timestamp;
 
     public NotificationRecyclerAdapter(List<NotificationList> notificationLists) {
         this.notificationLists = notificationLists;
@@ -55,9 +58,16 @@ public class NotificationRecyclerAdapter extends RecyclerView.Adapter<Notificati
         //holder.setIsRecyclable(false);
         noti_message = notificationLists.get(position).getMessage();
         noti_postID = notificationLists.get(position).getPost_id();
+        timestamp = notificationLists.get(position).getTimestamp();
+
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat dateformatMMDDYYYY = new SimpleDateFormat("dd MMMM yy");
+        final StringBuilder nowMMDDYYYY = new StringBuilder(dateformatMMDDYYYY.format(timestamp));
 
         Log.e("Notification", "message " + noti_message);
         Log.e("Notification", "post id " + noti_postID);
+        Log.e("Notification", "timestamp " + nowMMDDYYYY);
+
+        holder.setTimeStamp(nowMMDDYYYY);
 
         final String notificationID = notificationLists.get(position).NotificationID;
 
@@ -119,6 +129,25 @@ public class NotificationRecyclerAdapter extends RecyclerView.Adapter<Notificati
                 context.startActivity(i);
             }
         });
+        holder.textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.e("Notification", "OnClick position" + notification_post_id);
+                Intent i = new Intent(context, Comments.class);
+                i.putExtra("blog_post_id", notification_post_id);
+                context.startActivity(i);
+            }
+        });
+        holder.timeView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.e("Notification", "OnClick position" + notification_post_id);
+                Intent i = new Intent(context, Comments.class);
+                i.putExtra("blog_post_id", notification_post_id);
+                context.startActivity(i);
+            }
+        });
+
     }
 
     @Override
@@ -129,7 +158,7 @@ public class NotificationRecyclerAdapter extends RecyclerView.Adapter<Notificati
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView imageView;
-        private TextView textView;
+        private TextView textView, timeView;
         private View mView;
         private ProgressDialog progressDialog;
 
@@ -137,6 +166,8 @@ public class NotificationRecyclerAdapter extends RecyclerView.Adapter<Notificati
             super(itemView);
             mView = itemView;
             imageView = mView.findViewById(R.id.noti_item_imageView);
+            textView = mView.findViewById(R.id.noti_item_textView);
+            timeView = mView.findViewById(R.id.noti_item_timeStamp);
             progressDialog = new ProgressDialog(context);
             progressDialog.setMessage("Loading Please Wait..");
             //progressDialog.show();
@@ -157,8 +188,11 @@ public class NotificationRecyclerAdapter extends RecyclerView.Adapter<Notificati
             //progressDialog.dismiss();
         }
 
+        void setTimeStamp(StringBuilder time){
+            timeView.setText(time);
+        }
+
         void setTextView(String message) {
-            textView = mView.findViewById(R.id.noti_item_textView);
             textView.setText(Html.fromHtml(message));
         }
     }

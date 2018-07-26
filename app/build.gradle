@@ -81,6 +81,9 @@ dependencies {
 
     //for firebase performance
     implementation 'com.google.firebase:firebase-perf:11.8.0'
+
+    //for version check
+    implementation 'org.jsoup:jsoup:1.11.3'
 }
 
 apply plugin: 'com.google.gms.google-services'

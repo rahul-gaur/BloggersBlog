@@ -1,16 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/colorBackground"
-    android:padding="6dp">
+    android:background="?attr/colorBackground">
 
     <android.support.v7.widget.CardView
         android:id="@+id/notif_item_cardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/cardBackgroundColorDefault">
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="?attr/cardBackgroundColorDefault"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
@@ -21,10 +29,10 @@
                 android:id="@+id/noti_item_imageView"
                 android:layout_width="72dp"
                 android:layout_height="60dp"
-                android:contentDescription="@string/username"
                 android:layout_marginBottom="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
+                android:contentDescription="@string/username"
                 android:scaleType="centerCrop"
                 android:src="@drawable/ic_launcher_background"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -43,9 +51,20 @@
                 android:textColor="?attr/hintColor"
                 android:textSize="15sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/noti_item_timeStamp"
                 app:layout_constraintStart_toEndOf="@+id/noti_item_imageView"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/noti_item_timeStamp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="TextView"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/noti_item_textView" />
 
         </android.support.constraint.ConstraintLayout>
 

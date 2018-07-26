@@ -1,15 +1,22 @@
 package com.rahulgaur.bloggersblog.home;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -23,6 +30,7 @@ import com.rahulgaur.bloggersblog.Search.SearchFragment;
 import com.rahulgaur.bloggersblog.ThemeAndSettings.SharedPref;
 import com.rahulgaur.bloggersblog.account.Account;
 import com.rahulgaur.bloggersblog.account.AccountFragment;
+import com.rahulgaur.bloggersblog.home.updateChecker.versionChecker;
 import com.rahulgaur.bloggersblog.notification.NotificationFragment;
 import com.rahulgaur.bloggersblog.notification.notificationServices.Common;
 import com.rahulgaur.bloggersblog.welcome.WelcomePage;
@@ -30,8 +38,11 @@ import com.rahulgaur.bloggersblog.welcome.WelcomePage;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+import static com.rahulgaur.bloggersblog.home.PostRecyclerAdapter.context;
 
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+
+    private static final String TAG = "MainActivity.java";
     private FirebaseAuth auth = FirebaseAuth.getInstance();
 
     private String current_user_id;
@@ -79,6 +90,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         addBtn.setOnClickListener(this);
         profileBtn.setOnClickListener(this);
 
+        checkUpdate();
+
         if (auth.getCurrentUser() != null) {
 
             //initializing fragments
@@ -93,6 +106,62 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         assert current_user != null;
+    }
+
+    private void checkUpdate() {
+        try {
+            versionChecker VersionChecker = new versionChecker();
+            String versionUpdated = VersionChecker.execute().get();
+            Log.i("version code is", versionUpdated);
+
+
+            PackageInfo packageInfo = null;
+            try {
+                packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
+            int version_code = packageInfo.versionCode;
+            String version_name = packageInfo.versionName;
+            Log.i("updated version code", String.valueOf(version_code) + "  " + version_name);
+            if (!version_name.equals(versionUpdated)) {
+                String packageName = getApplicationContext().getPackageName();
+
+                AlertDialog alertDialog;
+                if (sharedPref.loadNightModeState()) {
+                    new android.app.AlertDialog.Builder(MainActivity.this, android.app.AlertDialog.THEME_HOLO_DARK);
+                } else {
+                    new android.app.AlertDialog.Builder(MainActivity.this, android.app.AlertDialog.THEME_HOLO_LIGHT);
+                }
+
+                alertDialog = new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("Please Update")
+                        .setMessage("A Newer and Updated version of Blogger's Blogs" +
+                                "is available to update, Update to improve stablilty" +
+                                "and get excited new features")
+                        .setPositiveButton("Update", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Intent intent = new Intent(Intent.ACTION_VIEW);
+                                intent.setData(Uri.parse("https://play.google.com/store/apps/details?id=com.rahulgaur.bloggersblog+&hl=en"));
+                                context.startActivity(intent);
+                            }
+                        })
+                        .setNegativeButton("Maybe Later", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Log.e(TAG, "onClick: No Clicked");
+                            }
+                        }).show();
+                alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.GREEN);
+                alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
+                alertDialog.setCanceledOnTouchOutside(false);
+
+                Toast.makeText(getApplicationContext(), "please updated", Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception e) {
+            e.getStackTrace();
+        }
     }
 
     private void sendToNewPost() {
@@ -219,7 +288,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.home_btn:
                 fragmentReplace(homeFrag);
                 Log.d("Main Activity", "home btn clicked");
