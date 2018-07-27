@@ -24,6 +24,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -39,11 +40,11 @@ import com.rahulgaur.bloggersblog.comment.like_sheet.LikeList;
 import com.rahulgaur.bloggersblog.comment.like_sheet.LikeRecyclerAdapter;
 import com.rahulgaur.bloggersblog.notification.Remote.APIService;
 import com.rahulgaur.bloggersblog.notification.notificationServices.Common;
+import com.rahulgaur.bloggersblog.notification.notificationServices.Data;
 import com.rahulgaur.bloggersblog.notification.notificationServices.MyResponse;
 import com.rahulgaur.bloggersblog.notification.notificationServices.Sender;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,7 +63,6 @@ public class Comments extends AppCompatActivity {
     private TextView comment_Username;
 
     private String post_user_id;
-    private String post_user_token;
 
     private LikeRecyclerAdapter likeRecyclerAdapter;
 
@@ -70,8 +70,10 @@ public class Comments extends AppCompatActivity {
     private ArrayList<LikeList> likeLists;
     private APIService apiService;
     private TextView descTV;
-
+    private String post_user_token;
     private String blog_post_id;
+
+    //private String blog_post_id = null;
     private String current_user_id;
     private String post_user;
 
@@ -98,8 +100,32 @@ public class Comments extends AppCompatActivity {
             setTheme(R.style.AppTheme);
         }
 
+        String id = null;
+        try {
+            id = getIntent().getStringExtra("id");
+            Log.e(TAG, "onCreate: id from notification " + id);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comments);
+
+        try {
+            blog_post_id = getIntent().getStringExtra("blog_post_id");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            if (id.length() > 0) {
+                blog_post_id = id;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        Log.e(TAG, "onCreate: blog post id after id " + blog_post_id);
 
         Toolbar commentToolbar = findViewById(R.id.cmntToolbar);
         setSupportActionBar(commentToolbar);
@@ -159,13 +185,11 @@ public class Comments extends AppCompatActivity {
             }
         });
 
-        blog_post_id = getIntent().getStringExtra("blog_post_id").trim();
-        Log.e("Comment ", "Intent blog post id " + blog_post_id);
-
         current_user_id = auth.getCurrentUser().getUid();
 
         //Likes count
-        firebaseFirestore.collection("Posts/" + blog_post_id+ "/Likes")
+
+        firebaseFirestore.collection("Posts/" + blog_post_id + "/Likes")
                 .addSnapshotListener(Comments.this, new EventListener<QuerySnapshot>() {
                     @SuppressLint("SetTextI18n")
                     @Override
@@ -174,13 +198,13 @@ public class Comments extends AppCompatActivity {
                             if (!documentSnapshots.isEmpty()) {
                                 //some likes
                                 int count = documentSnapshots.size();
-                                if (count == 1){
+                                if (count == 1) {
                                     likeText.setText("1 person liked this pic");
                                 } else {
-                                    likeText.setText(count+" people liked this pic");
+                                    likeText.setText(count + " people liked this pic");
                                 }
                             } else {
-                                likeText.setText("Be first to like this pic");
+                                likeText.setText("No likes \uD83D\uDE32 ");
                                 //no likes
                             }
                         } catch (Exception e1) {
@@ -189,11 +213,14 @@ public class Comments extends AppCompatActivity {
                     }
                 });
 
-        likeView.setOnClickListener(new View.OnClickListener() {
+        //it is throwing exception.
+
+     /*   likeView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 likeFeature();
             }
+
             private void likeFeature() {
                 firebaseFirestore.collection("Posts/" + blog_post_id + "/Likes")
                         .document(current_user_id).get()
@@ -205,7 +232,7 @@ public class Comments extends AppCompatActivity {
                                         //if the like does not exists then add like
                                         Map<String, Object> likesMap = new HashMap<>();
                                         likesMap.put("timestamp", FieldValue.serverTimestamp());
-                                        firebaseFirestore.collection("Posts/" + blog_post_id+ "/Likes")
+                                        firebaseFirestore.collection("Posts/" + blog_post_id + "/Likes")
                                                 .document(current_user_id).set(likesMap)
                                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                     @Override
@@ -225,7 +252,7 @@ public class Comments extends AppCompatActivity {
                                                                         notificaitonMap.put("post_id", blog_post_id);
                                                                         notificaitonMap.put("timestamp", FieldValue.serverTimestamp());
                                                                         notificaitonMap.put("message", "<b>" + current_user_name + "</b> <br>Liked your photo");
-                                                                        Log.e("Notification user","like notification post user id "+post_user_id);
+                                                                        Log.e("Notification user", "like notification post user id " + post_user_id);
                                                                         firebaseFirestore.collection("Users/" + post_user_id + "/Notification").add(notificaitonMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                                                                             @Override
                                                                             public void onComplete(@NonNull Task<DocumentReference> task) {
@@ -236,8 +263,9 @@ public class Comments extends AppCompatActivity {
                                                                                             if (documentSnapshot.exists()) {
                                                                                                 String token = documentSnapshot.getString("token");
 
-                                                                                                com.rahulgaur.bloggersblog.notification.notificationServices.Notification notification = new com.rahulgaur.bloggersblog.notification.notificationServices.Notification("Likes", current_user_name + " Liked your Photo");
-                                                                                                Sender sender = new Sender(notification, token); //send notification to itself
+                                                                                                Data data = new Data(blog_post_id,"no");
+                                                                                                com.rahulgaur.bloggersblog.notification.notificationServices.Notification notification = new com.rahulgaur.bloggersblog.notification.notificationServices.Notification("Likes", current_user_name + " Liked your Photo","com.rahulgaur.bloggersblog.fcmClick");
+                                                                                                Sender sender = new Sender(notification, token,data); //send notification to itself
                                                                                                 Log.e("Sender Token", " " + token);
                                                                                                 apiService.sendNotification(sender)
                                                                                                         .enqueue(new Callback<MyResponse>() {
@@ -298,7 +326,9 @@ public class Comments extends AppCompatActivity {
 
             }
         });
+*/
 
+        Log.e(TAG, "onCreate: blog post id before post and image " + blog_post_id);
         //post image and username retrieving
         firebaseFirestore.collection("Posts/").document(blog_post_id).addSnapshotListener(Comments.this, new EventListener<DocumentSnapshot>() {
             @Override
@@ -369,12 +399,12 @@ public class Comments extends AppCompatActivity {
         });
 
         //likes retrieving
-        firebaseFirestore.collection("Posts/" + blog_post_id+ "/Likes").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        firebaseFirestore.collection("Posts/" + blog_post_id + "/Likes").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     try {
-                        for (DocumentSnapshot documentSnapshot : task.getResult()){
+                        for (DocumentSnapshot documentSnapshot : task.getResult()) {
                             String user_id = documentSnapshot.getId();
                             final LikeList likes = documentSnapshot.toObject(LikeList.class)
                                     .withID(user_id);
@@ -382,11 +412,11 @@ public class Comments extends AppCompatActivity {
                                 @Override
                                 public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
                                     try {
-                                        if (documentSnapshot.exists()){
+                                        if (documentSnapshot.exists()) {
                                             String name = documentSnapshot.getString("name");
                                             String thumb_image = documentSnapshot.getString("thumb_image");
 
-                                            Log.e(TAG, "onEvent: name "+name);
+                                            Log.e(TAG, "onEvent: name " + name);
 
                                             likes.setName(name);
                                             likes.setThumb_image(thumb_image);
@@ -404,7 +434,7 @@ public class Comments extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 } else {
-                    Log.e(TAG, "onComplete: some error "+task.getException().getMessage() );
+                    Log.e(TAG, "onComplete: some error " + task.getException().getMessage());
                 }
 
             }
@@ -471,8 +501,9 @@ public class Comments extends AppCompatActivity {
                                                                                                     try {
                                                                                                         if (documentSnapshot.exists()) {
                                                                                                             String token = documentSnapshot.getString("token");
-                                                                                                            com.rahulgaur.bloggersblog.notification.notificationServices.Notification notification = new com.rahulgaur.bloggersblog.notification.notificationServices.Notification("Comments", current_user_name + " Commented " + comment_message);
-                                                                                                            Sender sender = new Sender(notification, token); //send notification to token
+                                                                                                            Data data = new Data(blog_post_id, "no");
+                                                                                                            com.rahulgaur.bloggersblog.notification.notificationServices.Notification notification = new com.rahulgaur.bloggersblog.notification.notificationServices.Notification("Comments", current_user_name + " Commented " + comment_message, "com.rahulgaur.bloggersblog.fcmClick");
+                                                                                                            Sender sender = new Sender(notification, token, data); //send notification to token
                                                                                                             Log.e("Sender Token", "" + token);
                                                                                                             apiService.sendNotification(sender)
                                                                                                                     .enqueue(new Callback<MyResponse>() {
@@ -482,8 +513,10 @@ public class Comments extends AppCompatActivity {
                                                                                                                             try {
                                                                                                                                 if (response.body().success == 1) {
                                                                                                                                     Log.e("Notification service ", "Success");
+                                                                                                                                    commentsRecyclerAdapter.notifyDataSetChanged();
                                                                                                                                 } else {
                                                                                                                                     Log.e("Notification service ", "Failed");
+                                                                                                                                    commentsRecyclerAdapter.notifyDataSetChanged();
                                                                                                                                 }
                                                                                                                             } catch (NullPointerException ne) {
                                                                                                                                 Log.e("Notification", "Exception " + ne.getMessage());
@@ -498,6 +531,7 @@ public class Comments extends AppCompatActivity {
                                                                                                                         }
                                                                                                                     });
                                                                                                             Log.e("Comment notificaiton", "Comment Notification Added");
+                                                                                                            commentsRecyclerAdapter.notifyDataSetChanged();
                                                                                                             progressBar.setVisibility(View.INVISIBLE);
                                                                                                         }
                                                                                                     } catch (Exception e1) {
@@ -535,9 +569,8 @@ public class Comments extends AppCompatActivity {
                                                 }
                                             });
 
-                                        } else
-
-                                        {
+                                        } else {
+                                            commentsRecyclerAdapter.notifyDataSetChanged();
                                             comment_field.setText(null);
                                             comment_field.clearFocus();
                                         }

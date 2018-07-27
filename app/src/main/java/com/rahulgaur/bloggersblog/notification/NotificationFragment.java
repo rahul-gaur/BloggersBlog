@@ -90,7 +90,7 @@ public class NotificationFragment extends Fragment {
         });
 
         //notification retrieving
-        Query sortNotification = firebaseFirestore.collection("Users/" + current_user_id + "/Notification").orderBy("timestamp", Query.Direction.DESCENDING);
+        Query sortNotification = firebaseFirestore.collection("Users/" + current_user_id + "/Notification").orderBy("timestamp", Query.Direction.ASCENDING);
         sortNotification.addSnapshotListener((Activity) getContext(), new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {

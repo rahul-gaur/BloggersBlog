@@ -45,6 +45,7 @@ import com.rahulgaur.bloggersblog.blogPost.postid;
 import com.rahulgaur.bloggersblog.comment.Comments;
 import com.rahulgaur.bloggersblog.notification.Remote.APIService;
 import com.rahulgaur.bloggersblog.notification.notificationServices.Common;
+import com.rahulgaur.bloggersblog.notification.notificationServices.Data;
 import com.rahulgaur.bloggersblog.notification.notificationServices.MyResponse;
 import com.rahulgaur.bloggersblog.notification.notificationServices.Sender;
 
@@ -139,7 +140,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
         //time feature
         Date date = postList.get(position).getTimestamp();
 
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat dateformatMMDDYYYY = new SimpleDateFormat("dd MMMM yyyy");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat dateformatMMDDYYYY = new SimpleDateFormat("hh:mma dd MMMM yy");
         final StringBuilder nowMMDDYYYY = new StringBuilder(dateformatMMDDYYYY.format(date));
 
         //hiding reported posts
@@ -341,7 +342,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                                                                         notificaitonMap.put("post_id", blogPostID);
                                                                         notificaitonMap.put("timestamp", FieldValue.serverTimestamp());
                                                                         notificaitonMap.put("message", "<b>" + current_user_name + "</b> <br>Liked your photo");
-                                                                        Log.e("Notification user","like notification post user id "+post_user_id);
+                                                                        Log.e("Notification user", "like notification post user id " + post_user_id);
                                                                         firebaseFirestore.collection("Users/" + post_user_id + "/Notification").add(notificaitonMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                                                                             @Override
                                                                             public void onComplete(@NonNull Task<DocumentReference> task) {
@@ -352,8 +353,9 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                                                                                             if (documentSnapshot.exists()) {
                                                                                                 String token = documentSnapshot.getString("token");
 
-                                                                                                com.rahulgaur.bloggersblog.notification.notificationServices.Notification notification = new com.rahulgaur.bloggersblog.notification.notificationServices.Notification("Likes", current_user_name + " Liked your Photo");
-                                                                                                Sender sender = new Sender(notification, token); //send notification to itself
+                                                                                                Data data = new Data(blogPostID, "no");
+                                                                                                com.rahulgaur.bloggersblog.notification.notificationServices.Notification notification = new com.rahulgaur.bloggersblog.notification.notificationServices.Notification("Likes", current_user_name + " Liked your Photo", "com.rahulgaur.bloggersblog.fcmClick");
+                                                                                                Sender sender = new Sender(notification, token,data); //send notification to itself
                                                                                                 Log.e("Sender Token", " " + token);
                                                                                                 apiService.sendNotification(sender)
                                                                                                         .enqueue(new Callback<MyResponse>() {

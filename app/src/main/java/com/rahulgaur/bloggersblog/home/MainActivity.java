@@ -102,10 +102,54 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             searchFrag = new SearchFragment();
             initializeFragment();
 
+            updateToken(current_user_id);
+
             firebaseFirestore = FirebaseFirestore.getInstance();
         }
 
         assert current_user != null;
+    }
+
+    private void updateToken(final String current_user) {
+
+        firebaseFirestore = FirebaseFirestore.getInstance();
+
+        firebaseFirestore.collection("Users").document(current_user).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                try {
+                    if (task.isSuccessful()) {
+                        String token = task.getResult().getString("token");
+                        final String current_user_token = Common.currentToken = FirebaseInstanceId.getInstance().getToken();
+
+                        Map<String, Object> userMap = new HashMap<>();
+                        userMap.put("token", current_user_token);
+
+                        firebaseFirestore.collection("Users").document(current_user).update(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                try {
+
+                                    if (task.isSuccessful()) {
+                                        Log.e("token main", "token " + current_user_token);
+                                    } else {
+                                        Log.e("token main", "else ");
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+
+                        if (!task.getResult().exists()) {
+                            sendToAccount();
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     private void checkUpdate() {
@@ -180,41 +224,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             sendUserToWelcome();
         } else {
             current_user_id = auth.getCurrentUser().getUid();
-            firebaseFirestore.collection("Users").document(current_user_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    try {
-                        if (task.isSuccessful()) {
-                            String token = task.getResult().getString("token");
-                            final String current_user_token = Common.currentToken = FirebaseInstanceId.getInstance().getToken();
-
-                            Map<String, Object> userMap = new HashMap<>();
-                            userMap.put("token", current_user_token);
-
-                            firebaseFirestore.collection("Users").document(current_user_id).update(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    try {
-                                        if (task.isSuccessful()) {
-                                            Log.e("token main", "token " + current_user_token);
-                                        } else {
-                                            Log.e("token main", "else ");
-                                        }
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            });
-
-                            if (!task.getResult().exists()) {
-                                sendToAccount();
-                            }
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
         }
     }
 
