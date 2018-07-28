@@ -75,11 +75,11 @@
             <ImageView
                 android:id="@+id/post_imageView"
                 android:layout_width="0dp"
-                android:layout_height="200dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:contentDescription="@string/app_name"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_launcher_background"
+                android:scaleType="center"
+                android:src="@drawable/loading_background"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/profile_view" />
@@ -161,6 +161,18 @@
                 app:layout_constraintBottom_toBottomOf="@+id/cmnt_imageView"
                 app:layout_constraintStart_toEndOf="@+id/cmnt_imageView"
                 app:layout_constraintTop_toTopOf="@+id/cmnt_imageView" />
+
+            <ProgressBar
+                android:id="@+id/post_card_progressBar"
+                style="@android:style/Widget.Material.Light.ProgressBar"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:indeterminate="true"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="@+id/post_imageView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/post_imageView"
+                app:layout_constraintTop_toTopOf="@+id/post_imageView" />
 
         </android.support.constraint.ConstraintLayout>
 

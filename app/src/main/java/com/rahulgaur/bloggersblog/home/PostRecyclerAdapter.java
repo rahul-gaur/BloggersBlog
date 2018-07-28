@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,6 +55,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
@@ -93,6 +95,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
 
     }
 
+    @SuppressLint("SimpleDateFormat")
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
 
@@ -140,8 +143,13 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
         //time feature
         Date date = postList.get(position).getTimestamp();
 
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat dateformatMMDDYYYY = new SimpleDateFormat("hh:mma dd MMMM yy");
-        final StringBuilder nowMMDDYYYY = new StringBuilder(dateformatMMDDYYYY.format(date));
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat dateformatMMDDYYYY = null;
+        try {
+            dateformatMMDDYYYY = new SimpleDateFormat("hh:mma dd MMMM yy");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        final StringBuilder nowMMDDYYYY = new StringBuilder(Objects.requireNonNull(dateformatMMDDYYYY).format(date));
 
         //hiding reported posts
         firebaseFirestore.collection("Posts").document(blogPostID).collection("Report").document(current_user_id).addSnapshotListener((Activity) context, new EventListener<DocumentSnapshot>() {
@@ -162,7 +170,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                         holder.setTime(nowMMDDYYYY);
                         holder.setPostImage(thumb_image_url);
                         holder.setDescText(desc_data);
-
+                        holder.progressBar.setVisibility(View.INVISIBLE);
                         holder.mView.setVisibility(View.VISIBLE);
                         Log.e("reported posts ", "no post exists");
                     }
@@ -199,7 +207,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                         holder.setTime(nowMMDDYYYY);
                         holder.setPostImage(thumb_image_url);
                         holder.setDescText(desc_data);
-
+                        holder.progressBar.setVisibility(View.INVISIBLE);
                         Log.e("Blocked posts ", "no blocked posts");
                     }
                 } catch (Exception e1) {
@@ -757,6 +765,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
         private TextView descView, userView, dateView, likeView, cmntView;
         private CircleImageView profile;
         private ImageView imageView, likeImage, deleteImage, cmntImage, menuBtn;
+        private ProgressBar progressBar;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -773,6 +782,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
             dateView = mView.findViewById(R.id.date_tv);
             userView = mView.findViewById(R.id.username_tv);
             imageView = mView.findViewById(R.id.post_imageView);
+            progressBar = mView.findViewById(R.id.post_card_progressBar);
         }
 
         @SuppressLint("SetTextI18n")
@@ -805,7 +815,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
         @SuppressLint("CheckResult")
         void setPostImage(String downloadUri) {
             RequestOptions placeholder = new RequestOptions();
-            placeholder.placeholder(R.drawable.ic_launcher_background);
+            placeholder.placeholder(R.drawable.loading_background);
             try {
                 Glide.with(context).applyDefaultRequestOptions(placeholder).load(downloadUri).into(imageView);
             } catch (Exception e) {

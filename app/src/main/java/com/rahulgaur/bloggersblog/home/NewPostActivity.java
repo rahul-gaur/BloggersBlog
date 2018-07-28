@@ -37,6 +37,8 @@ import com.rahulgaur.bloggersblog.ThemeAndSettings.SharedPref;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -102,7 +104,7 @@ public class NewPostActivity extends AppCompatActivity {
         uploadBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String post_desc = Objects.requireNonNull(textInputLayout.getEditText()).getText().toString();
+                final String post_desc = StringUtils.capitalize(Objects.requireNonNull(textInputLayout.getEditText()).getText().toString());
                 if (!TextUtils.isEmpty(post_desc) && !postUri.toString().isEmpty()) {
                     progressBar.setVisibility(View.VISIBLE);
                     Toast.makeText(NewPostActivity.this, "Please wait..", Toast.LENGTH_LONG).show();
@@ -216,8 +218,6 @@ public class NewPostActivity extends AppCompatActivity {
     private void ImagePicker() {
         CropImage.activity()
                 .setGuidelines(CropImageView.Guidelines.ON)
-                .setMinCropResultSize(1024, 576)
-                .setAspectRatio(16, 9)
                 .start(NewPostActivity.this);
     }
 

@@ -23,6 +23,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
@@ -61,6 +62,7 @@ public class Comments extends AppCompatActivity {
     private EditText comment_field;
     private ImageView comment_postView, postUserImageView;
     private TextView comment_Username;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     private String post_user_id;
 
@@ -99,6 +101,11 @@ public class Comments extends AppCompatActivity {
         } else {
             setTheme(R.style.AppTheme);
         }
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_comments);
+
+        // Obtain the FirebaseAnalytics instance.
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         String id = null;
         try {
@@ -107,10 +114,6 @@ public class Comments extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_comments);
-
         try {
             blog_post_id = getIntent().getStringExtra("blog_post_id");
         } catch (Exception e) {
@@ -199,8 +202,10 @@ public class Comments extends AppCompatActivity {
                                 //some likes
                                 int count = documentSnapshots.size();
                                 if (count == 1) {
+                                    Glide.with(Comments.this).load(R.mipmap.like_pink).into(likeView);
                                     likeText.setText("1 person liked this pic");
                                 } else {
+                                    Glide.with(Comments.this).load(R.mipmap.like_pink).into(likeView);
                                     likeText.setText(count + " people liked this pic");
                                 }
                             } else {

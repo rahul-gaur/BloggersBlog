@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -82,6 +83,9 @@ public class HomeFragment extends Fragment {
         postList = new ArrayList<>();
         userList = new ArrayList<>();
         recyclerView = view.findViewById(R.id.frag_home_recyclerView);
+
+        //to test a crash and it generates null pointer exception
+        //Crashlytics.getInstance().crash();
 
         postRecyclerAdapter = new PostRecyclerAdapter(postList, userList);
 

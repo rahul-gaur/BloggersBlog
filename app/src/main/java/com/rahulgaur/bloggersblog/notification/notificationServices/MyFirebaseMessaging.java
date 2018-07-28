@@ -3,6 +3,7 @@ package com.rahulgaur.bloggersblog.notification.notificationServices;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -12,6 +13,9 @@ import com.rahulgaur.bloggersblog.R;
 
 import java.util.Map;
 import java.util.Objects;
+
+import static android.support.constraint.Constraints.TAG;
+import static com.rahulgaur.bloggersblog.home.PostRecyclerAdapter.context;
 
 public class MyFirebaseMessaging extends FirebaseMessagingService {
     @Override
@@ -32,9 +36,12 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
         if (data.size() > 0) {
             String post_id = data.get("id");
             intent.putExtra("id", post_id);
-        } else {
-            String post_id = "UjK7FheiXbrAv8HVsqq6";
-            intent.putExtra("id", post_id);
+            String update = data.get("update");
+
+            if (update.equals("yes")){
+                Log.e(TAG, "showNotification: update received "+update);
+                update();
+            }
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
@@ -48,5 +55,16 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
                 .setContentIntent(pendingIntent);
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         Objects.requireNonNull(notificationManager).notify(0, builder.build());
+    }
+
+    private void update() {
+        Log.e(TAG, "showNotification: entered in update() ");
+        final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
+        Log.e(TAG, "update: packageName "+appPackageName);
+        try {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+        } catch (android.content.ActivityNotFoundException anfe) {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+        }
     }
 }
