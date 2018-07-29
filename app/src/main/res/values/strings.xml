@@ -48,4 +48,6 @@
     <string name="following">Following</string>
     <string name="followers">Followers</string>
     <string name="follow">Follow</string>
+    <string name="please_select_a_color_for_your_profile_background_theme">Please Select a Color for your profile background Theme</string>
+    <string name="change_profile_theme">Change Profile Theme</string>
 </resources>

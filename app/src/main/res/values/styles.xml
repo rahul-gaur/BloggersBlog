@@ -21,6 +21,12 @@
         <item name="android:itemBackground">@color/white</item>
         <item name="android:itemTextAppearance">@color/black</item>
         <item name="android:windowAnimationStyle">@style/WindowAnimation</item>
+        <item name="pbOrange" >@color/pbOrange</item>
+        <item name="pbPurple">@color/pbPurple</item>
+        <item name="pbPink" >@color/pbPink</item>
+        <item name="pbRed" >@color/pbRed</item>
+        <item name="pbBlue" >@color/pbBlue</item>
+        <item name="pbGreen" >@color/pbGreen</item>
     </style>
 
     <!-- Dark application theme. -->
@@ -42,6 +48,12 @@
         <item name="bottomNevBarColor">@color/black</item>
         <item name="cardBackgroundColorDefault">@color/colorPrimaryDark</item>
         <item name="android:windowAnimationStyle">@style/WindowAnimation</item>
+        <item name="pbOrange" >@color/pbOrange</item>
+        <item name="pbPurple">@color/pbPurple</item>
+        <item name="pbPink" >@color/pbPink</item>
+        <item name="pbRed" >@color/pbRed</item>
+        <item name="pbBlue" >@color/pbBlue</item>
+        <item name="pbGreen" >@color/pbGreen</item>
     </style>
 
     <style name="popUpThemeLight" parent="Widget.AppCompat.PopupMenu">
@@ -63,5 +75,24 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="profile_Background_theme_red">
+        <item name="android:background">@color/pbRed</item>
+    </style>
+    <style name="profile_Background_theme_orange">
+        <item name="android:background">@color/pbOrange</item>
+    </style>
+    <style name="profile_Background_theme_Purple">
+        <item name="android:background">@color/pbPurple</item>
+    </style>
+    <style name="profile_Background_theme_Pink">
+        <item name="android:background">@color/pbPink</item>
+    </style>
+    <style name="profile_Background_theme_Blue">
+        <item name="android:background">@color/pbBlue</item>
+    </style>
+    <style name="profile_Background_theme_Green">
+        <item name="android:background">@color/pbGreen</item>
+    </style>
 
 </resources>

@@ -18,7 +18,7 @@ public class Settings extends AppCompatActivity {
     private SharedPref sharedPref;
     private Toolbar toolbar;
     private BlockFragment blockFragment;
-    private TextView textView;
+    private TextView textView, profileTV;
     private int i;
 
     @Override
@@ -39,11 +39,20 @@ public class Settings extends AppCompatActivity {
         blockFragment = new BlockFragment();
 
         textView = findViewById(R.id.setting_block_textView);
+        profileTV = findViewById(R.id.setting_profile_backTV);
 
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle("Settings");
 
         SwitchCompat switchCompat = findViewById(R.id.setting_switchCompat);
+
+        profileTV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(Settings.this, Profile_theme.class);
+                startActivity(i);
+            }
+        });
 
         if (sharedPref.loadNightModeState()) {
             switchCompat.setChecked(true);

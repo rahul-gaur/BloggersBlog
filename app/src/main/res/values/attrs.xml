@@ -15,6 +15,13 @@
         <attr name="hintColor" format="color" />
         <attr name="cardBackgroundColorDefault" format="color" />
         <attr name="bottomNevBarColor" format="color" />
+        <attr name="pbOrange" format="color"/>
+        <attr name="pbPurple" format="color"/>
+        <attr name="pbPink" format="color"/>
+        <attr name="pbRed" format="color"/>
+        <attr name="pbBlue" format="color"/>
+        <attr name="pbGreen" format="color"/>
+
     </declare-styleable>
 
 </resources>

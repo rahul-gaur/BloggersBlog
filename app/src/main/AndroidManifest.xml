@@ -12,6 +12,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
+        android:name="android.support.multidex.MultiDexApplication"
         android:allowBackup="true"
         android:fullBackupContent="true"
         android:icon="@drawable/icon"
@@ -21,13 +22,13 @@
         android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:name="android.support.multidex.MultiDexApplication"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
         <activity
             android:name=".home.MainActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="com.rahulgaur.bloggersblog.mainActivityClick" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -59,6 +60,7 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="com.rahulgaur.bloggersblog.fcmClick" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -85,6 +87,7 @@
             </intent-filter>
         </service>
 
+        <activity android:name=".ThemeAndSettings.Profile_theme"></activity>
     </application>
 
 </manifest>

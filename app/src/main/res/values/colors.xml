@@ -16,4 +16,10 @@
     <color name="hintColor">#808080</color>
     <color name="blackBackground">#4d000000</color>
     <color name="noBackground">#00000000</color>
+    <color name="pbOrange">#e65100</color>
+    <color name="pbPurple">#6a1b9a</color>
+    <color name="pbPink">#e91e63</color>
+    <color name="pbRed">#db3236</color>
+    <color name="pbBlue">#0084b4</color>
+    <color name="pbGreen">#00c853</color>
 </resources>
