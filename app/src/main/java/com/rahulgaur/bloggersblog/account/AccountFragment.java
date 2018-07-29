@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -42,12 +43,17 @@ import com.rahulgaur.bloggersblog.welcome.WelcomePage;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
+import static io.fabric.sdk.android.Fabric.TAG;
+
 /**
  * A simple {@link Fragment} subclass.
  */
 public class AccountFragment extends Fragment {
 
-    private ImageView profileImageView;
+    private CircleImageView profileImageView;
+    private ImageView profile_background;
     private String current_userID;
     private String imageURL;
     private String post_id;
@@ -57,6 +63,8 @@ public class AccountFragment extends Fragment {
     private GridViewList gridViewList;
     private FirebaseAuth auth;
     private Toolbar account_toolbar;
+    private int post_count = 0;
+    private TextView post_countTV;
 
     ArrayList<GridViewList> postList = new ArrayList<>();
 
@@ -85,6 +93,15 @@ public class AccountFragment extends Fragment {
         account_toolbar = view.findViewById(R.id.account_frag_toolbar);
         ((AppCompatActivity) Objects.requireNonNull(getActivity())).setSupportActionBar(account_toolbar);
         setHasOptionsMenu(true);
+
+        profile_background = view.findViewById(R.id.profile_frag_Background);
+        post_countTV = view.findViewById(R.id.acc_frag_post_count);
+
+        try {
+            Glide.with(getContext()).load(R.drawable.profile_grad).into(profile_background);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         current_userID = Objects.requireNonNull(auth.getCurrentUser()).getUid();
         FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
@@ -143,6 +160,7 @@ public class AccountFragment extends Fragment {
 
         //getting posts from the database
         firebaseFirestore.collection("Posts/" + post_id).addSnapshotListener((Activity) Objects.requireNonNull(getContext()), new EventListener<QuerySnapshot>() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
                 try {
@@ -155,6 +173,15 @@ public class AccountFragment extends Fragment {
                                 String blog_post_id = doc.getDocument().getId();
 
                                 if (post_user_id.equals(current_userID)) {
+                                    try {
+                                        post_count++;
+                                        Log.e(TAG, "onEvent: post count "+post_count);
+                                        post_countTV.setText(post_count+"");
+                                    } catch (Exception e1) {
+                                        Log.e(TAG, "onEvent: Exception while post count");
+                                        Log.e(TAG, "onEvent: exception "+e1.getMessage());
+                                        e1.printStackTrace();
+                                    }
                                     postList.add(new GridViewList(post_thumb_url, blog_post_id));
                                     gridViewList.setBlogPostID(post_id);
                                     Log.e("accountFragnent", "post_id " + blog_post_id);
@@ -172,6 +199,7 @@ public class AccountFragment extends Fragment {
                 }
             }
         });
+
 
         gridView.setAdapter(gridViewAdapter);
 

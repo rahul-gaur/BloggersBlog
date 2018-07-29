@@ -90,7 +90,7 @@ public class NotificationFragment extends Fragment {
         });
 
         //notification retrieving
-        Query sortNotification = firebaseFirestore.collection("Users/" + current_user_id + "/Notification").orderBy("timestamp", Query.Direction.ASCENDING);
+        Query sortNotification = firebaseFirestore.collection("Users/" + current_user_id + "/Notification").orderBy("timestamp", Query.Direction.DESCENDING);
         sortNotification.addSnapshotListener((Activity) getContext(), new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
@@ -101,7 +101,7 @@ public class NotificationFragment extends Fragment {
                                 String notification_id = doc.getDocument().getId();
                                 NotificationList notificationList = doc.getDocument().toObject(NotificationList.class).withID(notification_id);
                                 notificationLists.add(notificationList);
-                                notificationRecyclerAdapter.notifyDataSetChanged();
+                                //notificationRecyclerAdapter.notifyDataSetChanged();
                             }
                         }
                     }

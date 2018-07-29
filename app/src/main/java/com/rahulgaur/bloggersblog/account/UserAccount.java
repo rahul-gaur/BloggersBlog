@@ -1,5 +1,6 @@
 package com.rahulgaur.bloggersblog.account;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,6 +10,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -27,16 +29,22 @@ import com.rahulgaur.bloggersblog.blogPost.postid;
 
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
+import static io.fabric.sdk.android.Fabric.TAG;
+
 /**
  * @author Rahul Gaur
  */
 
 public class UserAccount extends AppCompatActivity {
 
+    private static final String TAG = "UserAccount";
     private String post_user_id;
     private String name;
     private String imageURL;
-    private ImageView profileImage;
+    private CircleImageView profileImage;
+    private ImageView profile_background;
     private FirebaseAuth firebaseAuth;
     private FirebaseFirestore firebaseFirestore;
     private SharedPref sharedPref;
@@ -46,6 +54,8 @@ public class UserAccount extends AppCompatActivity {
     private ArrayList<GridViewList> postList = new ArrayList<>();
     private RecyclerView recyclerView;
     private GridViewList gridViewList;
+    private int post_count = 0;
+    private TextView post_countTV;
 
     private UserAdapter userAdapter;
 
@@ -60,6 +70,17 @@ public class UserAccount extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_account);
+
+
+        profile_background = findViewById(R.id.acc_user_backgroundImage);
+        post_countTV = findViewById(R.id.acc_user_post_count);
+
+        try {
+            Glide.with(UserAccount.this).load(R.drawable.profile_grad).into(profile_background);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
 
         postid pd = new postid();
         final String post_id = pd.getPostid();
@@ -118,9 +139,9 @@ public class UserAccount extends AppCompatActivity {
             }
         });
 
-        // TODO: 09-07-2018 uncomment this and also fix errors
         //getting posts from the database
         firebaseFirestore.collection("Posts/" + post_id).addSnapshotListener(this, new EventListener<QuerySnapshot>() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
                 try {
@@ -132,6 +153,15 @@ public class UserAccount extends AppCompatActivity {
                                 String blog_post_id = doc.getDocument().getId();
 
                                 if (post_user_id.equals(blog_user_id)) {
+                                    try {
+                                        post_count++;
+                                        Log.e(TAG, "onEvent: post count "+post_count);
+                                        post_countTV.setText(post_count+"");
+                                    } catch (Exception e1) {
+                                        Log.e(TAG, "onEvent: exception "+e1.getMessage());
+                                        Log.e(TAG, "onEvent: Exception while printing post count");
+                                        e1.printStackTrace();
+                                    }
                                     postList.add(new GridViewList(post_thumb_url,blog_post_id));
                                     gridViewList.setBlogPostID(blog_post_id);
                                     Log.e("userAccount", "post id " + blog_post_id+" post url "+post_thumb_url);

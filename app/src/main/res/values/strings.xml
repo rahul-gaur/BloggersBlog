@@ -28,7 +28,7 @@
     <string name="your_comment_here">Your comment here</string>
     <string name="write_your_comment">Write your comment</string>
     <string name="dark_mode">Dark Mode </string>
-    <string name="posts">Posts:</string>
+    <string name="posts">Posts</string>
     <string name="some_notification">Some Notification</string>
     <string name="blocked_users">Blocked Users</string>
     <string name="unblock">unblock</string>
@@ -45,4 +45,7 @@
     <string name="liked_by">Liked By:</string>
     <string name="timestamp">timestamp</string>
     <string name="title_activity_like">LikeActivity</string>
+    <string name="following">Following</string>
+    <string name="followers">Followers</string>
+    <string name="follow">Follow</string>
 </resources>
