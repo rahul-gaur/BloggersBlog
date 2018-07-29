@@ -29,7 +29,7 @@
             android:layout_width="0dp"
             android:layout_height="200dp"
             android:adjustViewBounds="false"
-            android:background="?attr/white"
+            android:background="@drawable/profile_grad"
             android:src="@drawable/profile_grad"
             android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
