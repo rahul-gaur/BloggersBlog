@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="ds">
+        <attr name="searchBackground" format="color"/>
         <attr name="colorBackground" format="color" />
         <attr name="colorPrimary" format="color" />
         <attr name="colorPrimaryDark" format="color" />

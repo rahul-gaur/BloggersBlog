@@ -16,7 +16,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -37,7 +36,6 @@ import com.rahulgaur.bloggersblog.R;
 import com.rahulgaur.bloggersblog.ThemeAndSettings.Settings;
 import com.rahulgaur.bloggersblog.ThemeAndSettings.SharedPref;
 import com.rahulgaur.bloggersblog.blogPost.postid;
-import com.rahulgaur.bloggersblog.comment.Comments;
 import com.rahulgaur.bloggersblog.welcome.WelcomePage;
 
 import java.util.ArrayList;
@@ -81,8 +79,10 @@ public class AccountFragment extends Fragment {
         sharedPref = new SharedPref(getContext());
         if (sharedPref.loadNightModeState()) {
             getActivity().setTheme(R.style.darkTheme);
+            setTheme(R.drawable.profile_grad_black);
         } else {
             getActivity().setTheme(R.style.AppTheme);
+            setTheme(R.drawable.profile_grad);
         }
 
         // Inflate the layout for this fragment
@@ -95,18 +95,17 @@ public class AccountFragment extends Fragment {
         setHasOptionsMenu(true);
 
         profile_background = view.findViewById(R.id.profile_frag_Background);
-        profile_background.setVisibility(View.VISIBLE);
         post_countTV = view.findViewById(R.id.acc_frag_post_count);
 
-        try {
-            Glide.with(getContext()).load(R.drawable.profile_grad).into(profile_background);
-            Toast.makeText(getContext(), "gradient added ", Toast.LENGTH_SHORT).show();
-        } catch (Exception e) {
-            Toast.makeText(getContext(), "gradient failed "+e.getMessage(), Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
+        if (sharedPref.loadNightModeState()) {
+            setTheme(R.drawable.profile_grad_black);
+        } else {
+            setTheme(R.drawable.profile_grad);
         }
 
-        profile_background.setImageResource(R.drawable.profile_grad);
+
+        final TextView followersTV = view.findViewById(R.id.acc_frag_followers);
+        final TextView followingTV = view.findViewById(R.id.acc_frag_following);
 
         current_userID = Objects.requireNonNull(auth.getCurrentUser()).getUid();
         FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
@@ -130,6 +129,40 @@ public class AccountFragment extends Fragment {
                 account_toolbar.setTitle(username);
             }
         });
+
+
+        //followers count
+        firebaseFirestore.collection("Users/" + current_userID + "/Followers").addSnapshotListener((Activity) getContext(), new EventListener<QuerySnapshot>() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+                try {
+                    if (!documentSnapshots.isEmpty()) {
+                        int count = documentSnapshots.size();
+                        followersTV.setText(count + "");
+                    } else {
+                        followersTV.setText("0");
+                    }
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
+
+        //following count
+        firebaseFirestore.collection("Users/" + current_userID + "/Following").addSnapshotListener((Activity) getContext(), new EventListener<QuerySnapshot>() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+                if (!documentSnapshots.isEmpty()) {
+                    int count = documentSnapshots.size();
+                    followingTV.setText("" + count);
+                } else {
+                    followingTV.setText("0");
+                }
+            }
+        });
+
 
         final GridView gridView = view.findViewById(R.id.account_postGridView);
         profileImageView = view.findViewById(R.id.user_account_profileImage);
@@ -180,11 +213,11 @@ public class AccountFragment extends Fragment {
                                 if (post_user_id.equals(current_userID)) {
                                     try {
                                         post_count++;
-                                        Log.e(TAG, "onEvent: post count "+post_count);
-                                        post_countTV.setText(post_count+"");
+                                        Log.e(TAG, "onEvent: post count " + post_count);
+                                        post_countTV.setText(post_count + "");
                                     } catch (Exception e1) {
                                         Log.e(TAG, "onEvent: Exception while post count");
-                                        Log.e(TAG, "onEvent: exception "+e1.getMessage());
+                                        Log.e(TAG, "onEvent: exception " + e1.getMessage());
                                         e1.printStackTrace();
                                     }
                                     postList.add(new GridViewList(post_thumb_url, blog_post_id));
@@ -209,6 +242,15 @@ public class AccountFragment extends Fragment {
         gridView.setAdapter(gridViewAdapter);
 
         return view;
+    }
+
+    private void setTheme(int profile) {
+
+        try {
+            Glide.with(getContext()).load(profile).into(profile_background);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @SuppressLint("CheckResult")
