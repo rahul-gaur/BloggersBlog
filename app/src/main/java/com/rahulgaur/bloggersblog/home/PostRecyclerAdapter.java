@@ -732,6 +732,10 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                                         notifyDataSetChanged();
                                         Toast.makeText(context, "Blocked..", Toast.LENGTH_SHORT).show();
                                         Log.e("block ", "user " + current_user_id + " blocked " + post_user);
+                                        Intent i = context.getPackageManager()
+                                                .getLaunchIntentForPackage(context.getPackageName());
+                                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        context.startActivity(i);
                                     } else {
                                         Log.e("block ", "block error");
                                     }

@@ -31,12 +31,15 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.rahulgaur.bloggersblog.R;
 import com.rahulgaur.bloggersblog.ThemeAndSettings.SharedPref;
 import com.rahulgaur.bloggersblog.blogPost.postid;
+import com.rahulgaur.bloggersblog.home.MainActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+
+import static com.rahulgaur.bloggersblog.home.MainActivity.restartMain;
 
 /**
  * @author Rahul Gaur
@@ -191,6 +194,7 @@ public class UserAccount extends AppCompatActivity {
                                                                     followBtn.setText("Unfollow");
                                                                     followBtn.setBackgroundColor(Color.RED);
                                                                     progressDialog1.dismiss();
+                                                                    restartMain = "yes";
                                                                 } else {
                                                                     Toast.makeText(UserAccount.this, "error " + task.getException(), Toast.LENGTH_SHORT).show();
                                                                     Log.e(TAG, "onComplete: error " + task.getException());
@@ -233,6 +237,7 @@ public class UserAccount extends AppCompatActivity {
                                                             followBtn.setText("Follow");
                                                             Log.e(TAG, "onComplete: unfollowed");
                                                             progressDialog1.dismiss();
+                                                            restartMain = "yes";
                                                         } else {
                                                             //error
                                                             Toast.makeText(UserAccount.this, "Error " + task.getException(), Toast.LENGTH_SHORT).show();
@@ -358,4 +363,5 @@ public class UserAccount extends AppCompatActivity {
                 .load(profile)
                 .into(profileImage);
     }
+
 }

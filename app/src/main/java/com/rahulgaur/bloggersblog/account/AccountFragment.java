@@ -158,11 +158,15 @@ public class AccountFragment extends Fragment {
             @SuppressLint("SetTextI18n")
             @Override
             public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
-                if (!documentSnapshots.isEmpty()) {
-                    int count = documentSnapshots.size();
-                    followingTV.setText("" + count);
-                } else {
-                    followingTV.setText("0");
+                try {
+                    if (!documentSnapshots.isEmpty()) {
+                        int count = documentSnapshots.size();
+                        followingTV.setText("" + count);
+                    } else {
+                        followingTV.setText("0");
+                    }
+                } catch (Exception e1) {
+                    e1.printStackTrace();
                 }
             }
         });

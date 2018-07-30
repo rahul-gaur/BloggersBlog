@@ -28,6 +28,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.rahulgaur.bloggersblog.R;
 import com.rahulgaur.bloggersblog.Search.SearchFragment;
+import com.rahulgaur.bloggersblog.ThemeAndSettings.Settings;
 import com.rahulgaur.bloggersblog.ThemeAndSettings.SharedPref;
 import com.rahulgaur.bloggersblog.account.Account;
 import com.rahulgaur.bloggersblog.account.AccountFragment;
@@ -48,6 +49,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private String current_user_id;
     FirebaseFirestore firebaseFirestore;
+
+    public static String restartMain = "no";
 
     private HomeFragment homeFrag;
     private NotificationFragment notiFrag;
@@ -116,19 +119,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void followRahul() {
         auth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
-        String current_userID = auth.getCurrentUser().getUid();
-        final String post_user_id = "IPxXH6oMX0SKikPX84KgkIcbAYJ3";
-        Map<String, Object> map = new HashMap<>();
+        final String current_userID = auth.getCurrentUser().getUid();
+        final String post_user_id = "mZSx3Oeh8NblHPHukT8zyg5WgLs1";
+        final Map<String, Object> map = new HashMap<>();
         map.put("timestamp", FieldValue.serverTimestamp());
         firebaseFirestore.collection("Users/" + post_user_id + "/Followers").document(current_userID).set(map)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         try {
-                            if (task.isSuccessful()){
-                                Log.e(TAG, "onComplete: Rahul is followed "+post_user_id);
+                            if (task.isSuccessful()) {
+                                firebaseFirestore.collection("Users/"+current_userID+"/Following").document(post_user_id).set(map)
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                try {
+                                                    if (task.isSuccessful()){
+                                                        Log.e(TAG, "onComplete: Rahul is followed " + post_user_id);
+                                                    } else {
+                                                        Log.e(TAG, "onComplete: Error " + task.getException());
+                                                    }
+                                                } catch (Exception e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        });
+                                Log.e(TAG, "onComplete: Rahul is followed " + post_user_id);
                             } else {
-                                Log.e(TAG, "onComplete: Error "+task.getException());
+                                Log.e(TAG, "onComplete: Error " + task.getException());
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -257,6 +275,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
+
         Log.d("Main Activity", "onResume() ");
 
         if (current_user_id == null) {
@@ -294,11 +313,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         startActivity(i);
     }
 
-    public void fragmentReplace(Fragment fragment) {
+    public void fragmentReplace(Fragment fragment, String val) {
         Log.d("Main Activity", "Fragment Replacer called");
 
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         if (fragment == homeFrag) {
+            fragmentTransaction.detach(homeFrag);
+            fragmentTransaction.attach(homeFrag);
             fragmentTransaction.hide(accountFrag);
             fragmentTransaction.hide(notiFrag);
             fragmentTransaction.hide(searchFrag);
@@ -310,6 +331,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             fragmentTransaction.hide(searchFrag);
         }
         if (fragment == notiFrag) {
+            fragmentTransaction.attach(notiFrag);
             fragmentTransaction.hide(accountFrag);
             fragmentTransaction.hide(homeFrag);
             fragmentTransaction.hide(searchFrag);
@@ -319,19 +341,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             fragmentTransaction.hide(homeFrag);
             fragmentTransaction.hide(notiFrag);
         }
-        fragmentTransaction.show(fragment);
-        fragmentTransaction.commit();
+
+        try {
+            fragmentTransaction.show(fragment);
+            fragmentTransaction.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.home_btn:
-                fragmentReplace(homeFrag);
+                fragmentReplace(homeFrag, "no");
                 Log.d("Main Activity", "home btn clicked");
                 break;
             case R.id.search_Btn:
-                fragmentReplace(searchFrag);
+                fragmentReplace(searchFrag, "no");
                 Log.d("Main Activity", "search btn clicked");
                 break;
             case R.id.add_Btn:
@@ -339,11 +366,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Log.d("Main Activity", "add btn clicked");
                 break;
             case R.id.noti_Btn:
-                fragmentReplace(notiFrag);
+                fragmentReplace(notiFrag, "no");
                 Log.d("Main Activity", "noti btn clicked");
                 break;
             case R.id.profile_Btn:
-                fragmentReplace(accountFrag);
+                fragmentReplace(accountFrag, "no");
                 Log.d("Main Activity", "account btn clicked");
                 break;
         }

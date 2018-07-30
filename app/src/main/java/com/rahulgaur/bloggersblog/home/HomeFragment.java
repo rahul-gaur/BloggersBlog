@@ -3,9 +3,11 @@ package com.rahulgaur.bloggersblog.home;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -119,7 +121,8 @@ public class HomeFragment extends Fragment {
             String current_user_id = auth.getCurrentUser().getUid();
 
             //adding posts
-            firebaseFirestore.collection("Users/" + current_user_id + "/Following").addSnapshotListener((Activity) getContext(), new EventListener<QuerySnapshot>() {
+            Query query = firebaseFirestore.collection("Users/" + current_user_id + "/Following").orderBy("timestamp");
+            query.addSnapshotListener((Activity) getContext(), new EventListener<QuerySnapshot>() {
                 @Override
                 public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
                     try {
