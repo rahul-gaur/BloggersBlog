@@ -1,6 +1,7 @@
 package com.rahulgaur.bloggersblog.home;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -115,48 +116,72 @@ public class HomeFragment extends Fragment {
             ((AppCompatActivity) Objects.requireNonNull(getActivity())).setSupportActionBar(toolbar);
             setHasOptionsMenu(true);
 
-            //adding posts
-            Query firstQuery = firebaseFirestore.collection("Posts").orderBy("timestamp", Query.Direction.DESCENDING);
-            firstQuery.addSnapshotListener(getActivity(), new EventListener<QuerySnapshot>() {
+            String current_user_id = auth.getCurrentUser().getUid();
 
+            //adding posts
+            firebaseFirestore.collection("Users/" + current_user_id + "/Following").addSnapshotListener((Activity) getContext(), new EventListener<QuerySnapshot>() {
                 @Override
-                public void onEvent(final QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+                public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
                     try {
                         if (!documentSnapshots.isEmpty()) {
                             for (DocumentChange doc : documentSnapshots.getDocumentChanges()) {
                                 if (doc.getType() == DocumentChange.Type.ADDED) {
-                                    String blogPosTID = doc.getDocument().getId();
-                                    final Post post = doc.getDocument().toObject(Post.class).withID(blogPosTID);
+                                    String user_id = doc.getDocument().getId();
 
-                                    String blogUserID = doc.getDocument().getString("user_id");
-                                    firebaseFirestore.collection("Users").document(blogUserID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    Query firstQuery = firebaseFirestore.collection("Posts")
+                                            .orderBy("timestamp", Query.Direction.DESCENDING)
+                                            .whereEqualTo("user_id",user_id);
+                                    firstQuery.addSnapshotListener(getActivity(), new EventListener<QuerySnapshot>() {
+
                                         @Override
-                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                        public void onEvent(final QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
                                             try {
-                                                if (task.isSuccessful()) {
-                                                    User user = task.getResult().toObject(User.class);
-                                                    userList.add(user);
-                                                    postList.add(post);
-                                                    postRecyclerAdapter.notifyDataSetChanged();
+                                                if (!documentSnapshots.isEmpty()) {
+                                                    for (DocumentChange doc : documentSnapshots.getDocumentChanges()) {
+                                                        if (doc.getType() == DocumentChange.Type.ADDED) {
+                                                            String blogPosTID = doc.getDocument().getId();
+                                                            final Post post = doc.getDocument().toObject(Post.class).withID(blogPosTID);
+
+                                                            String blogUserID = doc.getDocument().getString("user_id");
+                                                            firebaseFirestore.collection("Users").document(blogUserID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                                @Override
+                                                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                                    try {
+                                                                        if (task.isSuccessful()) {
+                                                                            User user = task.getResult().toObject(User.class);
+                                                                            userList.add(user);
+                                                                            postList.add(post);
+                                                                            postRecyclerAdapter.notifyDataSetChanged();
+                                                                        } else {
+                                                                            //some error
+                                                                        }
+                                                                    } catch (Exception e1) {
+                                                                        e1.printStackTrace();
+                                                                    }
+                                                                }
+                                                            });
+
+                                                        }
+                                                    }
                                                 } else {
-                                                    //some error
+                                                    Toast.makeText(getContext(), "No posts..", Toast.LENGTH_LONG).show();
                                                 }
                                             } catch (Exception e1) {
                                                 e1.printStackTrace();
                                             }
                                         }
                                     });
-
                                 }
                             }
                         } else {
-                            Toast.makeText(getContext(), "No posts..", Toast.LENGTH_LONG).show();
+
                         }
                     } catch (Exception e1) {
                         e1.printStackTrace();
                     }
                 }
             });
+
         }
         return view;
     }

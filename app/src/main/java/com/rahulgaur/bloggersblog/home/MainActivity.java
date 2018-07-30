@@ -23,6 +23,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.rahulgaur.bloggersblog.R;
@@ -90,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         addBtn.setOnClickListener(this);
         profileBtn.setOnClickListener(this);
 
+
         checkUpdate();
 
         if (auth.getCurrentUser() != null) {
@@ -101,6 +103,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             accountFrag = new AccountFragment();
             searchFrag = new SearchFragment();
             initializeFragment();
+            followRahul();
 
             updateToken(current_user_id);
 
@@ -108,6 +111,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         assert current_user != null;
+    }
+
+    private void followRahul() {
+        auth = FirebaseAuth.getInstance();
+        firebaseFirestore = FirebaseFirestore.getInstance();
+        String current_userID = auth.getCurrentUser().getUid();
+        final String post_user_id = "IPxXH6oMX0SKikPX84KgkIcbAYJ3";
+        Map<String, Object> map = new HashMap<>();
+        map.put("timestamp", FieldValue.serverTimestamp());
+        firebaseFirestore.collection("Users/" + post_user_id + "/Followers").document(current_userID).set(map)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        try {
+                            if (task.isSuccessful()){
+                                Log.e(TAG, "onComplete: Rahul is followed "+post_user_id);
+                            } else {
+                                Log.e(TAG, "onComplete: Error "+task.getException());
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
     }
 
     private void updateToken(final String current_user) {
@@ -277,6 +304,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             fragmentTransaction.hide(searchFrag);
         }
         if (fragment == accountFrag) {
+            fragmentTransaction.attach(accountFrag);
             fragmentTransaction.hide(homeFrag);
             fragmentTransaction.hide(notiFrag);
             fragmentTransaction.hide(searchFrag);

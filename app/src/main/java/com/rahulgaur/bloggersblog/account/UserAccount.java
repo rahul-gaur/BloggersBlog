@@ -22,7 +22,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
@@ -32,8 +31,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.rahulgaur.bloggersblog.R;
 import com.rahulgaur.bloggersblog.ThemeAndSettings.SharedPref;
 import com.rahulgaur.bloggersblog.blogPost.postid;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -71,10 +68,10 @@ public class UserAccount extends AppCompatActivity {
         sharedPref = new SharedPref(this);
         if (sharedPref.loadNightModeState()) {
             this.setTheme(R.style.darkTheme);
-            setGradTheme(R.drawable.profile_red_back_grad);
+            setGradTheme(R.drawable.profile_green_back_grad);
         } else {
             this.setTheme(R.style.AppTheme);
-            setGradTheme(R.drawable.profile_red_grad);
+            setGradTheme(R.drawable.profile_green_grad);
         }
 
         super.onCreate(savedInstanceState);
@@ -91,9 +88,9 @@ public class UserAccount extends AppCompatActivity {
         profile_background = findViewById(R.id.acc_user_backgroundImage);
 
         if (sharedPref.loadNightModeState()) {
-            setGradTheme(R.drawable.profile_red_back_grad);
+            setGradTheme(R.drawable.profile_green_back_grad);
         } else {
-            setGradTheme(R.drawable.profile_red_grad);
+            setGradTheme(R.drawable.profile_green_grad);
         }
 
         post_countTV = findViewById(R.id.acc_user_post_count);

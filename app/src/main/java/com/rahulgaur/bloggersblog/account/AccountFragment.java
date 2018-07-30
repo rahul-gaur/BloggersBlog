@@ -72,6 +72,10 @@ public class AccountFragment extends Fragment {
         // Required empty public constructor
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -166,6 +170,14 @@ public class AccountFragment extends Fragment {
 
         final GridView gridView = view.findViewById(R.id.account_postGridView);
         profileImageView = view.findViewById(R.id.user_account_profileImage);
+
+        profileImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getContext(),Account.class);
+                startActivity(i);
+            }
+        });
 
         postid pd = new postid();
 
