@@ -3,6 +3,7 @@ package com.rahulgaur.bloggersblog.ThemeAndSettings;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -33,7 +34,6 @@ public class Settings extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        //TO-DO = Add Toolbar name "Settings".
         toolbar = findViewById(R.id.setting_toolbar);
 
         blockFragment = new BlockFragment();
@@ -46,6 +46,11 @@ public class Settings extends AppCompatActivity {
 
         SwitchCompat switchCompat = findViewById(R.id.setting_switchCompat);
 
+        CardView cardView = findViewById(R.id.profileCardLayout);
+        cardView.setVisibility(View.INVISIBLE);
+        profileTV.setVisibility(View.INVISIBLE);
+        profileTV.setEnabled(false);
+        /*
         profileTV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -53,7 +58,7 @@ public class Settings extends AppCompatActivity {
                 startActivity(i);
             }
         });
-
+*/
         if (sharedPref.loadNightModeState()) {
             switchCompat.setChecked(true);
         }

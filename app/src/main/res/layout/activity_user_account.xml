@@ -12,7 +12,7 @@
         android:id="@+id/user_account_frag_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
+        android:background="@color/pbRed"
         android:elevation="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,13 +22,12 @@
 
     <ImageView
         android:id="@+id/acc_user_backgroundImage"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="220dp"
-        android:background="@drawable/profile_grad"
+        android:src="@drawable/profile_red_grad"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/user_account_frag_toolbar"
-        app:srcCompat="@drawable/profile_grad"
         tools:ignore="ContentDescription" />
 
     <android.support.v4.widget.SwipeRefreshLayout

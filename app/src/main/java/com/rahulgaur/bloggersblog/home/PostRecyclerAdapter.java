@@ -170,7 +170,6 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                         holder.setTime(nowMMDDYYYY);
                         holder.setPostImage(thumb_image_url);
                         holder.setDescText(desc_data);
-                        holder.progressBar.setVisibility(View.INVISIBLE);
                         holder.mView.setVisibility(View.VISIBLE);
                         Log.e("reported posts ", "no post exists");
                     }
@@ -207,7 +206,6 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                         holder.setTime(nowMMDDYYYY);
                         holder.setPostImage(thumb_image_url);
                         holder.setDescText(desc_data);
-                        holder.progressBar.setVisibility(View.INVISIBLE);
                         Log.e("Blocked posts ", "no blocked posts");
                     }
                 } catch (Exception e1) {
@@ -829,8 +827,10 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
             placeholder.placeholder(R.drawable.default_usr);
             try {
                 Glide.with(context).applyDefaultRequestOptions(placeholder).load(downloadUri).into(profile);
+                progressBar.setVisibility(View.INVISIBLE);
             } catch (Exception e) {
                 e.printStackTrace();
+                progressBar.setVisibility(View.INVISIBLE);
             }
         }
 

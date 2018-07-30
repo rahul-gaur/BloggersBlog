@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -73,13 +74,18 @@ public class UserAccount extends AppCompatActivity {
 
 
         profile_background = findViewById(R.id.acc_user_backgroundImage);
+        profile_background.setVisibility(View.VISIBLE);
         post_countTV = findViewById(R.id.acc_user_post_count);
 
         try {
-            Glide.with(UserAccount.this).load(R.drawable.profile_grad).into(profile_background);
+            Toast.makeText(UserAccount.this, "gradient Added ", Toast.LENGTH_SHORT).show();
+            Glide.with(UserAccount.this).load(R.drawable.profile_red_grad).into(profile_background);
         } catch (Exception e) {
+            Toast.makeText(UserAccount.this, "gradient failed "+e.getMessage(), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
+
+        profile_background.setImageResource(R.drawable.profile_red_grad);
 
 
         postid pd = new postid();

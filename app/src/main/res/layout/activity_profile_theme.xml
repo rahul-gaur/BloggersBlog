@@ -12,6 +12,7 @@
         android:layout_width="0dp"
         android:layout_height="200dp"
         app:layout_constraintEnd_toEndOf="parent"
+        android:theme="@style/profile_Background_theme_Default"
         android:background="@drawable/profile_grad"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -19,6 +20,7 @@
         tools:ignore="ContentDescription" />
 
     <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profile_imageView"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginEnd="8dp"
@@ -31,6 +33,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.v7.widget.CardView
+        android:id="@+id/cardView4"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -60,7 +63,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/circleImageView7"
+                android:id="@+id/greenImageView"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginBottom="8dp"
@@ -68,11 +71,11 @@
                 android:layout_marginTop="8dp"
                 android:background="?attr/pbGreen"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/circleImageView6"
+                app:layout_constraintStart_toEndOf="@+id/pinkImageView"
                 app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/circleImageView4"
+                android:id="@+id/blueImageView"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginBottom="8dp"
@@ -80,21 +83,21 @@
                 android:background="?attr/pbBlue"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/circleImageView5" />
+                app:layout_constraintTop_toTopOf="@+id/redImageView" />
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/circleImageView5"
+                android:id="@+id/redImageView"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginBottom="8dp"
                 android:layout_marginStart="8dp"
                 android:background="?attr/pbRed"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/circleImageView4"
-                app:layout_constraintTop_toTopOf="@+id/circleImageView6" />
+                app:layout_constraintStart_toEndOf="@+id/blueImageView"
+                app:layout_constraintTop_toTopOf="@+id/pinkImageView" />
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/circleImageView6"
+                android:id="@+id/pinkImageView"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginBottom="8dp"
@@ -102,33 +105,48 @@
                 android:layout_marginTop="8dp"
                 android:background="?attr/pbPink"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/circleImageView5"
+                app:layout_constraintStart_toEndOf="@+id/redImageView"
                 app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/circleImageView3"
+                android:id="@+id/purpleImageView"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginBottom="8dp"
                 android:layout_marginStart="8dp"
                 android:background="?attr/pbPurple"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/circleImageView7"
-                app:layout_constraintTop_toTopOf="@+id/circleImageView7" />
+                app:layout_constraintStart_toEndOf="@+id/greenImageView"
+                app:layout_constraintTop_toTopOf="@+id/greenImageView" />
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/circleImageView2"
+                android:id="@+id/orangeImageView"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginBottom="8dp"
                 android:layout_marginStart="8dp"
                 android:background="?attr/pbOrange"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/circleImageView3"
-                app:layout_constraintTop_toTopOf="@+id/circleImageView3" />
+                app:layout_constraintStart_toEndOf="@+id/purpleImageView"
+                app:layout_constraintTop_toTopOf="@+id/purpleImageView" />
 
         </android.support.constraint.ConstraintLayout>
 
     </android.support.v7.widget.CardView>
+
+    <Button
+        android:id="@+id/applyBtn"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="?attr/colorAccent"
+        android:text="@string/apply_theme"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardView4" />
 
 </android.support.constraint.ConstraintLayout>

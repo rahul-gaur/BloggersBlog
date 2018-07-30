@@ -10,6 +10,16 @@ public class SharedPref {
         sharedPreferences = context.getSharedPreferences("filename", Context.MODE_PRIVATE);
     }
 
+    public void setProfileBackground(String color){
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("color",color);
+        editor.apply();
+    }
+
+    public String loadProfilBackground(){
+        return sharedPreferences.getString("color","");
+    }
+
     public void setNightModeState(Boolean state) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean("NightMode", state);

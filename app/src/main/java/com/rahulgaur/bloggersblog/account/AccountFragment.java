@@ -95,13 +95,18 @@ public class AccountFragment extends Fragment {
         setHasOptionsMenu(true);
 
         profile_background = view.findViewById(R.id.profile_frag_Background);
+        profile_background.setVisibility(View.VISIBLE);
         post_countTV = view.findViewById(R.id.acc_frag_post_count);
 
         try {
             Glide.with(getContext()).load(R.drawable.profile_grad).into(profile_background);
+            Toast.makeText(getContext(), "gradient added ", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
+            Toast.makeText(getContext(), "gradient failed "+e.getMessage(), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
+
+        profile_background.setImageResource(R.drawable.profile_grad);
 
         current_userID = Objects.requireNonNull(auth.getCurrentUser()).getUid();
         FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();

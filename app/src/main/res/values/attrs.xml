@@ -21,6 +21,7 @@
         <attr name="pbRed" format="color"/>
         <attr name="pbBlue" format="color"/>
         <attr name="pbGreen" format="color"/>
+        <attr name="gradColor" format="color"/>
 
     </declare-styleable>
 

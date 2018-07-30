@@ -16,7 +16,7 @@
             android:id="@+id/account_frag_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
+            android:background="@color/pbBlue"
             android:elevation="4dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -28,8 +28,9 @@
             android:id="@+id/profile_frag_Background"
             android:layout_width="0dp"
             android:layout_height="200dp"
-            android:adjustViewBounds="false"
+            android:adjustViewBounds="true"
             android:background="@drawable/profile_grad"
+            android:scaleType="center"
             android:src="@drawable/profile_grad"
             android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
@@ -180,6 +181,15 @@
             app:layout_constraintEnd_toEndOf="@+id/profile_frag_Background"
             app:layout_constraintStart_toStartOf="@+id/profile_frag_Background"
             app:layout_constraintTop_toTopOf="@+id/profile_frag_Background" />
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="200dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/profile_frag_Background">
+
+        </RelativeLayout>
 
     </android.support.constraint.ConstraintLayout>
 
