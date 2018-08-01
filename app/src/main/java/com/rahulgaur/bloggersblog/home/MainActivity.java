@@ -107,6 +107,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             searchFrag = new SearchFragment();
             initializeFragment();
             followRahul();
+            followSelf();
 
             updateToken(current_user_id);
 
@@ -114,6 +115,44 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         assert current_user != null;
+    }
+
+    private void followSelf(){
+        auth = FirebaseAuth.getInstance();
+        firebaseFirestore = FirebaseFirestore.getInstance();
+        final String current_userID = auth.getCurrentUser().getUid();
+        final Map<String, Object> map = new HashMap<>();
+        map.put("timestamp", FieldValue.serverTimestamp());
+        firebaseFirestore.collection("Users/" + current_userID + "/Followers").document(current_userID).set(map)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        try {
+                            if (task.isSuccessful()) {
+                                firebaseFirestore.collection("Users/"+current_userID+"/Following").document(current_userID).set(map)
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                try {
+                                                    if (task.isSuccessful()){
+                                                        Log.e(TAG, "onComplete: Rahul is followed " + current_userID);
+                                                    } else {
+                                                        Log.e(TAG, "onComplete: Error " + task.getException());
+                                                    }
+                                                } catch (Exception e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        });
+                                Log.e(TAG, "onComplete: Rahul followed " + current_userID);
+                            } else {
+                                Log.e(TAG, "onComplete: Error " + task.getException());
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
     }
 
     private void followRahul() {
@@ -144,7 +183,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                                 }
                                             }
                                         });
-                                Log.e(TAG, "onComplete: Rahul is followed " + post_user_id);
+                                Log.e(TAG, "onComplete: Rahul followed " + post_user_id);
                             } else {
                                 Log.e(TAG, "onComplete: Error " + task.getException());
                             }
@@ -265,10 +304,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         FirebaseUser current_user = auth.getCurrentUser();
         Log.d("Main Activity", "onStart() main");
 
-        if (current_user == null) {
-            sendUserToWelcome();
-        } else {
-            current_user_id = auth.getCurrentUser().getUid();
+        try {
+            if (current_user == null) {
+                sendUserToWelcome();
+            } else {
+                current_user_id = auth.getCurrentUser().getUid();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -278,8 +321,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         Log.d("Main Activity", "onResume() ");
 
-        if (current_user_id == null) {
-            sendUserToWelcome();
+        try {
+            if (current_user_id == null) {
+                sendUserToWelcome();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

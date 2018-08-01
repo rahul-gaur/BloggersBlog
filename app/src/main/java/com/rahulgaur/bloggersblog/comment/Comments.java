@@ -191,7 +191,6 @@ public class Comments extends AppCompatActivity {
         current_user_id = auth.getCurrentUser().getUid();
 
         //Likes count
-
         firebaseFirestore.collection("Posts/" + blog_post_id + "/Likes")
                 .addSnapshotListener(Comments.this, new EventListener<QuerySnapshot>() {
                     @SuppressLint("SetTextI18n")
@@ -218,120 +217,6 @@ public class Comments extends AppCompatActivity {
                     }
                 });
 
-        //it is throwing exception.
-
-     /*   likeView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                likeFeature();
-            }
-
-            private void likeFeature() {
-                firebaseFirestore.collection("Posts/" + blog_post_id + "/Likes")
-                        .document(current_user_id).get()
-                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                try {
-                                    if (!task.getResult().exists()) {
-                                        //if the like does not exists then add like
-                                        Map<String, Object> likesMap = new HashMap<>();
-                                        likesMap.put("timestamp", FieldValue.serverTimestamp());
-                                        firebaseFirestore.collection("Posts/" + blog_post_id + "/Likes")
-                                                .document(current_user_id).set(likesMap)
-                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<Void> task) {
-                                                        if (task.isSuccessful()) {
-                                                            likeView.setImageResource(R.mipmap.like_pink);
-                                                            firebaseFirestore.collection("Users").document(current_user_id).addSnapshotListener((Activity) context, new EventListener<DocumentSnapshot>() {
-                                                                @Override
-                                                                public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
-                                                                    if (documentSnapshot.exists()) {
-                                                                        Log.e("Like notificaiton", "Like Notification current user entered");
-
-                                                                        final String current_user_name = documentSnapshot.getString("name");
-                                                                        Log.e("Like notificaiton", "Like Notification current user name " + current_user_name);
-
-                                                                        final Map<String, Object> notificaitonMap = new HashMap<>();
-                                                                        notificaitonMap.put("post_id", blog_post_id);
-                                                                        notificaitonMap.put("timestamp", FieldValue.serverTimestamp());
-                                                                        notificaitonMap.put("message", "<b>" + current_user_name + "</b> <br>Liked your photo");
-                                                                        Log.e("Notification user", "like notification post user id " + post_user_id);
-                                                                        firebaseFirestore.collection("Users/" + post_user_id + "/Notification").add(notificaitonMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                                                                            @Override
-                                                                            public void onComplete(@NonNull Task<DocumentReference> task) {
-                                                                                if (task.isSuccessful()) {
-                                                                                    firebaseFirestore.collection("Users/").document(post_user_id).addSnapshotListener((Activity) context, new EventListener<DocumentSnapshot>() {
-                                                                                        @Override
-                                                                                        public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
-                                                                                            if (documentSnapshot.exists()) {
-                                                                                                String token = documentSnapshot.getString("token");
-
-                                                                                                Data data = new Data(blog_post_id,"no");
-                                                                                                com.rahulgaur.bloggersblog.notification.notificationServices.Notification notification = new com.rahulgaur.bloggersblog.notification.notificationServices.Notification("Likes", current_user_name + " Liked your Photo","com.rahulgaur.bloggersblog.fcmClick");
-                                                                                                Sender sender = new Sender(notification, token,data); //send notification to itself
-                                                                                                Log.e("Sender Token", " " + token);
-                                                                                                apiService.sendNotification(sender)
-                                                                                                        .enqueue(new Callback<MyResponse>() {
-                                                                                                            @Override
-                                                                                                            public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
-                                                                                                                try {
-                                                                                                                    if (response.body().success == 1) {
-                                                                                                                        Log.e("Notification service ", "Success");
-                                                                                                                    } else {
-                                                                                                                        Log.e("Notification service ", "Failed");
-                                                                                                                    }
-                                                                                                                } catch (NullPointerException ne) {
-                                                                                                                    Log.e("Notificaiton", "Exception " + ne.getMessage());
-                                                                                                                }
-                                                                                                            }
-
-                                                                                                            @Override
-                                                                                                            public void onFailure(Call<MyResponse> call, Throwable t) {
-                                                                                                                Log.e("Notification service ", "Failed");
-                                                                                                            }
-                                                                                                        });
-                                                                                                Log.e("Like notificaiton", "Like Notification Added");
-
-                                                                                            }
-                                                                                        }
-                                                                                    });
-                                                                                } else {
-                                                                                    Log.e("Like notificaiton", "Like Notification failed");
-                                                                                }
-                                                                            }
-                                                                        });
-                                                                    } else {
-                                                                        Log.e("Like notificaiton", "Like Notification document not found");
-                                                                    }
-                                                                }
-                                                            });
-                                                        }
-                                                    }
-                                                });
-                                    } else {
-                                        //if like exists delete the like
-                                        firebaseFirestore.collection("Posts/" + blog_post_id + "/Likes")
-                                                .document(current_user_id).delete()
-                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<Void> task) {
-                                                        if (task.isSuccessful()) {
-                                                            likeView.setImageResource(R.mipmap.like_grey);
-                                                        }
-                                                    }
-                                                });
-                                    }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        });
-
-            }
-        });
-*/
 
         Log.e(TAG, "onCreate: blog post id before post and image " + blog_post_id);
         //post image and username retrieving
@@ -379,7 +264,6 @@ public class Comments extends AppCompatActivity {
         sortComment.addSnapshotListener(Comments.this, new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
-
                 try {
                     if (!documentSnapshots.isEmpty()) {
                         for (DocumentChange doc : documentSnapshots.getDocumentChanges()) {
@@ -407,39 +291,43 @@ public class Comments extends AppCompatActivity {
         firebaseFirestore.collection("Posts/" + blog_post_id + "/Likes").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    try {
-                        for (DocumentSnapshot documentSnapshot : task.getResult()) {
-                            String user_id = documentSnapshot.getId();
-                            final LikeList likes = documentSnapshot.toObject(LikeList.class)
-                                    .withID(user_id);
-                            firebaseFirestore.collection("Users").document(user_id).addSnapshotListener(Comments.this, new EventListener<DocumentSnapshot>() {
-                                @Override
-                                public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
-                                    try {
-                                        if (documentSnapshot.exists()) {
-                                            String name = documentSnapshot.getString("name");
-                                            String thumb_image = documentSnapshot.getString("thumb_image");
+                try {
+                    if (task.isSuccessful()) {
+                        try {
+                            for (DocumentSnapshot documentSnapshot : task.getResult()) {
+                                String user_id = documentSnapshot.getId();
+                                final LikeList likes = documentSnapshot.toObject(LikeList.class)
+                                        .withID(user_id);
+                                firebaseFirestore.collection("Users").document(user_id).addSnapshotListener(Comments.this, new EventListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
+                                        try {
+                                            if (documentSnapshot.exists()) {
+                                                String name = documentSnapshot.getString("name");
+                                                String thumb_image = documentSnapshot.getString("thumb_image");
 
-                                            Log.e(TAG, "onEvent: name " + name);
+                                                Log.e(TAG, "onEvent: name " + name);
 
-                                            likes.setName(name);
-                                            likes.setThumb_image(thumb_image);
+                                                likes.setName(name);
+                                                likes.setThumb_image(thumb_image);
 
-                                            likeLists.add(likes);
-                                            likeRecyclerAdapter.notifyDataSetChanged();
+                                                likeLists.add(likes);
+                                                likeRecyclerAdapter.notifyDataSetChanged();
+                                            }
+                                        } catch (Exception e1) {
+                                            e1.printStackTrace();
                                         }
-                                    } catch (Exception e1) {
-                                        e1.printStackTrace();
                                     }
-                                }
-                            });
+                                });
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    } else {
+                        Log.e(TAG, "onComplete: some error " + task.getException().getMessage());
                     }
-                } else {
-                    Log.e(TAG, "onComplete: some error " + task.getException().getMessage());
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
 
             }
@@ -506,7 +394,7 @@ public class Comments extends AppCompatActivity {
                                                                                                     try {
                                                                                                         if (documentSnapshot.exists()) {
                                                                                                             String token = documentSnapshot.getString("token");
-                                                                                                            Data data = new Data(blog_post_id, "no");
+                                                                                                            Data data = new Data(blog_post_id, "no","no");
                                                                                                             com.rahulgaur.bloggersblog.notification.notificationServices.Notification notification = new com.rahulgaur.bloggersblog.notification.notificationServices.Notification("Comments", current_user_name + " Commented " + comment_message, "com.rahulgaur.bloggersblog.fcmClick");
                                                                                                             Sender sender = new Sender(notification, token, data); //send notification to token
                                                                                                             Log.e("Sender Token", "" + token);

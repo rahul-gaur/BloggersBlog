@@ -359,7 +359,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                                                                                             if (documentSnapshot.exists()) {
                                                                                                 String token = documentSnapshot.getString("token");
 
-                                                                                                Data data = new Data(blogPostID, "no");
+                                                                                                Data data = new Data(blogPostID, "no","no");
                                                                                                 com.rahulgaur.bloggersblog.notification.notificationServices.Notification notification = new com.rahulgaur.bloggersblog.notification.notificationServices.Notification("Likes", current_user_name + " Liked your Photo", "com.rahulgaur.bloggersblog.fcmClick");
                                                                                                 Sender sender = new Sender(notification, token,data); //send notification to itself
                                                                                                 Log.e("Sender Token", " " + token);

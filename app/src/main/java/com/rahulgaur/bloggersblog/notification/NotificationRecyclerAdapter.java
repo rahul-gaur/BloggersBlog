@@ -37,6 +37,8 @@ public class NotificationRecyclerAdapter extends RecyclerView.Adapter<Notificati
     private String noti_message;
     private String noti_postID;
     private Date timestamp;
+    private String TAG = "notiRecyclerView";
+    private String notification_post_id = "";
 
     public NotificationRecyclerAdapter(List<NotificationList> notificationLists) {
         this.notificationLists = notificationLists;
@@ -72,28 +74,35 @@ public class NotificationRecyclerAdapter extends RecyclerView.Adapter<Notificati
         final String notificationID = notificationLists.get(position).NotificationID;
 
         //getting post image
-        firebaseFirestore.collection("Posts").document(noti_postID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                try {
-                    if (task.isSuccessful()) {
+        try {
+            if (!noti_postID.equals(null)){
+                firebaseFirestore.collection("Posts").document(noti_postID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                         try {
-                            String postURL = task.getResult().getString("thumb_image_url");
-                            Log.e("Notification", "post_id " + noti_postID);
-                            Log.e("Notification", "image url " + postURL);
-                            holder.setPostImage(postURL);
+                            if (task.isSuccessful()) {
+                                try {
+                                    String postURL = task.getResult().getString("thumb_image_url");
+                                    Log.e("Notification", "post_id " + noti_postID);
+                                    Log.e("Notification", "image url " + postURL);
+                                    holder.setPostImage(postURL);
+                                } catch (Exception e) {
+                                    Log.e("Notification getting", "Exception " + e.getMessage());
+                                }
+                            } else {
+                                Log.e("Notification", "else image url");
+                            }
                         } catch (Exception e) {
-                            Log.e("Notification getting", "Exception " + e.getMessage());
+                            e.printStackTrace();
                         }
-                    } else {
-                        Log.e("Notification", "else image url");
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                });
+            } else {
+                Log.e(TAG, "onBindViewHolder: post_id is null");
             }
-        });
-
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         final String current_user_id = auth.getCurrentUser().getUid();
 
         firebaseFirestore.collection("Users/" + current_user_id + "/Notification").document(notificationID).get()
@@ -119,7 +128,13 @@ public class NotificationRecyclerAdapter extends RecyclerView.Adapter<Notificati
                     }
                 });
 
-        final String notification_post_id = notificationLists.get(position).getPost_id().trim();
+        String nothing = " ";
+        try {
+            notification_post_id = nothing+"";
+            notification_post_id = notification_post_id+notificationLists.get(position).getPost_id().trim();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

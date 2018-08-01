@@ -1,5 +1,6 @@
 package com.rahulgaur.bloggersblog.notification.notificationServices;
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
@@ -35,8 +36,15 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
         Intent intent = new Intent(clickAction);
         if (data.size() > 0) {
             String post_id = data.get("id");
-            intent.putExtra("id", post_id);
+            if (!post_id.equals("no")){
+                intent.putExtra("id", post_id);
+            }
             String update = data.get("update");
+            String user_id = data.get("user");
+
+            if (!user_id.equals("no")){
+                intent.putExtra("post_user_id",user_id);
+            }
 
             if (update.equals("yes")){
                 Log.e(TAG, "showNotification: update received "+update);
@@ -52,6 +60,8 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
                 .setContentTitle(notification.getTitle())
                 .setContentText(notification.getBody())
                 .setAutoCancel(true)
+                .setPriority(Notification.PRIORITY_HIGH)
+                .setDefaults(Notification.DEFAULT_ALL)
                 .setContentIntent(pendingIntent);
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         Objects.requireNonNull(notificationManager).notify(0, builder.build());

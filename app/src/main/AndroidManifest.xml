@@ -70,7 +70,13 @@
             tools:ignore="InnerclassSeparator" />
         <activity
             android:name=".account.UserAccount"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="com.rahulgaur.bloggersblog.followed" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
 
         <service
             android:name=".notification.notificationServices.MyFirebaseIdService"
@@ -87,7 +93,7 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".ThemeAndSettings.Profile_theme"></activity>
+        <activity android:name=".ThemeAndSettings.Profile_theme"/>
     </application>
 
 </manifest>

@@ -13,6 +13,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
@@ -70,6 +73,13 @@ public class NotificationFragment extends Fragment {
         firebaseFirestore = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
         current_user_id = auth.getCurrentUser().getUid();
+
+        //adMob
+        AdView adView;
+        MobileAds.initialize(getContext(), "ca-app-pub-5119226630407445/5412380450");
+        adView = view.findViewById(R.id.notificationAd);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
 
         notificationLists = new ArrayList<>();
 
