@@ -37,7 +37,6 @@ import com.rahulgaur.bloggersblog.ThemeAndSettings.SharedPref;
 import com.rahulgaur.bloggersblog.account.Followers.FollowersList;
 import com.rahulgaur.bloggersblog.account.Followers.FollowersRecyclerViewer;
 import com.rahulgaur.bloggersblog.blogPost.postid;
-import com.rahulgaur.bloggersblog.comment.Comments;
 import com.rahulgaur.bloggersblog.notification.Remote.APIService;
 import com.rahulgaur.bloggersblog.notification.notificationServices.Data;
 import com.rahulgaur.bloggersblog.notification.notificationServices.MyResponse;
@@ -345,26 +344,26 @@ public class UserAccount extends AppCompatActivity {
                                                                                     try {
                                                                                         if (documentSnapshot.exists()) {
                                                                                             final String user_name = documentSnapshot.getString("name");
-                                                                                            Log.e(TAG, "onEvent: inNotification" );
+                                                                                            Log.e(TAG, "onEvent: inNotification");
                                                                                             Map<String, Object> notificationMap = new HashMap<>();
                                                                                             notificationMap.put("user_id", current_userID);
                                                                                             notificationMap.put("timestamp", FieldValue.serverTimestamp());
                                                                                             notificationMap.put("message", "<b>" + user_name + "</b> <br>Followed you");
-                                                                                            Log.e(TAG, "onEvent: inNotification "+user_name);
+                                                                                            Log.e(TAG, "onEvent: inNotification " + user_name);
                                                                                             firebaseFirestore.collection("Users/" + post_user_id + "/Notification").add(notificationMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                                                                                                 @Override
                                                                                                 public void onComplete(@NonNull Task<DocumentReference> task) {
                                                                                                     try {
                                                                                                         if (task.isSuccessful()) {
-                                                                                                            Log.e(TAG, "onEvent: inside notification document" );
+                                                                                                            Log.e(TAG, "onEvent: inside notification document");
                                                                                                             firebaseFirestore.collection("Users/").document(post_user_id).addSnapshotListener(UserAccount.this, new EventListener<DocumentSnapshot>() {
                                                                                                                 @Override
                                                                                                                 public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
                                                                                                                     try {
                                                                                                                         if (documentSnapshot.exists()) {
                                                                                                                             String token = documentSnapshot.getString("token");
-                                                                                                                            Log.e(TAG, "onEvent: generating token and adding noti to "+token );
-                                                                                                                            Data data = new Data("no", "no",post_user_id);
+                                                                                                                            Log.e(TAG, "onEvent: generating token and adding noti to " + token);
+                                                                                                                            Data data = new Data("no", "no", post_user_id);
                                                                                                                             com.rahulgaur.bloggersblog.notification.notificationServices.Notification notification = new com.rahulgaur.bloggersblog.notification.notificationServices.Notification("Comments", user_name + " Followed you", "com.rahulgaur.bloggersblog.followed");
                                                                                                                             Sender sender = new Sender(notification, token, data); //send notification to token
                                                                                                                             Log.e("Sender Token", "" + token);
@@ -376,7 +375,7 @@ public class UserAccount extends AppCompatActivity {
                                                                                                                                             try {
                                                                                                                                                 if (response.body().success == 1) {
                                                                                                                                                     Log.e("Notification service ", "Success");
-                                                                                                                                                    Log.e(TAG, "onEvent: notification sent" );
+                                                                                                                                                    Log.e(TAG, "onEvent: notification sent");
                                                                                                                                                     followersRecyclerAdapter.notifyDataSetChanged();
                                                                                                                                                 } else {
                                                                                                                                                     Log.e("Notification service ", "Failed");

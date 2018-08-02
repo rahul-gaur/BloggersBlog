@@ -5,9 +5,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,10 +40,13 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.rahulgaur.bloggersblog.R;
 import com.rahulgaur.bloggersblog.ThemeAndSettings.Settings;
 import com.rahulgaur.bloggersblog.ThemeAndSettings.SharedPref;
+import com.rahulgaur.bloggersblog.account.Followers.FollowersList;
+import com.rahulgaur.bloggersblog.account.Followers.FollowersRecyclerViewer;
 import com.rahulgaur.bloggersblog.blogPost.postid;
 import com.rahulgaur.bloggersblog.welcome.WelcomePage;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -63,7 +71,8 @@ public class AccountFragment extends Fragment {
     private Toolbar account_toolbar;
     private int post_count = 0;
     private TextView post_countTV;
-
+    private List<FollowersList> followersLists;
+    private FollowersRecyclerViewer followersRecyclerAdapter;
     ArrayList<GridViewList> postList = new ArrayList<>();
 
     private GridViewAdapter gridViewAdapter;
@@ -99,7 +108,9 @@ public class AccountFragment extends Fragment {
         setHasOptionsMenu(true);
 
         profile_background = view.findViewById(R.id.profile_frag_Background);
-        post_countTV = view.findViewById(R.id.acc_frag_post_count);
+        post_countTV = view.findViewById(R.id.accFrag_user_post_count);
+
+        final FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
 
         if (sharedPref.loadNightModeState()) {
             setTheme(R.drawable.profile_grad_black);
@@ -107,12 +118,21 @@ public class AccountFragment extends Fragment {
             setTheme(R.drawable.profile_grad);
         }
 
-
-        final TextView followersTV = view.findViewById(R.id.acc_frag_followers);
-        final TextView followingTV = view.findViewById(R.id.acc_frag_following);
+        final LinearLayout followersLayout = view.findViewById(R.id.userFrag_followers_layout);
+        final LinearLayout followingLayout = view.findViewById(R.id.userFrag_following_layout);
+        final TextView followersTV = view.findViewById(R.id.accFrag_user_followers);
+        final TextView followingTV = view.findViewById(R.id.accFrag_user_following);
+        NestedScrollView followSheetLayout = view.findViewById(R.id.userFrag_sheet_layout);
+        final BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(followSheetLayout);
+        RecyclerView followRecyclerViw = view.findViewById(R.id.userFrag_sheet_recyclerView);
+        final TextView followTV = view.findViewById(R.id.userFrag_sheet_textView);
+        followersLists = new ArrayList<>();
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+        followRecyclerViw.setLayoutManager(new LinearLayoutManager(getContext()));
+        followersRecyclerAdapter = new FollowersRecyclerViewer(followersLists);
+        followRecyclerViw.setAdapter(followersRecyclerAdapter);
 
         current_userID = Objects.requireNonNull(auth.getCurrentUser()).getUid();
-        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
         firebaseFirestore.collection("Users")
                 .document(current_userID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -178,7 +198,7 @@ public class AccountFragment extends Fragment {
         profileImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(getContext(),Account.class);
+                Intent i = new Intent(getContext(), Account.class);
                 startActivity(i);
             }
         });
@@ -209,8 +229,6 @@ public class AccountFragment extends Fragment {
         auth = FirebaseAuth.getInstance();
 
         current_userID = auth.getCurrentUser().getUid();
-
-        firebaseFirestore = FirebaseFirestore.getInstance();
 
         //getting posts from the database
         firebaseFirestore.collection("Posts/" + post_id).addSnapshotListener((Activity) Objects.requireNonNull(getContext()), new EventListener<QuerySnapshot>() {
@@ -251,6 +269,121 @@ public class AccountFragment extends Fragment {
                 } catch (Exception e1) {
                     e1.printStackTrace();
                 }
+            }
+        });
+
+
+        //followers list
+        followersLayout.setOnClickListener(new View.OnClickListener()
+
+        {
+            @Override
+            public void onClick(View view) {
+                followersLists.clear();
+                followTV.setText("Followers");
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                firebaseFirestore.collection("Users/" + current_userID + "/Followers")
+                        .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        try {
+                            if (task.isSuccessful()) {
+                                for (DocumentSnapshot doc : task.getResult()) {
+                                    try {
+                                        if (doc.exists()) {
+                                            String followers_id = doc.getId();
+                                            final FollowersList followersList = doc.toObject(FollowersList.class).withID(followers_id);
+                                            firebaseFirestore.collection("Users").document(followers_id)
+                                                    .addSnapshotListener((Activity) getContext(), new EventListener<DocumentSnapshot>() {
+                                                        @Override
+                                                        public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
+                                                            try {
+                                                                if (documentSnapshot.exists()) {
+                                                                    String name = documentSnapshot.getString("name");
+                                                                    String thumb_image = documentSnapshot.getString("thumb_image");
+
+                                                                    Log.e(TAG, "onEvent: name " + name);
+
+                                                                    followersList.setName(name);
+                                                                    followersList.setThumb_image(thumb_image);
+
+                                                                    followersLists.add(followersList);
+                                                                    followersRecyclerAdapter.notifyDataSetChanged();
+                                                                }
+                                                            } catch (Exception e1) {
+                                                                e1.printStackTrace();
+                                                            }
+                                                        }
+                                                    });
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            }
+        });
+
+        //following list
+        followingLayout.setOnClickListener(new View.OnClickListener()
+
+        {
+            @Override
+            public void onClick(View view) {
+                followTV.setText("Following");
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                followersLists.clear();
+                firebaseFirestore.collection("Users/" + current_userID + "/Following")
+                        .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        try {
+                            if (task.isSuccessful()) {
+                                for (DocumentSnapshot doc : task.getResult()) {
+                                    try {
+                                        if (doc.exists()) {
+                                            String followers_id = doc.getId();
+                                            final FollowersList followersList = doc.toObject(FollowersList.class)
+                                                    .withID(followers_id);
+                                            firebaseFirestore.collection("Users")
+                                                    .document(followers_id)
+                                                    .addSnapshotListener((Activity) getContext(), new EventListener<DocumentSnapshot>() {
+                                                        @Override
+                                                        public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
+                                                            try {
+                                                                if (documentSnapshot.exists()) {
+                                                                    String name = documentSnapshot.getString("name");
+                                                                    String thumb_image = documentSnapshot.getString("thumb_image");
+
+                                                                    Log.e(TAG, "onEvent: name " + name);
+
+                                                                    followersList.setName(name);
+                                                                    followersList.setThumb_image(thumb_image);
+
+                                                                    followersLists.add(followersList);
+                                                                    followersRecyclerAdapter.notifyDataSetChanged();
+                                                                }
+                                                            } catch (Exception e1) {
+                                                                e1.printStackTrace();
+                                                            }
+                                                        }
+                                                    });
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
             }
         });
 
