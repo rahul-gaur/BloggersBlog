@@ -211,7 +211,12 @@ public class Account extends AppCompatActivity {
             download_uri = mainImageURI;
         }
 
-        File newImageFile = new File(mainImageURI.getPath());
+        File newImageFile = null;
+        try {
+            newImageFile = new File(mainImageURI.getPath());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         try {
             compressedImageFile = new Compressor(Account.this)

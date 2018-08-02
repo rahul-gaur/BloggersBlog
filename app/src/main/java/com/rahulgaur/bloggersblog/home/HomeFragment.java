@@ -3,12 +3,11 @@ package com.rahulgaur.bloggersblog.home;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,13 +18,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
-import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
@@ -37,8 +37,10 @@ import com.rahulgaur.bloggersblog.R;
 import com.rahulgaur.bloggersblog.ThemeAndSettings.Settings;
 import com.rahulgaur.bloggersblog.ThemeAndSettings.SharedPref;
 import com.rahulgaur.bloggersblog.account.Account;
+import com.rahulgaur.bloggersblog.blogPost.DescPost;
 import com.rahulgaur.bloggersblog.blogPost.Post;
 import com.rahulgaur.bloggersblog.blogPost.User;
+import com.rahulgaur.bloggersblog.home.Adapters.PostRecyclerAdapter;
 import com.rahulgaur.bloggersblog.welcome.WelcomePage;
 
 import java.util.ArrayList;
@@ -60,10 +62,13 @@ public class HomeFragment extends Fragment {
     private FirebaseFirestore firebaseFirestore;
     private PostRecyclerAdapter postRecyclerAdapter;
     private FirebaseAuth auth;
-    private SwipeRefreshLayout swipeRefreshLayout;
+    private String TAG = "HomeFragment.java";
 
     private SharedPref sharedPref;
     private android.support.v7.widget.Toolbar toolbar;
+    private Button postBtn;
+    private TextInputLayout textInputLayout;
+    private TextInputEditText textInputEditText;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -86,13 +91,17 @@ public class HomeFragment extends Fragment {
         postList = new ArrayList<>();
         userList = new ArrayList<>();
         recyclerView = view.findViewById(R.id.frag_home_recyclerView);
+/*
+
+        postBtn = view.findViewById(R.id.home_frag_postBtn);
+        textInputEditText = view.findViewById(R.id.home_frag_EditText);
+        textInputLayout = view.findViewById(R.id.home_frag_EditText_layout);
+*/
 
         //to test a crash and it generates null pointer exception
         //Crashlytics.getInstance().crash();
 
         postRecyclerAdapter = new PostRecyclerAdapter(postList, userList);
-
-        swipeRefreshLayout = view.findViewById(R.id.frag_home_swipeRefresh);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(postRecyclerAdapter);
@@ -100,18 +109,41 @@ public class HomeFragment extends Fragment {
         auth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
 
-        if (auth.getCurrentUser() != null) {
+        //for posting status
+/*
+        postBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String post = textInputLayout.getEditText().getText().toString().trim();
+                String current_user = auth.getCurrentUser().getUid();
+                if (!post.equals("")) {
+                    Map<String, Object> descMap = new HashMap<>();
+                    descMap.put("desc",post);
+                    descMap.put("user_id",current_user);
+                    descMap.put("timestamp", FieldValue.serverTimestamp());
 
-            swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                @Override
-                public void onRefresh() {
-                    Toast.makeText(getContext(), "Refreshed..", Toast.LENGTH_SHORT).show();
-                    recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-                    recyclerView.setAdapter(postRecyclerAdapter);
-                    swipeRefreshLayout.setRefreshing(false);
+                    firebaseFirestore.collection("Desc").add(descMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentReference> task) {
+                            try {
+                                if (task.isSuccessful()){
+                                    //posted
+                                    Toast.makeText(getContext(), "Posted!! 😊", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    //some error
+                                    Log.e(TAG, "onComplete: error in desc posting "+task.getException());
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
                 }
+            }
+        });
+*/
 
-            });
+        if (auth.getCurrentUser() != null) {
 
             toolbar = view.findViewById(R.id.home_frag_toolbar);
             toolbar.setTitle("Blogger's Blog");
@@ -121,19 +153,47 @@ public class HomeFragment extends Fragment {
             String current_user_id = auth.getCurrentUser().getUid();
 
             //adding posts
-            Query query = firebaseFirestore.collection("Users/" + current_user_id + "/Following").orderBy("timestamp");
+            Query query = firebaseFirestore.collection("Users/" + current_user_id + "/Following");
             query.addSnapshotListener((Activity) getContext(), new EventListener<QuerySnapshot>() {
                 @Override
                 public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
                     try {
                         if (!documentSnapshots.isEmpty()) {
-                            for (DocumentChange doc : documentSnapshots.getDocumentChanges()) {
+                            for (final DocumentChange doc : documentSnapshots.getDocumentChanges()) {
                                 if (doc.getType() == DocumentChange.Type.ADDED) {
                                     String user_id = doc.getDocument().getId();
 
-                                    Query firstQuery = firebaseFirestore.collection("Posts")
+                               /*     //Desc posts
+                                    Query descQuery = firebaseFirestore.collection("Desc")
                                             .orderBy("timestamp", Query.Direction.DESCENDING)
                                             .whereEqualTo("user_id",user_id);
+                                    descQuery.addSnapshotListener(getActivity(), new EventListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+                                            if (!documentSnapshots.isEmpty()){
+                                                for (DocumentChange doc : documentSnapshots.getDocumentChanges()){
+                                                    if (doc.getType() == DocumentChange.Type.ADDED){
+                                                        final String blogPosTID = doc.getDocument().getId();
+                                                        final DescPost descPost = doc.getDocument().toObject(DescPost.class).withID(blogPosTID);
+                                                        String blogUserID = doc.getDocument().getString("user_id");
+                                                        firebaseFirestore.collection("Users").document(blogUserID).get()
+                                                                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                                    @Override
+                                                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                                        User user = task.getResult().toObject(User.class);
+
+                                                                    }
+                                                                });
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    });
+*/
+                                    //image posts
+                                    Query firstQuery = firebaseFirestore.collection("Posts")
+                                            .orderBy("timestamp", Query.Direction.DESCENDING)
+                                            .whereEqualTo("user_id", user_id);
                                     firstQuery.addSnapshotListener(getActivity(), new EventListener<QuerySnapshot>() {
 
                                         @Override

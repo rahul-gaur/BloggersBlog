@@ -28,7 +28,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.rahulgaur.bloggersblog.R;
 import com.rahulgaur.bloggersblog.Search.SearchFragment;
-import com.rahulgaur.bloggersblog.ThemeAndSettings.Settings;
 import com.rahulgaur.bloggersblog.ThemeAndSettings.SharedPref;
 import com.rahulgaur.bloggersblog.account.Account;
 import com.rahulgaur.bloggersblog.account.AccountFragment;
@@ -40,7 +39,7 @@ import com.rahulgaur.bloggersblog.welcome.WelcomePage;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.rahulgaur.bloggersblog.home.PostRecyclerAdapter.context;
+import static com.rahulgaur.bloggersblog.home.Adapters.PostRecyclerAdapter.context;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 

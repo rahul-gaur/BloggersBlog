@@ -1,4 +1,4 @@
-package com.rahulgaur.bloggersblog.home;
+package com.rahulgaur.bloggersblog.home.Adapters;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -78,7 +78,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
     private postid pd = new postid();
     private APIService apiService;
 
-    PostRecyclerAdapter(ArrayList<Post> postList, ArrayList<User> user_list) {
+    public PostRecyclerAdapter(ArrayList<Post> postList, ArrayList<User> user_list) {
         this.postList = postList;
         this.user_list = user_list;
     }

@@ -85,12 +85,16 @@ public class UserAccount extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         sharedPref = new SharedPref(this);
-        if (sharedPref.loadNightModeState()) {
-            this.setTheme(R.style.darkTheme);
-            setGradTheme(R.drawable.profile_green_back_grad);
-        } else {
-            this.setTheme(R.style.AppTheme);
-            setGradTheme(R.drawable.profile_green_grad);
+        try {
+            if (sharedPref.loadNightModeState()) {
+                this.setTheme(R.style.darkTheme);
+                setGradTheme(R.drawable.profile_green_back_grad);
+            } else {
+                this.setTheme(R.style.AppTheme);
+                setGradTheme(R.drawable.profile_green_grad);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         super.onCreate(savedInstanceState);

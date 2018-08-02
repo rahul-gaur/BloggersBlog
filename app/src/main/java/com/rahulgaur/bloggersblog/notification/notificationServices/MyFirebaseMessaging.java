@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import static android.support.constraint.Constraints.TAG;
-import static com.rahulgaur.bloggersblog.home.PostRecyclerAdapter.context;
 
 public class MyFirebaseMessaging extends FirebaseMessagingService {
     @Override
