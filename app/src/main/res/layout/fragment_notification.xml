@@ -31,12 +31,12 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginEnd="2dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="4dp"
             ads:adSize="BANNER"
             ads:adUnitId="ca-app-pub-5119226630407445/5412380450"
-            ads:layout_constraintEnd_toEndOf="parent"
+            ads:layout_constraintEnd_toStartOf="@+id/noti_frag_clearBtn"
             ads:layout_constraintStart_toStartOf="parent"
             ads:layout_constraintTop_toBottomOf="@+id/noti_frag_toolbar" />
 
@@ -53,6 +53,18 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/notificationAd" />
+
+        <Button
+            android:id="@+id/noti_frag_clearBtn"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"
+            android:layout_marginTop="4dp"
+            android:background="?attr/colorAccent"
+            android:text="@string/clear"
+            android:textAllCaps="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/noti_frag_toolbar" />
 
     </android.support.constraint.ConstraintLayout>
 

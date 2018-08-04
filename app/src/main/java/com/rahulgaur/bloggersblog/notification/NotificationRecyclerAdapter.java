@@ -62,6 +62,17 @@ public class NotificationRecyclerAdapter extends RecyclerView.Adapter<Notificati
         noti_postID = notificationLists.get(position).getPost_id();
         timestamp = notificationLists.get(position).getTimestamp();
 
+        Log.e(TAG, "onBindViewHolder: before if noti_msg " + noti_message);
+        if (noti_message.contains("Followed")) {
+            try {
+                notificationLists.remove(position);
+                notifyDataSetChanged();
+                Log.e(TAG, "onBindViewHolder: in if noti_msg " + noti_message);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
         @SuppressLint("SimpleDateFormat") SimpleDateFormat dateformatMMDDYYYY = new SimpleDateFormat("dd MMMM yy");
         final StringBuilder nowMMDDYYYY = new StringBuilder(dateformatMMDDYYYY.format(timestamp));
 
@@ -75,7 +86,7 @@ public class NotificationRecyclerAdapter extends RecyclerView.Adapter<Notificati
 
         //getting post image
         try {
-            if (!noti_postID.equals(null)){
+            if (!noti_postID.equals(null)) {
                 firebaseFirestore.collection("Posts").document(noti_postID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -105,6 +116,7 @@ public class NotificationRecyclerAdapter extends RecyclerView.Adapter<Notificati
         }
         final String current_user_id = auth.getCurrentUser().getUid();
 
+        //getting notification text
         firebaseFirestore.collection("Users/" + current_user_id + "/Notification").document(notificationID).get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
@@ -128,28 +140,21 @@ public class NotificationRecyclerAdapter extends RecyclerView.Adapter<Notificati
                     }
                 });
 
-        String nothing = " ";
-        try {
-            notification_post_id = nothing+"";
-            notification_post_id = notification_post_id+notificationLists.get(position).getPost_id().trim();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.e("Notification", "OnClick position" + notification_post_id);
+                Log.e("Notification", "OnClick position" + noti_postID);
                 Intent i = new Intent(context, Comments.class);
-                i.putExtra("blog_post_id", notification_post_id);
+                i.putExtra("blog_post_id", noti_postID);
                 context.startActivity(i);
             }
         });
         holder.textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.e("Notification", "OnClick position" + notification_post_id);
+                Log.e("Notification", "OnClick position" + noti_postID);
                 Intent i = new Intent(context, Comments.class);
-                i.putExtra("blog_post_id", notification_post_id);
+                i.putExtra("blog_post_id", noti_postID);
                 context.startActivity(i);
             }
         });
@@ -203,7 +208,7 @@ public class NotificationRecyclerAdapter extends RecyclerView.Adapter<Notificati
             //progressDialog.dismiss();
         }
 
-        void setTimeStamp(StringBuilder time){
+        void setTimeStamp(StringBuilder time) {
             timeView.setText(time);
         }
 

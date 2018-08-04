@@ -5,9 +5,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -66,6 +68,8 @@ public class HomeFragment extends Fragment {
 
     private SharedPref sharedPref;
     private android.support.v7.widget.Toolbar toolbar;
+    private CoordinatorLayout coordinatorLayout;
+    private NestedScrollView nestedScrollView;
     private Button postBtn;
     private TextInputLayout textInputLayout;
     private TextInputEditText textInputEditText;
@@ -105,6 +109,8 @@ public class HomeFragment extends Fragment {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(postRecyclerAdapter);
+
+
 
         auth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();

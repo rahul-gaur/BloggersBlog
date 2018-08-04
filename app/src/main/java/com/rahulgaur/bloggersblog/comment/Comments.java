@@ -215,6 +215,7 @@ public class Comments extends AppCompatActivity {
 
 
         Log.e(TAG, "onCreate: blog post id before post and image " + blog_post_id);
+
         //post image and username retrieving
         firebaseFirestore.collection("Posts/").document(blog_post_id).addSnapshotListener(Comments.this, new EventListener<DocumentSnapshot>() {
             @Override
