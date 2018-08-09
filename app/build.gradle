@@ -11,8 +11,8 @@ android {
         applicationId "com.rahulgaur.bloggersblog"
         minSdkVersion 21
         targetSdkVersion 27
-        versionCode 8
-        versionName "2.3.7"
+        versionCode 9
+        versionName "2.3.8"
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
