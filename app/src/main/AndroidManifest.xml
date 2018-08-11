@@ -70,7 +70,7 @@
             tools:ignore="InnerclassSeparator" />
         <activity
             android:name=".account.UserAccount"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="com.rahulgaur.bloggersblog.followed" />
 
@@ -93,7 +93,12 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".ThemeAndSettings.Profile_theme"/>
+        <activity android:name=".ThemeAndSettings.Profile_theme" />
+        <activity
+            android:name=".Messaging.MessagingMainActivity"
+            android:label="@string/title_activity_messaging_main"
+            android:theme="@style/AppTheme" />
+        <activity android:name=".Messaging.New_Message.NewMessageActivity"></activity>
     </application>
 
 </manifest>

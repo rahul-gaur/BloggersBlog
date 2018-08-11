@@ -35,6 +35,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.rahulgaur.bloggersblog.Messaging.MessagingMainActivity;
 import com.rahulgaur.bloggersblog.R;
 import com.rahulgaur.bloggersblog.ThemeAndSettings.Settings;
 import com.rahulgaur.bloggersblog.ThemeAndSettings.SharedPref;
@@ -95,12 +96,6 @@ public class HomeFragment extends Fragment {
         postList = new ArrayList<>();
         userList = new ArrayList<>();
         recyclerView = view.findViewById(R.id.frag_home_recyclerView);
-/*
-
-        postBtn = view.findViewById(R.id.home_frag_postBtn);
-        textInputEditText = view.findViewById(R.id.home_frag_EditText);
-        textInputLayout = view.findViewById(R.id.home_frag_EditText_layout);
-*/
 
         //to test a crash and it generates null pointer exception
         //Crashlytics.getInstance().crash();
@@ -111,43 +106,8 @@ public class HomeFragment extends Fragment {
         recyclerView.setAdapter(postRecyclerAdapter);
 
 
-
         auth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
-
-        //for posting status
-/*
-        postBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String post = textInputLayout.getEditText().getText().toString().trim();
-                String current_user = auth.getCurrentUser().getUid();
-                if (!post.equals("")) {
-                    Map<String, Object> descMap = new HashMap<>();
-                    descMap.put("desc",post);
-                    descMap.put("user_id",current_user);
-                    descMap.put("timestamp", FieldValue.serverTimestamp());
-
-                    firebaseFirestore.collection("Desc").add(descMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                        @Override
-                        public void onComplete(@NonNull Task<DocumentReference> task) {
-                            try {
-                                if (task.isSuccessful()){
-                                    //posted
-                                    Toast.makeText(getContext(), "Posted!! 😊", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    //some error
-                                    Log.e(TAG, "onComplete: error in desc posting "+task.getException());
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
-                }
-            }
-        });
-*/
 
         if (auth.getCurrentUser() != null) {
 
@@ -169,33 +129,6 @@ public class HomeFragment extends Fragment {
                                 if (doc.getType() == DocumentChange.Type.ADDED) {
                                     String user_id = doc.getDocument().getId();
 
-                               /*     //Desc posts
-                                    Query descQuery = firebaseFirestore.collection("Desc")
-                                            .orderBy("timestamp", Query.Direction.DESCENDING)
-                                            .whereEqualTo("user_id",user_id);
-                                    descQuery.addSnapshotListener(getActivity(), new EventListener<QuerySnapshot>() {
-                                        @Override
-                                        public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
-                                            if (!documentSnapshots.isEmpty()){
-                                                for (DocumentChange doc : documentSnapshots.getDocumentChanges()){
-                                                    if (doc.getType() == DocumentChange.Type.ADDED){
-                                                        final String blogPosTID = doc.getDocument().getId();
-                                                        final DescPost descPost = doc.getDocument().toObject(DescPost.class).withID(blogPosTID);
-                                                        String blogUserID = doc.getDocument().getString("user_id");
-                                                        firebaseFirestore.collection("Users").document(blogUserID).get()
-                                                                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                                                    @Override
-                                                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                                                        User user = task.getResult().toObject(User.class);
-
-                                                                    }
-                                                                });
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    });
-*/
                                     //image posts
                                     Query firstQuery = firebaseFirestore.collection("Posts")
                                             .orderBy("timestamp", Query.Direction.DESCENDING)
@@ -273,11 +206,19 @@ public class HomeFragment extends Fragment {
                 break;
             case R.id.LogOut_app_bar:
                 logout();
+                break;
+            case R.id.message_menu:
+                message();
                 return true;
             default:
                 return false;
         }
         return false;
+    }
+
+    private void message() {
+        Intent i = new Intent(getContext(), MessagingMainActivity.class);
+        startActivity(i);
     }
 
     private void settings() {

@@ -54,4 +54,6 @@
     <string name="write_something">Write something..</string>
     <string name="post">Post</string>
     <string name="clear">Clear</string>
+    <string name="messages">Messages</string>
+    <string name="title_activity_messaging_main">MessagingMainActivity</string>
 </resources>

@@ -22,12 +22,12 @@
         <item name="android:itemBackground">@color/white</item>
         <item name="android:itemTextAppearance">@color/black</item>
         <item name="android:windowAnimationStyle">@style/WindowAnimation</item>
-        <item name="pbOrange" >@color/pbOrange</item>
+        <item name="pbOrange">@color/pbOrange</item>
         <item name="pbPurple">@color/pbPurple</item>
-        <item name="pbPink" >@color/pbPink</item>
-        <item name="pbRed" >@color/pbRed</item>
-        <item name="pbBlue" >@color/pbBlue</item>
-        <item name="pbGreen" >@color/pbGreen</item>
+        <item name="pbPink">@color/pbPink</item>
+        <item name="pbRed">@color/pbRed</item>
+        <item name="pbBlue">@color/pbBlue</item>
+        <item name="pbGreen">@color/pbGreen</item>
     </style>
 
     <!-- Dark application theme. -->
@@ -50,12 +50,12 @@
         <item name="bottomNevBarColor">@color/black</item>
         <item name="cardBackgroundColorDefault">@color/colorPrimaryDark</item>
         <item name="android:windowAnimationStyle">@style/WindowAnimation</item>
-        <item name="pbOrange" >@color/pbOrange</item>
+        <item name="pbOrange">@color/pbOrange</item>
         <item name="pbPurple">@color/pbPurple</item>
-        <item name="pbPink" >@color/pbPink</item>
-        <item name="pbRed" >@color/pbRed</item>
-        <item name="pbBlue" >@color/pbBlue</item>
-        <item name="pbGreen" >@color/pbGreen</item>
+        <item name="pbPink">@color/pbPink</item>
+        <item name="pbRed">@color/pbRed</item>
+        <item name="pbBlue">@color/pbBlue</item>
+        <item name="pbGreen">@color/pbGreen</item>
     </style>
 
     <style name="popUpThemeLight" parent="Widget.AppCompat.PopupMenu">
@@ -82,26 +82,32 @@
         <item name="gradColor">@color/pbRed</item>
         <item name="android:src">@drawable/profile_grad</item>
     </style>
+
     <style name="profile_Background_theme_orange_dark" parent="darkTheme">
         <item name="android:src">@drawable/profile_grad</item>
         <item name="gradColor">@color/pbOrange</item>
     </style>
+
     <style name="profile_Background_theme_Purple_dark" parent="darkTheme">
         <item name="android:src">@drawable/profile_grad</item>
         <item name="gradColor">@color/pbPurple</item>
     </style>
+
     <style name="profile_Background_theme_Pink_dark" parent="darkTheme">
         <item name="android:src">@drawable/profile_grad</item>
         <item name="gradColor">@color/pbPink</item>
     </style>
+
     <style name="profile_Background_theme_Blue_dark" parent="darkTheme">
         <item name="android:src">@drawable/profile_grad</item>
         <item name="gradColor">@color/pbBlue</item>
     </style>
+
     <style name="profile_Background_theme_Green_dark" parent="darkTheme">
         <item name="android:src">@drawable/profile_grad</item>
         <item name="gradColor">@color/pbGreen</item>
     </style>
+
     <style name="profile_Background_theme_Default_dark" parent="darkTheme">
         <item name="android:src">@drawable/profile_grad</item>
         <item name="gradColor">@color/pbBlue</item>
@@ -111,26 +117,32 @@
         <item name="gradColor">@color/pbRed</item>
         <item name="android:src">@drawable/profile_grad</item>
     </style>
+
     <style name="profile_Background_theme_orange" parent="AppTheme">
         <item name="android:src">@drawable/profile_grad</item>
         <item name="gradColor">@color/pbOrange</item>
     </style>
+
     <style name="profile_Background_theme_Purple" parent="AppTheme">
         <item name="android:src">@drawable/profile_grad</item>
         <item name="gradColor">@color/pbPurple</item>
     </style>
+
     <style name="profile_Background_theme_Pink" parent="AppTheme">
         <item name="android:src">@drawable/profile_grad</item>
         <item name="gradColor">@color/pbPink</item>
     </style>
+
     <style name="profile_Background_theme_Blue" parent="AppTheme">
         <item name="android:src">@drawable/profile_grad</item>
         <item name="gradColor">@color/pbBlue</item>
     </style>
+
     <style name="profile_Background_theme_Green" parent="AppTheme">
         <item name="android:src">@drawable/profile_grad</item>
         <item name="gradColor">@color/pbGreen</item>
     </style>
+
     <style name="profile_Background_theme_Default" parent="AppTheme">
         <item name="android:src">@drawable/profile_grad</item>
         <item name="gradColor">@color/pbBlue</item>
